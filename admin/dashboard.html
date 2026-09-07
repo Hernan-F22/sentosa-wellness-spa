@@ -261,6 +261,7 @@
                         <button onclick="filterAdminBookings('confirmed')" id="bFilterConfirmed" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Dikonfirmasi</button>
                         <button onclick="filterAdminBookings('on_process')" id="bFilterProcess" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Berlangsung</button>
                         <button onclick="filterAdminBookings('completed')" id="bFilterCompleted" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Selesai</button>
+                        <button onclick="filterAdminBookings('cancelled')" id="bFilterCancelled" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Dibatalkan</button>
                     </div>
 
                     <div class="w-full sm:w-64">
@@ -612,7 +613,7 @@
 
         function filterAdminBookings(status) {
             currentBookingFilter = status;
-            ['all', 'pending', 'confirmed', 'on_process', 'completed'].forEach(s => {
+            ['all', 'pending', 'confirmed', 'on_process', 'completed', 'cancelled'].forEach(s => {
                 const btn = document.getElementById('bFilter' + s.charAt(0).toUpperCase() + s.slice(1));
                 if (btn) {
                     btn.className = (s === status)
@@ -693,9 +694,26 @@
                             <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Completed</option>
                             <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                         </select>
+                        <button onclick="deleteBookingConfirm(${b.id}, '${b.booking_code}')" class="p-1.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 transition-colors" title="Hapus Reservasi">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function deleteBookingConfirm(id, code) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus data reservasi "${code}" secara permanen?`)) {
+                return;
+            }
+            const res = SentosaStore.deleteBooking(id);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                loadBookingsTable();
+                loadOverview();
+            } else {
+                SentosaStore.showToast(res.message, 'error');
+            }
         }
 
         function updateBookingStatus(id, newStatus) {

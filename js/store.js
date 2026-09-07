@@ -722,6 +722,18 @@
         return { success: false, message: 'Pesanan tidak ditemukan.' };
     }
 
+    function deleteBooking(id) {
+        initStore();
+        let bookings = getItem('bookings', []);
+        const initialLen = bookings.length;
+        bookings = bookings.filter(b => b.id != id);
+        if (bookings.length < initialLen) {
+            setItem('bookings', bookings);
+            return { success: true, message: 'Data reservasi berhasil dihapus.' };
+        }
+        return { success: false, message: 'Reservasi tidak ditemukan.' };
+    }
+
     // 8. REVIEWS & TESTIMONIALS
     function getReviews(therapistId = null) {
         initStore();
@@ -915,6 +927,7 @@
         updateBookingStatus,
         updatePaymentStatus,
         assignTherapist,
+        deleteBooking,
         getReviews,
         submitReview,
         getStats,

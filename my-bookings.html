@@ -12,8 +12,11 @@
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" />
 
     <!-- Tailwind CSS (via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,7 +50,8 @@
     </script>
 </head>
 
-<body class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+<body
+    class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
 
     <!-- Navbar Container -->
     <div id="navbar-container"></div>
@@ -68,17 +72,22 @@
             </div>
 
             <!-- Filter Status Tab Buttons -->
-            <div class="flex items-center space-x-2 overflow-x-auto pb-3 mb-6 border-b border-stone-200/80 scrollbar-none">
-                <button onclick="filterBookings('all')" id="tabFilterAll" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-emerald-800 text-white shadow-sm">
+            <div
+                class="flex items-center space-x-2 overflow-x-auto pb-3 mb-6 border-b border-stone-200/80 scrollbar-none">
+                <button onclick="filterBookings('all')" id="tabFilterAll"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-emerald-800 text-white shadow-sm">
                     Semua Reservasi
                 </button>
-                <button onclick="filterBookings('active')" id="tabFilterActive" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                <button onclick="filterBookings('active')" id="tabFilterActive"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
                     Menunggu & Sedang Berjalan
                 </button>
-                <button onclick="filterBookings('completed')" id="tabFilterCompleted" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                <button onclick="filterBookings('completed')" id="tabFilterCompleted"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
                     Selesai
                 </button>
-                <button onclick="filterBookings('cancelled')" id="tabFilterCancelled" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                <button onclick="filterBookings('cancelled')" id="tabFilterCancelled"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
                     Dibatalkan
                 </button>
             </div>
@@ -92,8 +101,10 @@
     </div>
 
     <!-- Modal Beri Rating & Ulasan Pelanggan -->
-    <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-stone-100 overflow-hidden transform transition-all duration-300">
+    <div id="reviewModal"
+        class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div
+            class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-stone-100 overflow-hidden transform transition-all duration-300">
             <div class="p-6 sm:p-8">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center space-x-2">
@@ -102,13 +113,16 @@
                         </div>
                         <h3 class="font-serif text-lg font-bold text-stone-900">Beri Rating & Ulasan</h3>
                     </div>
-                    <button onclick="closeReviewModal()" class="w-8 h-8 rounded-full bg-stone-100 text-stone-500 hover:text-stone-800 hover:bg-stone-200 flex items-center justify-center transition-colors">
+                    <button onclick="closeReviewModal()"
+                        class="w-8 h-8 rounded-full bg-stone-100 text-stone-500 hover:text-stone-800 hover:bg-stone-200 flex items-center justify-center transition-colors">
                         <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
                 </div>
 
                 <div class="mb-4 text-xs text-stone-500">
-                    Bagikan pengalaman pijat Anda bersama <strong id="modalTherapistName" class="text-stone-800">Terapis</strong> untuk pesanan <strong id="modalBookingCode" class="text-stone-800 font-mono">BKG-XXXX</strong>.
+                    Bagikan pengalaman pijat Anda bersama <strong id="modalTherapistName"
+                        class="text-stone-800">Terapis</strong> untuk pesanan <strong id="modalBookingCode"
+                        class="text-stone-800 font-mono">BKG-XXXX</strong>.
                 </div>
 
                 <form onsubmit="submitCustomerReview(event)" class="space-y-5">
@@ -116,24 +130,35 @@
 
                     <!-- Star Rating Interactive -->
                     <div class="text-center py-3 bg-stone-50 rounded-2xl border border-stone-200/80">
-                        <span class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">Bintang Kepuasan:</span>
+                        <span class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">Bintang
+                            Kepuasan:</span>
                         <div class="flex items-center justify-center space-x-2 text-2xl" id="starContainer">
-                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetHoverRating()"></i>
-                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetHoverRating()"></i>
-                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetHoverRating()"></i>
-                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetHoverRating()"></i>
-                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125"
+                                onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125"
+                                onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125"
+                                onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125"
+                                onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125"
+                                onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetHoverRating()"></i>
                         </div>
-                        <span id="ratingLabelText" class="block text-xs font-bold text-amber-800 mt-2">5.0 - Sangat Memuaskan & Sempurna</span>
+                        <span id="ratingLabelText" class="block text-xs font-bold text-amber-800 mt-2">5.0 - Sangat
+                            Memuaskan & Sempurna</span>
                         <input type="hidden" id="ratingValue" value="5">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Komentar & Testimoni (Opsional)</label>
-                        <textarea id="reviewComment" rows="3" placeholder="Tuliskan kepuasan Anda terhadap keramahan, ketepatan waktu, atau teknik pemijatan terapis..." class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Komentar &
+                            Testimoni (Opsional)</label>
+                        <textarea id="reviewComment" rows="3"
+                            placeholder="Tuliskan kepuasan Anda terhadap keramahan, ketepatan waktu, atau teknik pemijatan terapis..."
+                            class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
                     </div>
 
-                    <button type="submit" id="submitReviewBtn" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center space-x-2">
+                    <button type="submit" id="submitReviewBtn"
+                        class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-paper-plane text-xs"></i>
                         <span>Kirim Ulasan Pelanggan</span>
                     </button>
@@ -459,4 +484,5 @@
         });
     </script>
 </body>
+
 </html>

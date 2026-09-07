@@ -1029,6 +1029,11 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
                                     <button onclick='viewBookingDetail(${JSON.stringify(b)})' class="p-1.5 text-stone-500 hover:text-stone-900 rounded-lg hover:bg-stone-200/60" title="Lihat Detail & Catatan">
                                         <i class="fa-solid fa-eye text-xs"></i>
                                     </button>
+
+                                    <!-- Delete Button -->
+                                    <button onclick="deleteBookingConfirm(${b.id}, '${b.booking_code}')" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Reservasi">
+                                        <i class="fa-solid fa-trash text-xs"></i>
+                                    </button>
                                 </div>
                             </td>
                         `;
@@ -1051,6 +1056,29 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
             'cancelled': '<span class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-100 text-rose-800">Batal</span>'
         };
         return badges[status] || status;
+    }
+
+    async function deleteBookingConfirm(id, code) {
+        if (!confirm(`Apakah Anda yakin ingin menghapus data reservasi "${code}" secara permanen?`)) {
+            return;
+        }
+        try {
+            const res = await fetch('../api/booking.php?action=delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+                loadAllBookings();
+                loadDashboardStats();
+            } else {
+                showToast(data.message || 'Gagal menghapus reservasi.', 'error');
+            }
+        } catch (e) {
+            showToast('Terjadi kesalahan jaringan saat menghapus reservasi.', 'error');
+        }
     }
 
     async function updateBookingStatus(id, newStatus) {

@@ -12,8 +12,11 @@
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" />
 
     <!-- Tailwind CSS (via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,7 +50,8 @@
     </script>
 </head>
 
-<body class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+<body
+    class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
 
     <!-- Navbar Container -->
     <div id="navbar-container"></div>
@@ -63,34 +67,42 @@
             </div>
 
             <!-- Admin Preview Switcher Banner (Tampil Jika Admin) -->
-            <div id="adminPreviewBanner" class="hidden mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm shadow-sm">
+            <div id="adminPreviewBanner"
+                class="hidden mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm shadow-sm">
                 <div class="flex items-center space-x-3 text-amber-900">
-                    <div class="w-9 h-9 rounded-xl bg-amber-200/80 flex items-center justify-center text-amber-800 shrink-0">
+                    <div
+                        class="w-9 h-9 rounded-xl bg-amber-200/80 flex items-center justify-center text-amber-800 shrink-0">
                         <i class="fa-solid fa-user-shield text-base"></i>
                     </div>
                     <div>
                         <span class="font-bold">Mode Pratinjau Administrator</span>
-                        <p class="text-xs text-amber-700">Melihat tampilan portal terapis untuk <strong id="adminPreviewName">Terapis</strong>.</p>
+                        <p class="text-xs text-amber-700">Melihat tampilan portal terapis untuk <strong
+                                id="adminPreviewName">Terapis</strong>.</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 flex-wrap">
-                    <label for="adminSelectTherapist" class="text-xs font-semibold text-stone-600">Ganti Terapis:</label>
-                    <select id="adminSelectTherapist" onchange="switchTherapistPreview(this.value)" class="text-xs bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 font-medium text-stone-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></select>
-                    <a href="admin/dashboard.html" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
+                    <label for="adminSelectTherapist" class="text-xs font-semibold text-stone-600">Ganti
+                        Terapis:</label>
+                    <select id="adminSelectTherapist" onchange="switchTherapistPreview(this.value)"
+                        class="text-xs bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 font-medium text-stone-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></select>
+                    <a href="admin/dashboard.html"
+                        class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
                         Dashboard Admin
                     </a>
                 </div>
             </div>
 
             <!-- Banner Profil Terapis & Kontrol Status Ketersediaan -->
-            <div id="therapistHeaderBanner" class="bg-gradient-to-r from-stone-900 via-stone-800 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-stone-950/10 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div id="therapistHeaderBanner"
+                class="bg-gradient-to-r from-stone-900 via-stone-800 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-stone-950/10 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <!-- Injected via JavaScript -->
             </div>
 
             <!-- Kartu Metrik Kinerja Terapis -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 <!-- Tugas Aktif -->
-                <button onclick="switchTab('active')" id="metricCardActive" class="p-4 rounded-2xl border transition-all text-left bg-white border-blue-600 shadow-md ring-2 ring-blue-600/10">
+                <button onclick="switchTab('active')" id="metricCardActive"
+                    class="p-4 rounded-2xl border transition-all text-left bg-white border-blue-600 shadow-md ring-2 ring-blue-600/10">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Tugas Aktif</span>
                         <i class="fa-solid fa-clock-rotate-left text-blue-500 text-sm"></i>
@@ -100,7 +112,8 @@
                 </button>
 
                 <!-- Tugas Selesai -->
-                <button onclick="switchTab('completed')" id="metricCardCompleted" class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
+                <button onclick="switchTab('completed')" id="metricCardCompleted"
+                    class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Tuntas</span>
                         <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
@@ -110,7 +123,8 @@
                 </button>
 
                 <!-- Total Penugasan -->
-                <button onclick="switchTab('all')" id="metricCardAll" class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
+                <button onclick="switchTab('all')" id="metricCardAll"
+                    class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-stone-600 uppercase tracking-wider">Total Tugas</span>
                         <i class="fa-solid fa-calendar-days text-stone-400 text-sm"></i>
@@ -120,9 +134,11 @@
                 </button>
 
                 <!-- Rating Pelanggan -->
-                <button onclick="switchTab('reviews')" id="metricCardReviews" class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
+                <button onclick="switchTab('reviews')" id="metricCardReviews"
+                    class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider">Rating Pelanggan</span>
+                        <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider">Rating
+                            Pelanggan</span>
                         <i class="fa-solid fa-star text-amber-500 text-sm"></i>
                     </div>
                     <div class="flex items-center space-x-1.5 mt-1">
@@ -134,17 +150,22 @@
             </div>
 
             <!-- Filter Tab Buttons -->
-            <div class="flex items-center space-x-2 overflow-x-auto pb-3 mb-6 border-b border-stone-200/80 scrollbar-none">
-                <button onclick="switchTab('active')" id="tabBtnActive" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-blue-800 text-white shadow-sm">
+            <div
+                class="flex items-center space-x-2 overflow-x-auto pb-3 mb-6 border-b border-stone-200/80 scrollbar-none">
+                <button onclick="switchTab('active')" id="tabBtnActive"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-blue-800 text-white shadow-sm">
                     <i class="fa-solid fa-list-check mr-1.5"></i> Tugas Aktif & Jadwal
                 </button>
-                <button onclick="switchTab('completed')" id="tabBtnCompleted" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                <button onclick="switchTab('completed')" id="tabBtnCompleted"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
                     <i class="fa-solid fa-circle-check mr-1.5"></i> Tugas Selesai
                 </button>
-                <button onclick="switchTab('all')" id="tabBtnAll" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                <button onclick="switchTab('all')" id="tabBtnAll"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
                     <i class="fa-solid fa-receipt mr-1.5"></i> Semua Jadwal
                 </button>
-                <button onclick="switchTab('reviews')" id="tabBtnReviews" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                <button onclick="switchTab('reviews')" id="tabBtnReviews"
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
                     <i class="fa-solid fa-star mr-1.5 text-amber-400"></i> Ulasan & Testimoni Pelanggan
                 </button>
             </div>
@@ -407,10 +428,10 @@
             container.innerHTML = `
                 <div class="space-y-5">
                     ${tasks.map(t => {
-                        const cleanPhone = (t.customer_phone || '').replace(/[^0-9]/g, '');
-                        const waMsg = encodeURIComponent(`Halo Bpk/Ibu ${t.customer_name}, saya ${therapist.name}, terapis dari Sentosa Spa yang bertugas untuk pesanan Anda (#${t.booking_code}).`);
+                const cleanPhone = (t.customer_phone || '').replace(/[^0-9]/g, '');
+                const waMsg = encodeURIComponent(`Halo Bpk/Ibu ${t.customer_name}, saya ${therapist.name}, terapis dari Sentosa Spa yang bertugas untuk pesanan Anda (#${t.booking_code}).`);
 
-                        return `
+                return `
                         <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm hover:shadow-md transition-all space-y-5">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-100 gap-3">
                                 <div class="flex items-center space-x-3">
@@ -474,7 +495,7 @@
                             </div>
                         </div>
                         `;
-                    }).join('')}
+            }).join('')}
                 </div>
             `;
         }
@@ -508,4 +529,5 @@
         });
     </script>
 </body>
+
 </html>

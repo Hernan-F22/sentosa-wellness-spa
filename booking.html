@@ -12,8 +12,11 @@
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" />
 
     <!-- Tailwind CSS (via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,7 +50,8 @@
     </script>
 </head>
 
-<body class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+<body
+    class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
 
     <!-- Navbar Container -->
     <div id="navbar-container"></div>
@@ -57,11 +61,14 @@
 
             <!-- Header Title -->
             <div class="text-center mb-10">
-                <span class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-wider uppercase mb-2">
+                <span
+                    class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-wider uppercase mb-2">
                     Sistem Reservasi Praktis
                 </span>
-                <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900">Pemesanan Sesi Pijat & Wellness</h1>
-                <p class="text-stone-600 text-sm sm:text-base mt-2">Lengkapi tahapan di bawah ini untuk mengamankan slot jadwal terapis Anda.</p>
+                <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900">Pemesanan Sesi Pijat & Wellness
+                </h1>
+                <p class="text-stone-600 text-sm sm:text-base mt-2">Lengkapi tahapan di bawah ini untuk mengamankan slot
+                    jadwal terapis Anda.</p>
             </div>
 
             <!-- WIZARD CARD -->
@@ -71,31 +78,36 @@
                 <div class="bg-stone-900 px-6 py-4 border-b border-stone-800 text-white">
                     <div class="flex items-center justify-between max-w-2xl mx-auto">
                         <div class="flex items-center space-x-2 step-indicator active" id="ind-1">
-                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold ring-4 ring-emerald-900/50 ind-circle">1</span>
+                            <span
+                                class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold ring-4 ring-emerald-900/50 ind-circle">1</span>
                             <span class="text-xs font-medium hidden sm:inline ind-text">Tipe</span>
                         </div>
                         <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-1"></div>
 
                         <div class="flex items-center space-x-2 step-indicator" id="ind-2">
-                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">2</span>
+                            <span
+                                class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">2</span>
                             <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Layanan</span>
                         </div>
                         <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-2"></div>
 
                         <div class="flex items-center space-x-2 step-indicator" id="ind-3">
-                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">3</span>
+                            <span
+                                class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">3</span>
                             <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Terapis</span>
                         </div>
                         <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-3"></div>
 
                         <div class="flex items-center space-x-2 step-indicator" id="ind-4">
-                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">4</span>
+                            <span
+                                class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">4</span>
                             <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Waktu</span>
                         </div>
                         <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-4"></div>
 
                         <div class="flex items-center space-x-2 step-indicator" id="ind-5">
-                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">5</span>
+                            <span
+                                class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">5</span>
                             <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Selesai</span>
                         </div>
                     </div>
@@ -107,38 +119,51 @@
                     <!-- STEP 1: TIPE RESERVASI & LOKASI -->
                     <div class="step-panel" id="stepPanel-1">
                         <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Tipe Reservasi</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Tentukan apakah Anda ingin terapis datang ke rumah/hotel atau datang langsung ke klinik kami.</p>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Tentukan apakah Anda ingin terapis datang ke
+                            rumah/hotel atau datang langsung ke klinik kami.</p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-                            <label class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50" id="typeCardHome">
-                                <input type="radio" name="booking_type" value="home_service" checked onchange="handleTypeChange()" class="sr-only">
+                            <label
+                                class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50"
+                                id="typeCardHome">
+                                <input type="radio" name="booking_type" value="home_service" checked
+                                    onchange="handleTypeChange()" class="sr-only">
                                 <div class="flex items-center justify-between mb-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl">
+                                    <div
+                                        class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl">
                                         <i class="fa-solid fa-house-chimney-medical text-emerald-300"></i>
                                     </div>
-                                    <span class="w-6 h-6 rounded-full border-2 border-emerald-600 flex items-center justify-center check-icon">
+                                    <span
+                                        class="w-6 h-6 rounded-full border-2 border-emerald-600 flex items-center justify-center check-icon">
                                         <span class="w-3 h-3 rounded-full bg-emerald-700"></span>
                                     </span>
                                 </div>
                                 <span class="font-bold text-stone-900 text-lg">Home Service (Panggilan)</span>
                                 <span class="text-xs text-stone-500 mt-1 leading-relaxed">
-                                    Terapis kami tiba di rumah, apartemen, atau hotel Anda dengan perlengkapan lengkap & matras steril.
+                                    Terapis kami tiba di rumah, apartemen, atau hotel Anda dengan perlengkapan lengkap &
+                                    matras steril.
                                 </span>
                             </label>
 
-                            <label class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white" id="typeCardClinic">
-                                <input type="radio" name="booking_type" value="clinic" onchange="handleTypeChange()" class="sr-only">
+                            <label
+                                class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white"
+                                id="typeCardClinic">
+                                <input type="radio" name="booking_type" value="clinic" onchange="handleTypeChange()"
+                                    class="sr-only">
                                 <div class="flex items-center justify-between mb-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-2xl">
+                                    <div
+                                        class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-2xl">
                                         <i class="fa-solid fa-shop"></i>
                                     </div>
-                                    <span class="w-6 h-6 rounded-full border-2 border-stone-300 flex items-center justify-center check-icon">
+                                    <span
+                                        class="w-6 h-6 rounded-full border-2 border-stone-300 flex items-center justify-center check-icon">
                                         <span class="w-3 h-3 rounded-full bg-transparent"></span>
                                     </span>
                                 </div>
                                 <span class="font-bold text-stone-900 text-lg">Di Klinik Spa (On-site)</span>
                                 <span class="text-xs text-stone-500 mt-1 leading-relaxed">
-                                    Nikmati suasana mewah, aromaterapi tenang, dan alunan musik relaksasi di studio Sentosa Spa Senopati.
+                                    Nikmati suasana mewah, aromaterapi tenang, dan alunan musik relaksasi di studio
+                                    Sentosa Spa Senopati.
                                 </span>
                             </label>
                         </div>
@@ -148,12 +173,16 @@
                             <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">
                                 Alamat Penjemputan / Lokasi Anda <span class="text-rose-500">*</span>
                             </label>
-                            <textarea id="addressInput" rows="3" placeholder="Contoh: Jl. Kemang Raya No. 12B, RT 02/05, Mampang Prapatan, Jaksel (Pagar cokelat samping mini market)" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
-                            <p class="text-[11px] text-stone-400">Gratis biaya transport untuk wilayah Jakarta Selatan dan radius 10 km.</p>
+                            <textarea id="addressInput" rows="3"
+                                placeholder="Contoh: Jl. Kemang Raya No. 12B, RT 02/05, Mampang Prapatan, Jaksel (Pagar cokelat samping mini market)"
+                                class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
+                            <p class="text-[11px] text-stone-400">Gratis biaya transport untuk wilayah Jakarta Selatan
+                                dan radius 10 km.</p>
                         </div>
 
                         <div class="flex justify-end pt-4 border-t border-stone-100">
-                            <button type="button" onclick="goToStep(2)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                            <button type="button" onclick="goToStep(2)"
+                                class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
                                 <span>Lanjut: Pilih Layanan</span>
                                 <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
@@ -163,17 +192,20 @@
                     <!-- STEP 2: PILIH MENU LAYANAN -->
                     <div class="step-panel hidden" id="stepPanel-2">
                         <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Menu Perawatan</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih salah satu menu terapi yang sesuai dengan kebutuhan relaksasi tubuh Anda.</p>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih salah satu menu terapi yang sesuai
+                            dengan kebutuhan relaksasi tubuh Anda.</p>
 
                         <div id="serviceListContainer" class="space-y-4 mb-8">
                             <!-- Injected via JavaScript -->
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-stone-100">
-                            <button type="button" onclick="goToStep(1)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                            <button type="button" onclick="goToStep(1)"
+                                class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
                                 Kembali
                             </button>
-                            <button type="button" onclick="goToStep(3)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                            <button type="button" onclick="goToStep(3)"
+                                class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
                                 <span>Lanjut: Pilih Terapis</span>
                                 <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
@@ -183,26 +215,37 @@
                     <!-- STEP 3: PREFERENSI TERAPIS -->
                     <div class="step-panel hidden" id="stepPanel-3">
                         <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Terapis</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih preferensi gender terapis atau pilih langsung terapis favorit Anda.</p>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih preferensi gender terapis atau pilih
+                            langsung terapis favorit Anda.</p>
 
                         <!-- Gender Preference Cards -->
                         <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-                            <label class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/50" id="genderAny">
-                                <input type="radio" name="therapist_gender_pref" value="any" checked onchange="handleGenderChange('any')" class="sr-only">
+                            <label
+                                class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/50"
+                                id="genderAny">
+                                <input type="radio" name="therapist_gender_pref" value="any" checked
+                                    onchange="handleGenderChange('any')" class="sr-only">
                                 <i class="fa-solid fa-users text-xl text-emerald-800 mb-2"></i>
-                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Bebas / Siapa Saja</span>
+                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Bebas / Siapa
+                                    Saja</span>
                                 <span class="text-[10px] text-stone-500">Terapis terbaik tersedia</span>
                             </label>
 
-                            <label class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white" id="genderFemale">
-                                <input type="radio" name="therapist_gender_pref" value="female" onchange="handleGenderChange('female')" class="sr-only">
+                            <label
+                                class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white"
+                                id="genderFemale">
+                                <input type="radio" name="therapist_gender_pref" value="female"
+                                    onchange="handleGenderChange('female')" class="sr-only">
                                 <i class="fa-solid fa-venus text-xl text-pink-600 mb-2"></i>
                                 <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Wanita</span>
                                 <span class="text-[10px] text-stone-500">Pijatan lembut & relaks</span>
                             </label>
 
-                            <label class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white" id="genderMale">
-                                <input type="radio" name="therapist_gender_pref" value="male" onchange="handleGenderChange('male')" class="sr-only">
+                            <label
+                                class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white"
+                                id="genderMale">
+                                <input type="radio" name="therapist_gender_pref" value="male"
+                                    onchange="handleGenderChange('male')" class="sr-only">
                                 <i class="fa-solid fa-mars text-xl text-blue-600 mb-2"></i>
                                 <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Pria</span>
                                 <span class="text-[10px] text-stone-500">Tekanan kuat & bertenaga</span>
@@ -214,16 +257,19 @@
                             <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
                                 Atau Pilih Terapis Spesifik (Opsional):
                             </label>
-                            <select id="specificTherapistSelect" onchange="handleSpecificTherapistChange()" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                            <select id="specificTherapistSelect" onchange="handleSpecificTherapistChange()"
+                                class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
                                 <option value="">-- Biarkan Admin Menentukan Terapis Terbaik --</option>
                             </select>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-stone-100">
-                            <button type="button" onclick="goToStep(2)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                            <button type="button" onclick="goToStep(2)"
+                                class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
                                 Kembali
                             </button>
-                            <button type="button" onclick="goToStep(4)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                            <button type="button" onclick="goToStep(4)"
+                                class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
                                 <span>Lanjut: Tentukan Jadwal</span>
                                 <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
@@ -233,21 +279,24 @@
                     <!-- STEP 4: TANGGAL & SLOT JAM -->
                     <div class="step-panel hidden" id="stepPanel-4">
                         <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Tentukan Tanggal & Jam</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih tanggal reservasi dan jam mulai sesi pijat Anda.</p>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih tanggal reservasi dan jam mulai sesi
+                            pijat Anda.</p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                             <div>
                                 <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
                                     Tanggal Pemijatan <span class="text-rose-500">*</span>
                                 </label>
-                                <input type="date" id="bookingDateInput" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                <input type="date" id="bookingDateInput" required
+                                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
                                     Pilihan Slot Jam <span class="text-rose-500">*</span>
                                 </label>
-                                <select id="bookingTimeSelect" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                <select id="bookingTimeSelect" required
+                                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
                                     <option value="09:00">09.00 WIB (Pagi)</option>
                                     <option value="11:00">11.00 WIB (Siang)</option>
                                     <option value="13:30">13.30 WIB (Siang)</option>
@@ -260,10 +309,12 @@
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-stone-100">
-                            <button type="button" onclick="goToStep(3)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                            <button type="button" onclick="goToStep(3)"
+                                class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
                                 Kembali
                             </button>
-                            <button type="button" onclick="goToStep(5)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                            <button type="button" onclick="goToStep(5)"
+                                class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
                                 <span>Lanjut: Konfirmasi & Kontak</span>
                                 <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
@@ -273,11 +324,13 @@
                     <!-- STEP 5: DATA KONTAK, CATATAN & CHECKOUT -->
                     <div class="step-panel hidden" id="stepPanel-5">
                         <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Data Pemesan & Konfirmasi</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pastikan nomor WhatsApp aktif untuk verifikasi langsung struk reservasi.</p>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pastikan nomor WhatsApp aktif untuk verifikasi
+                            langsung struk reservasi.</p>
 
                         <!-- Struk Ringkasan Reservasi -->
                         <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 mb-6 text-xs space-y-2">
-                            <div class="font-bold text-stone-900 text-sm border-b border-stone-200 pb-2 flex items-center justify-between">
+                            <div
+                                class="font-bold text-stone-900 text-sm border-b border-stone-200 pb-2 flex items-center justify-between">
                                 <span>Ringkasan Reservasi</span>
                                 <span id="summaryBookingType" class="text-emerald-700">Home Service</span>
                             </div>
@@ -301,24 +354,35 @@
 
                         <div class="space-y-4 mb-6">
                             <div>
-                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
-                                <input type="text" id="custName" required placeholder="Contoh: Bpk. Bambang" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nama
+                                    Lengkap <span class="text-rose-500">*</span></label>
+                                <input type="text" id="custName" required placeholder="Contoh: Bpk. Bambang"
+                                    class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nomor WhatsApp <span class="text-rose-500">*</span></label>
-                                <input type="tel" id="custPhone" required placeholder="081234567890" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                <label
+                                    class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nomor
+                                    WhatsApp <span class="text-rose-500">*</span></label>
+                                <input type="tel" id="custPhone" required placeholder="081234567890"
+                                    class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Catatan Keluhan Khusus (Opsional)</label>
-                                <input type="text" id="custNotes" placeholder="Contoh: Fokus punggung kiri pegal, tekanan sedang" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                <label
+                                    class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Catatan
+                                    Keluhan Khusus (Opsional)</label>
+                                <input type="text" id="custNotes"
+                                    placeholder="Contoh: Fokus punggung kiri pegal, tekanan sedang"
+                                    class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-stone-100">
-                            <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                            <button type="button" onclick="goToStep(4)"
+                                class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
                                 Kembali
                             </button>
-                            <button type="submit" id="submitBookingBtn" class="px-8 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm rounded-2xl shadow-xl shadow-emerald-950/20 transition-all transform hover:scale-[1.02] flex items-center space-x-2">
+                            <button type="submit" id="submitBookingBtn"
+                                class="px-8 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm rounded-2xl shadow-xl shadow-emerald-950/20 transition-all transform hover:scale-[1.02] flex items-center space-x-2">
                                 <i class="fa-brands fa-whatsapp text-lg text-emerald-300"></i>
                                 <span>Konfirmasi & Kirim WhatsApp</span>
                             </button>
@@ -333,27 +397,33 @@
     </div>
 
     <!-- Modal Sukses Pemesanan & Direct WhatsApp -->
-    <div id="bookingSuccessModal" class="fixed inset-0 z-50 hidden bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div id="bookingSuccessModal"
+        class="fixed inset-0 z-50 hidden bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 sm:p-8 text-center">
-            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto mb-4">
+            <div
+                class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto mb-4">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <h3 class="font-serif text-2xl font-bold text-stone-900 mb-1">Reservasi Berhasil Dibuat!</h3>
             <p class="text-xs text-stone-500 mb-4">Kode reservasi unik Anda:</p>
-            <div class="px-4 py-3 bg-stone-100 rounded-2xl font-mono text-xl font-bold text-emerald-800 tracking-wider mb-6" id="successBookingCode">
+            <div class="px-4 py-3 bg-stone-100 rounded-2xl font-mono text-xl font-bold text-emerald-800 tracking-wider mb-6"
+                id="successBookingCode">
                 BKG-XXXXXX
             </div>
 
             <p class="text-xs text-stone-600 mb-6 leading-relaxed">
-                Silakan klik tombol di bawah untuk mengirim konfirmasi langsung ke Admin WhatsApp kami agar jadwal terapis langsung diprioritaskan.
+                Silakan klik tombol di bawah untuk mengirim konfirmasi langsung ke Admin WhatsApp kami agar jadwal
+                terapis langsung diprioritaskan.
             </p>
 
             <div class="space-y-3">
-                <a href="#" id="successWaBtn" target="_blank" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all">
+                <a href="#" id="successWaBtn" target="_blank"
+                    class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all">
                     <i class="fa-brands fa-whatsapp text-xl"></i>
                     <span>Kirim Pesan Konfirmasi ke Admin</span>
                 </a>
-                <a href="my-bookings.html" class="block w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-xs rounded-xl transition-all">
+                <a href="my-bookings.html"
+                    class="block w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-xs rounded-xl transition-all">
                     Lihat Riwayat Booking Saya
                 </a>
             </div>
@@ -605,4 +675,5 @@
         });
     </script>
 </body>
+
 </html>

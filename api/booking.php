@@ -534,6 +534,35 @@ if ($action === 'cancel') {
     ]);
 }
 
+// --- 6.1. ACTION: delete (Hapus Data Reservasi oleh Admin) ---
+if ($action === 'delete') {
+    $user = getCurrentUser();
+    if (!$user || $user['role'] !== 'admin') {
+        jsonResponse(['success' => false, 'message' => 'Akses ditolak. Fitur ini khusus Administrator.'], 403);
+    }
+
+    $id = (int)($input['id'] ?? 0);
+    if ($id <= 0) {
+        jsonResponse(['success' => false, 'message' => 'ID reservasi tidak valid.'], 400);
+    }
+
+    $bStmt = $db->prepare("SELECT id, booking_code FROM bookings WHERE id = ?");
+    $bStmt->execute([$id]);
+    $booking = $bStmt->fetch();
+
+    if (!$booking) {
+        jsonResponse(['success' => false, 'message' => 'Data reservasi tidak ditemukan.'], 404);
+    }
+
+    $deleteStmt = $db->prepare("DELETE FROM bookings WHERE id = ?");
+    $deleteStmt->execute([$id]);
+
+    jsonResponse([
+        'success' => true,
+        'message' => 'Reservasi ' . $booking['booking_code'] . ' berhasil dihapus.'
+    ]);
+}
+
 // --- 7. ACTION: submit_review (Beri Rating & Ulasan oleh Pelanggan) ---
 if ($action === 'submit_review') {
     $user = getCurrentUser();
