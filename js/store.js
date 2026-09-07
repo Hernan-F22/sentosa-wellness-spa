@@ -380,6 +380,24 @@
         return { success: true, message: 'Anda telah berhasil keluar.' };
     }
 
+    function changePassword(userId, currentPassword, newPassword) {
+        initStore();
+        const users = getItem('users', []);
+        const userIndex = users.findIndex(u => u.id === Number(userId));
+        if (userIndex === -1) {
+            return { success: false, message: 'Pengguna tidak ditemukan.' };
+        }
+        if (users[userIndex].password !== String(currentPassword).trim()) {
+            return { success: false, message: 'Kata sandi saat ini salah.' };
+        }
+        if (!newPassword || newPassword.length < 6) {
+            return { success: false, message: 'Kata sandi baru minimal harus 6 karakter.' };
+        }
+        users[userIndex].password = String(newPassword).trim();
+        setItem('users', users);
+        return { success: true, message: 'Kata sandi berhasil diperbarui!' };
+    }
+
     // 5. SERVICES
     function getServices(filterActiveOnly = false) {
         initStore();
@@ -880,6 +898,7 @@
         login,
         register,
         logout,
+        changePassword,
         getServices,
         getServiceById,
         saveService,

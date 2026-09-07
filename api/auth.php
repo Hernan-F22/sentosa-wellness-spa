@@ -150,6 +150,50 @@ switch ($action) {
             'success' => true,
             'message' => 'Anda telah berhasil keluar (logout).'
         ]);
+    case 'change_password':
+        if ($method !== 'POST') {
+            jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $currentUser = getCurrentUser();
+        if (!$currentUser) {
+            jsonResponse(['success' => false, 'message' => 'Sesi Anda telah berakhir. Silakan login terlebih dahulu.'], 401);
+        }
+
+        $currentPassword = $input['current_password'] ?? '';
+        $newPassword = $input['new_password'] ?? '';
+        $confirmPassword = $input['confirm_password'] ?? '';
+
+        if (empty($currentPassword) || empty($newPassword)) {
+            jsonResponse(['success' => false, 'message' => 'Kata sandi saat ini dan kata sandi baru wajib diisi.'], 400);
+        }
+
+        if (strlen($newPassword) < 6) {
+            jsonResponse(['success' => false, 'message' => 'Kata sandi baru minimal harus 6 karakter.'], 400);
+        }
+
+        if (!empty($confirmPassword) && $newPassword !== $confirmPassword) {
+            jsonResponse(['success' => false, 'message' => 'Konfirmasi kata sandi baru tidak cocok.'], 400);
+        }
+
+        // Cek kecocokan password saat ini di database
+        $stmt = $db->prepare("SELECT password FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$currentUser['id']]);
+        $userRow = $stmt->fetch();
+
+        if (!$userRow || !password_verify($currentPassword, $userRow['password'])) {
+            jsonResponse(['success' => false, 'message' => 'Kata sandi saat ini tidak sesuai.'], 400);
+        }
+
+        // Update password baru dengan hash bcrypt
+        $newHashed = password_hash($newPassword, PASSWORD_BCRYPT);
+        $updateStmt = $db->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $updateStmt->execute([$newHashed, $currentUser['id']]);
+
+        jsonResponse([
+            'success' => true,
+            'message' => 'Kata sandi berhasil diperbarui! Silakan gunakan kata sandi baru untuk login berikutnya.'
+        ]);
         break;
 
     case 'me':

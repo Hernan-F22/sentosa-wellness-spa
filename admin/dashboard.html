@@ -111,6 +111,10 @@
                     </nav>
 
                     <div class="flex items-center space-x-3">
+                        <button type="button" onclick="openChangePasswordModal()" class="inline-flex items-center space-x-1.5 text-xs text-amber-300 hover:text-white bg-stone-800 hover:bg-stone-700 px-3 py-1.5 rounded-lg transition-colors" title="Ganti Kata Sandi Administrator">
+                            <i class="fa-solid fa-key text-amber-400"></i>
+                            <span class="hidden sm:inline font-medium">Ganti Sandi</span>
+                        </button>
                         <a href="../index.html" target="_blank" class="hidden sm:inline-flex items-center space-x-1 text-xs text-stone-300 hover:text-white bg-stone-800 px-3 py-1.5 rounded-lg transition-colors">
                             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                             <span>Lihat Website</span>
@@ -129,6 +133,10 @@
                 <button onclick="switchTab('bookings')" id="mNavBookings" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Reservasi</button>
                 <button onclick="switchTab('services')" id="mNavServices" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Layanan</button>
                 <button onclick="switchTab('therapists')" id="mNavTherapists" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Terapis</button>
+                <button onclick="openChangePasswordModal()" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-amber-300 bg-stone-800 flex items-center space-x-1">
+                    <i class="fa-solid fa-key text-xs"></i>
+                    <span>Ganti Sandi</span>
+                </button>
             </div>
         </header>
 
@@ -434,6 +442,48 @@
         </div>
     </div>
 
+    <!-- Modal Ganti Kata Sandi Admin -->
+    <div id="changePasswordModal" class="hidden fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-stone-200">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif font-bold text-stone-900 text-lg">Ganti Kata Sandi</h3>
+                        <p class="text-xs text-stone-500">Perbarui kata sandi akun administrator.</p>
+                    </div>
+                </div>
+                <button onclick="closeChangePasswordModal()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 flex items-center justify-center text-sm transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAdminChangePassword(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Kata Sandi Saat Ini</label>
+                    <input type="password" id="cpCurrentPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Kata Sandi Baru (Min. 6 Karakter)</label>
+                    <input type="password" id="cpNewPassword" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Konfirmasi Kata Sandi Baru</label>
+                    <input type="password" id="cpConfirmPassword" required minlength="6" placeholder="Ulangi kata sandi baru" class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none transition-all">
+                </div>
+
+                <div class="pt-3 flex space-x-2">
+                    <button type="button" onclick="closeChangePasswordModal()" class="flex-1 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-semibold text-xs hover:bg-stone-50 transition-all">Batal</button>
+                    <button type="submit" id="cpSubmitBtn" class="flex-1 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs shadow-md transition-all">Simpan Sandi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="../js/store.js"></script>
     <script>
@@ -469,6 +519,43 @@
             SentosaStore.logout();
             SentosaStore.showToast('Anda telah keluar dari Admin Panel.', 'info');
             setTimeout(() => window.location.reload(), 500);
+        }
+
+        function openChangePasswordModal() {
+            document.getElementById('cpCurrentPassword').value = '';
+            document.getElementById('cpNewPassword').value = '';
+            document.getElementById('cpConfirmPassword').value = '';
+            document.getElementById('changePasswordModal').classList.remove('hidden');
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('hidden');
+        }
+
+        function handleAdminChangePassword(e) {
+            e.preventDefault();
+            const current_password = document.getElementById('cpCurrentPassword').value;
+            const new_password = document.getElementById('cpNewPassword').value;
+            const confirm_password = document.getElementById('cpConfirmPassword').value;
+
+            if (new_password !== confirm_password) {
+                SentosaStore.showToast('Konfirmasi kata sandi baru tidak cocok.', 'error');
+                return;
+            }
+
+            const currentUser = SentosaStore.getCurrentUser();
+            if (!currentUser) {
+                SentosaStore.showToast('Sesi tidak valid. Silakan login kembali.', 'error');
+                return;
+            }
+
+            const res = SentosaStore.changePassword(currentUser.id, current_password, new_password);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                closeChangePasswordModal();
+            } else {
+                SentosaStore.showToast(res.message, 'error');
+            }
         }
 
         function switchTab(tab) {
