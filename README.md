@@ -2,36 +2,65 @@
 
 Sistem Informasi & Manajemen Reservasi Layanan Spa / Pijat Modern (*Online/Home Service & Offline/On-site Spa*) berbasis Web Responsif dengan arsitektur **Multi-Role (Pelanggan, Terapis, Administrator)**, kalkulasi rating otomatis berbasis ulasan nyata pelanggan, dan portal kerja mandiri untuk terapis.
 
+> **Mendukung Dual-Deployment**:
+> 1. ⚡ **Vercel / Netlify / GitHub Pages (100% Serverless Static HTML + LocalStorage)**: Siap di-deploy ke Vercel tanpa perlu server PHP maupun database server.
+> 2. 🐘 **Apache + PHP + MySQL (XAMPP / cPanel Hosting)**: Fullstack PHP Native dengan database relasional MySQL.
+
 ---
 
 ## 🛠 Stack Teknologi
 
-- **Frontend**: HTML5, Tailwind CSS (CDN modern), JavaScript Vanilla (ES6+ Fetch API), FontAwesome 6 Free, Google Fonts (*Plus Jakarta Sans* & *Playfair Display*).
-- **Backend**: PHP Native (PHP 8+, OOP, PDO MySQL dengan Prepared Statements anti-SQL Injection).
-- **Database**: MySQL / MariaDB (Database: `massage_booking_db`).
-- **Autentikasi**: Session-based Authentication dengan Role-Based Access Control (RBAC) & enkripsi password `password_hash()` (Bcrypt).
+- **Frontend**: HTML5, Tailwind CSS (CDN modern), JavaScript Vanilla (ES6+), FontAwesome 6 Free, Google Fonts (*Plus Jakarta Sans* & *Playfair Display*).
+- **Client Store (Vercel)**: `localStorage` State Management dengan seed data bawaan (`js/store.js` & `js/components.js`).
+- **Backend (Opsional XAMPP)**: PHP Native (PHP 8+, OOP, PDO MySQL dengan Prepared Statements anti-SQL Injection).
+- **Database (Opsional XAMPP)**: MySQL / MariaDB (`massage_booking_db`).
 
 ---
 
-## 🚀 Panduan Menjalankan di XAMPP
+## 🚀 Panduan Deployment ke Vercel (1-Klik Deploy)
 
-1. **Jalankan XAMPP Control Panel**:
-   - Pastikan modul **Apache** dan **MySQL** berstatus **Running** (Hijau).
+Aplikasi ini telah dikonfigurasi secara lengkap dengan file `.html` dan `vercel.json` sehingga **100% siap langsung dideploy ke Vercel**:
 
+1. **Push Proyek ke Repositori GitHub**:
+   ```bash
+   git init
+   git add .
+   git commit -m "feat: deploy ready for vercel with static html architecture"
+   git branch -M main
+   git remote add origin https://github.com/USERNAME/sentosa-wellness-spa.git
+   git push -u origin main
+   ```
+
+2. **Deploy di Vercel**:
+   - Masuk ke dashboard [Vercel](https://vercel.com).
+   - Klik **"Add New..."** > **"Project"**.
+   - Hubungkan dengan repositori GitHub Anda (`sentosa-wellness-spa`).
+   - Pada bagian **Framework Preset**, pilih **"Other"** (Root directory dibiarkan default `./`).
+   - Klik **"Deploy"**.
+
+3. **Selesai!**
+   - Website Anda langsung aktif di URL `https://sentosa-wellness-spa.vercel.app`.
+   - Seluruh halaman bekerja tanpa server:
+     - `index.html` (Landing Page & Menu Katalog)
+     - `booking.html` (Wizard Reservasi 5 Langkah & WhatsApp Struk)
+     - `my-bookings.html` (Riwayat Booking Pelanggan & Penilaian Bintang Ulasan)
+     - `therapist-portal.html` (Portal Jadwal Tugas Terapis & Operasional Sesi)
+     - `admin/dashboard.html` (Panel Admin, Metrik Finansial, Layanan, Terapis)
+
+---
+
+## 💻 Panduan Menjalankan Lokal di XAMPP
+
+1. **Jalankan Apache & MySQL** di XAMPP Control Panel.
 2. **Koneksi Database**:
-   - Sistem dilengkapi fitur **Auto-Schema Migration** (`ensureSchema()` pada `config/database.php`) yang otomatis memastikan tabel dan kolom terbaru (termasuk tabel relasional `reviews`) siap pakai saat aplikasi pertama kali dibuka.
-   - Skrip SQL lengkap juga tersedia di [`database.sql`](database.sql) jika ingin diimpor ulang secara manual melalui phpMyAdmin (`http://localhost/phpmyadmin`).
-
-3. **Akses Aplikasi**:
-   - **Halaman Utama Publik**: [http://localhost/web_pjt/](http://localhost/web_pjt/)
-   - **Form Reservasi Interaktif**: [http://localhost/web_pjt/booking.php](http://localhost/web_pjt/booking.php)
-   - **Riwayat Reservasi Pelanggan**: [http://localhost/web_pjt/my-bookings.php](http://localhost/web_pjt/my-bookings.php)
-   - **Portal Khusus Terapis**: [http://localhost/web_pjt/therapist-portal.php](http://localhost/web_pjt/therapist-portal.php)
-   - **Panel Dashboard Administrator**: [http://localhost/web_pjt/admin/dashboard.php](http://localhost/web_pjt/admin/dashboard.php)
+   - Skrip SQL lengkap tersedia di [`database.sql`](database.sql) (Database: `massage_booking_db`).
+3. **Buka Browser**:
+   - Versi Statis (Vercel view): [http://localhost/web_pjt/index.html](http://localhost/web_pjt/index.html)
+   - Versi PHP MySQL: [http://localhost/web_pjt/index.php](http://localhost/web_pjt/index.php)
 
 ---
 
-## 🔑 Akun Uji Coba Bawaan (Demo Credentials)
+## 🔑 Akun Demo Bawaan (Demo Credentials)
 
 | Peran (*Role*) | Email / Identitas Login | Password | Akses & Fungsionalitas |
 |---|---|---|---|
@@ -42,35 +71,29 @@ Sistem Informasi & Manajemen Reservasi Layanan Spa / Pijat Modern (*Online/Home 
 | **Terapis Wanita (Dewi)** | `dewi@spa.com` | `user123` | Spesialis Balinese & Hot Stone Massage dengan portal penugasan terapis mandiri. |
 | **Terapis Pria (Ahmad)** | `ahmad@spa.com` | `user123` | Spesialis Sport Massage & Refleksi dengan portal penugasan terapis mandiri. |
 
-> **Catatan Akun Terapis Baru**: Ketika Admin menambahkan terapis baru melalui Dashboard Admin, Admin dapat langsung menentukan alamat email dan password login khusus untuk terapis tersebut (default: `therapist123` atau custom).
-
 ---
 
-## 📂 Struktur Direktori & Arsitektur File
+## 📂 Struktur Direktori
 
 ```
 web_pjt/
-├── config/
-│   └── database.php          # Koneksi PDO aman, session security, auto-schema migration & helper format
-├── api/
-│   ├── auth.php              # API Autentikasi (login, register, logout, me, session check)
-│   ├── services.php          # API CRUD katalog layanan pijat & filter kategori
-│   ├── therapists.php        # API CRUD tim terapis, akun login terapis, reset password, & toggle ketersediaan
-│   ├── booking.php           # API Reservasi, kalkulasi slot jam, penetapan terapis, update status, & submit review
-│   └── stats.php             # API Analitik metrik finansial, status rasio, dan ringkasan operasional
-├── views/
-│   ├── header.php            # Head HTML, Tailwind CDN, FontAwesome, Google Fonts, Flash Toast
-│   ├── navbar.php            # Navigasi responsif (desktop & mobile) dengan deteksi role dinamis
-│   ├── footer.php            # Footer informasi spa & Floating WhatsApp Quick Chat
-│   └── auth_modal.php        # Modal Login/Register dan Modal Pelacak Resi Reservasi Cepat
+├── js/
+│   ├── store.js              # State store client-side (LocalStorage) untuk Vercel
+│   └── components.js         # Shared UI: Navbar dinamis, Footer, Auth Modal, Pelacak Resi
 ├── admin/
-│   └── dashboard.php         # Panel Admin lengkap (Overview, Bookings, Services, Tim Terapis, & Keuangan)
-├── index.php                 # Landing page publik estetika luxury wellness modern
-├── booking.php               # Wizard 5 langkah pemesanan reservasi online & integrasi WhatsApp
-├── my-bookings.php           # Halaman riwayat reservasi pelanggan & modal interaktif rating/ulasan
-├── therapist-portal.php      # Portal khusus terapis: jadwal tugas, WhatsApp klien, kontrol sesi, & testimoni
-├── database.sql              # Skrip SQL lengkap dengan relasi Foreign Key (users, services, therapists, bookings, reviews)
-└── README.md                 # Dokumentasi teknis & operasional aplikasi
+│   ├── dashboard.html        # Dashboard Admin versi Vercel (HTML + JS)
+│   └── dashboard.php         # Dashboard Admin versi XAMPP (PHP)
+├── index.html                # Landing page utama publik (Vercel)
+├── booking.html              # Form wizard reservasi 5 langkah (Vercel)
+├── my-bookings.html          # Riwayat booking pelanggan & rating ulasan (Vercel)
+├── therapist-portal.html     # Portal operasional kerja terapis (Vercel)
+├── vercel.json               # Konfigurasi routing clean URLs Vercel
+├── index.php                 # Landing page versi PHP
+├── booking.php               # Booking wizard versi PHP
+├── my-bookings.php           # My bookings versi PHP
+├── therapist-portal.php      # Portal terapis versi PHP
+├── database.sql              # Skrip SQL skema relasi & seed data
+└── README.md                 # Dokumentasi teknis & panduan deployment
 ```
 
 ---
@@ -87,56 +110,32 @@ web_pjt/
   5. Pengisian data pemesan & catatan keluhan tubuh khusus.
 - **Konfirmasi & Struk Digital WhatsApp**: Struk digital dengan kode unik `BKG-XXXXXX` dan tombol sekali klik untuk mengirim format konfirmasi langsung ke nomor WhatsApp Admin.
 - **Pelacak Resi Instan**: Cek status reservasi kapan saja hanya dengan memasukkan kode booking tanpa harus login.
-- **Halaman Riwayat Reservasi Saya (`my-bookings.php`)**: Pelanggan login dapat memantau seluruh status pesanannya (*Menunggu Konfirmasi*, *Dikonfirmasi*, *Sedang Berlangsung*, *Selesai*, *Dibatalkan*).
+- **Halaman Riwayat Reservasi Saya (`my-bookings.html`)**: Pelanggan login dapat memantau seluruh status pesanannya (*Menunggu Konfirmasi*, *Dikonfirmasi*, *Sedang Berlangsung*, *Selesai*, *Dibatalkan*).
 - **Penilaian & Ulasan Otentik (1–5 Bintang)**: Setelah sesi selesai (`completed`), pelanggan dapat memberikan rating bintang interaktif dan testimoni langsung untuk terapis yang melayaninya.
 
----
-
 ### 2. Sisi Terapis (*Therapist Portal*)
-- **Tampilan Terpisah & Berbeda dari Pelanggan (`therapist-portal.php`)**: Terapis yang login tidak lagi diarahkan ke halaman pelanggan, melainkan ke portal kerja operasional khusus.
-- **Manajemen Tugas Sesi**:
-  - Tab *Tugas Aktif*, *Tugas Selesai*, dan *Semua Riwayat Jadwal*.
-  - Menampilkan identitas pelanggan, jenis layanan, tanggal & jam sesi, durasi menit, serta alamat penjemputan (jika Home Service).
-- **Direct WhatsApp Klien**: Terapis dapat langsung menghubungi pelanggan via tombol WhatsApp dengan pesan pengantar otomatis.
-- **Kontrol Operasional Sesi Mandiri**:
-  - Tombol **[▶ Mulai Sesi Perawatan]** untuk mengubah status menjadi `on_process`.
-  - Tombol **[✓ Selesaikan Sesi Perawatan]** untuk menuntaskan sesi menjadi `completed`.
-- **Toggle Status Ketersediaan Kerja Mandiri**: Terapis dapat mengaktifkan status *Tersedia (Siap Tugas)* atau *Sedang Libur / Istirahat* sendiri dari dashboard tanpa perlu meminta tolong admin.
+- **Tampilan Terpisah & Berbeda dari Pelanggan (`therapist-portal.html`)**: Terapis diarahkan ke portal kerja operasional khusus.
+- **Manajemen Tugas Sesi**: Tab *Tugas Aktif*, *Tugas Selesai*, dan *Semua Riwayat Jadwal*.
+- **Direct WhatsApp Klien**: Terapis dapat langsung menghubungi pelanggan via WhatsApp.
+- **Kontrol Operasional Sesi Mandiri**: Tombol **[▶ Mulai Sesi Perawatan]** (`on_process`) dan **[✓ Selesaikan Sesi Perawatan]** (`completed`).
+- **Toggle Status Ketersediaan Kerja Mandiri**: Switch *Tersedia (Siap Tugas)* atau *Sedang Libur / Istirahat*.
 - **Tab Ulasan & Kepuasan Pelanggan**: Membaca testimoni langsung dan memantau rata-rata rating kepuasan yang diberikan pelanggan.
-
----
 
 ### 3. Sisi Administrator (*Admin Management*)
 - **Ringkasan Analitik Finansial**: Metrik total pendapatan kotor, estimasi pendapatan bersih, rasio terapis aktif, reservasi pending, dan sesi berjalan.
-- **Manajemen Reservasi Lengkap**:
-  - Filter berdasarkan status reservasi, tipe layanan, tanggal, dan pencarian instan.
-  - Penetapan terapis (*Assign Therapist*) pada pesanan masuk.
-  - Pembaruan status reservasi dan status pembayaran (*Lunas* / *Belum Bayar*).
-  - Modal penampil detail alamat Home Service dan catatan keluhan tubuh klien.
+- **Manajemen Reservasi Lengkap**: Filter status, pencarian instan, penetapan terapis (*Assign Therapist*), dan pembaruan status pembayaran (*Lunas* / *Belum Bayar*).
 - **Katalog Layanan Pijat**: Tambah layanan baru, edit tarif, durasi menit, kategori layanan, gambar etalase, dan deskripsi manfaat.
 - **Manajemen Tim Terapis (CRUD Lengkap + Akun Login)**:
-  - Tambah terapis baru dengan formulir pembuatan akun login (Email & Password custom, tombol intip password mata interaktif, dan dialog konfirmasi kredensial siap kirim).
-  - Edit spesialisasi, jenis kelamin, nomor telepon, dan fitur **Reset Password**.
-  - Hapus terapis dengan proteksi konfirmasi.
+  - Tambah terapis baru dengan formulir pembuatan akun login (Email & Password custom, tombol intip password mata interaktif).
+  - Edit spesialisasi, nomor telepon, dan fitur **Reset Password**.
   - Tombol cepat **Buka Portal Terapis** untuk mengintip tampilan kerja masing-masing terapis.
-- **Mode Pratinjau Administrator di Portal Terapis**: Admin dapat meninjau portal terapis mana pun melalui dropdown selector dinamis dengan *Session Memory* yang konsisten.
-
----
+- **Mode Pratinjau Administrator di Portal Terapis**: Admin dapat meninjau portal terapis mana pun melalui dropdown selector dinamis.
 
 ### 4. Sistem Rating Otomatis (*Customer-Driven Calculation*)
-- **Kalkulasi Matematis Otomatis**: Rating terapis dihitung murni dari rata-rata ulasan bintang yang masuk:
+- **Kalkulasi Matematis Otomatis**: Rating terapis dihitung murni dari rata-rata ulasan bintang pelanggan yang masuk:
   $$\text{Rating} = \frac{\sum \text{Bintang Ulasan Pelanggan}}{\text{Total Jumlah Ulasan}}$$
 - **Anti-Manipulasi**: Kolom input manual rating oleh admin telah dikunci untuk menjamin orisinalitas penilaian.
-- **Anti-Spam / Anti-Duplikasi**: Kolom `booking_id` pada tabel `reviews` bersifat `UNIQUE`, menjamin 1 transaksi reservasi hanya dapat diulas 1 kali.
-
----
-
-## 🔒 Keamanan Sistem
-
-1. **SQL Injection Prevention**: 100% query database menggunakan PDO Prepared Statements dengan parameter binding terisolasi.
-2. **XSS Protection**: Seluruh output dinamis disanitasi menggunakan `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`.
-3. **Password Security**: Menggunakan algoritma standar industri PHP `password_hash($pass, PASSWORD_BCRYPT)`.
-4. **Role-Based Protection**: Endpoint API dan halaman portal dilindungi pengecekan peran pengguna (`requireLogin()`, `requireAdmin()`, kepemilikan ID terapis).
+- **Anti-Spam / Anti-Duplikasi**: 1 nomor reservasi hanya dapat diulas 1 kali.
 
 ---
 

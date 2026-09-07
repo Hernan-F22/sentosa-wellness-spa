@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Reservasi Layanan Pijat - Sentosa Spa</title>
+
+    <meta name="description" content="Formulir pemesanan online reservasi pijat dan refleksi Sentosa Spa.">
+    <meta name="theme-color" content="#064e3b">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <div class="min-h-screen bg-stone-50 py-10 lg:py-16 flex-1">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Header Title -->
+            <div class="text-center mb-10">
+                <span class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-wider uppercase mb-2">
+                    Sistem Reservasi Praktis
+                </span>
+                <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900">Pemesanan Sesi Pijat & Wellness</h1>
+                <p class="text-stone-600 text-sm sm:text-base mt-2">Lengkapi tahapan di bawah ini untuk mengamankan slot jadwal terapis Anda.</p>
+            </div>
+
+            <!-- WIZARD CARD -->
+            <div class="bg-white rounded-3xl border border-stone-200/80 shadow-xl overflow-hidden">
+
+                <!-- Step Indicators -->
+                <div class="bg-stone-900 px-6 py-4 border-b border-stone-800 text-white">
+                    <div class="flex items-center justify-between max-w-2xl mx-auto">
+                        <div class="flex items-center space-x-2 step-indicator active" id="ind-1">
+                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold ring-4 ring-emerald-900/50 ind-circle">1</span>
+                            <span class="text-xs font-medium hidden sm:inline ind-text">Tipe</span>
+                        </div>
+                        <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-1"></div>
+
+                        <div class="flex items-center space-x-2 step-indicator" id="ind-2">
+                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">2</span>
+                            <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Layanan</span>
+                        </div>
+                        <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-2"></div>
+
+                        <div class="flex items-center space-x-2 step-indicator" id="ind-3">
+                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">3</span>
+                            <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Terapis</span>
+                        </div>
+                        <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-3"></div>
+
+                        <div class="flex items-center space-x-2 step-indicator" id="ind-4">
+                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">4</span>
+                            <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Waktu</span>
+                        </div>
+                        <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-4"></div>
+
+                        <div class="flex items-center space-x-2 step-indicator" id="ind-5">
+                            <span class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle">5</span>
+                            <span class="text-xs font-medium text-stone-400 hidden sm:inline ind-text">Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Content Body -->
+                <form id="bookingWizardForm" onsubmit="handleWizardSubmit(event)" class="p-6 sm:p-10">
+
+                    <!-- STEP 1: TIPE RESERVASI & LOKASI -->
+                    <div class="step-panel" id="stepPanel-1">
+                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Tipe Reservasi</h2>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Tentukan apakah Anda ingin terapis datang ke rumah/hotel atau datang langsung ke klinik kami.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+                            <label class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50" id="typeCardHome">
+                                <input type="radio" name="booking_type" value="home_service" checked onchange="handleTypeChange()" class="sr-only">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl">
+                                        <i class="fa-solid fa-house-chimney-medical text-emerald-300"></i>
+                                    </div>
+                                    <span class="w-6 h-6 rounded-full border-2 border-emerald-600 flex items-center justify-center check-icon">
+                                        <span class="w-3 h-3 rounded-full bg-emerald-700"></span>
+                                    </span>
+                                </div>
+                                <span class="font-bold text-stone-900 text-lg">Home Service (Panggilan)</span>
+                                <span class="text-xs text-stone-500 mt-1 leading-relaxed">
+                                    Terapis kami tiba di rumah, apartemen, atau hotel Anda dengan perlengkapan lengkap & matras steril.
+                                </span>
+                            </label>
+
+                            <label class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white" id="typeCardClinic">
+                                <input type="radio" name="booking_type" value="clinic" onchange="handleTypeChange()" class="sr-only">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-2xl">
+                                        <i class="fa-solid fa-shop"></i>
+                                    </div>
+                                    <span class="w-6 h-6 rounded-full border-2 border-stone-300 flex items-center justify-center check-icon">
+                                        <span class="w-3 h-3 rounded-full bg-transparent"></span>
+                                    </span>
+                                </div>
+                                <span class="font-bold text-stone-900 text-lg">Di Klinik Spa (On-site)</span>
+                                <span class="text-xs text-stone-500 mt-1 leading-relaxed">
+                                    Nikmati suasana mewah, aromaterapi tenang, dan alunan musik relaksasi di studio Sentosa Spa Senopati.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Home Service Address Input -->
+                        <div id="addressSection" class="space-y-2 mb-6">
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">
+                                Alamat Penjemputan / Lokasi Anda <span class="text-rose-500">*</span>
+                            </label>
+                            <textarea id="addressInput" rows="3" placeholder="Contoh: Jl. Kemang Raya No. 12B, RT 02/05, Mampang Prapatan, Jaksel (Pagar cokelat samping mini market)" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
+                            <p class="text-[11px] text-stone-400">Gratis biaya transport untuk wilayah Jakarta Selatan dan radius 10 km.</p>
+                        </div>
+
+                        <div class="flex justify-end pt-4 border-t border-stone-100">
+                            <button type="button" onclick="goToStep(2)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                                <span>Lanjut: Pilih Layanan</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: PILIH MENU LAYANAN -->
+                    <div class="step-panel hidden" id="stepPanel-2">
+                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Menu Perawatan</h2>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih salah satu menu terapi yang sesuai dengan kebutuhan relaksasi tubuh Anda.</p>
+
+                        <div id="serviceListContainer" class="space-y-4 mb-8">
+                            <!-- Injected via JavaScript -->
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                            <button type="button" onclick="goToStep(1)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                                Kembali
+                            </button>
+                            <button type="button" onclick="goToStep(3)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                                <span>Lanjut: Pilih Terapis</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: PREFERENSI TERAPIS -->
+                    <div class="step-panel hidden" id="stepPanel-3">
+                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Terapis</h2>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih preferensi gender terapis atau pilih langsung terapis favorit Anda.</p>
+
+                        <!-- Gender Preference Cards -->
+                        <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+                            <label class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/50" id="genderAny">
+                                <input type="radio" name="therapist_gender_pref" value="any" checked onchange="handleGenderChange('any')" class="sr-only">
+                                <i class="fa-solid fa-users text-xl text-emerald-800 mb-2"></i>
+                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Bebas / Siapa Saja</span>
+                                <span class="text-[10px] text-stone-500">Terapis terbaik tersedia</span>
+                            </label>
+
+                            <label class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white" id="genderFemale">
+                                <input type="radio" name="therapist_gender_pref" value="female" onchange="handleGenderChange('female')" class="sr-only">
+                                <i class="fa-solid fa-venus text-xl text-pink-600 mb-2"></i>
+                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Wanita</span>
+                                <span class="text-[10px] text-stone-500">Pijatan lembut & relaks</span>
+                            </label>
+
+                            <label class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white" id="genderMale">
+                                <input type="radio" name="therapist_gender_pref" value="male" onchange="handleGenderChange('male')" class="sr-only">
+                                <i class="fa-solid fa-mars text-xl text-blue-600 mb-2"></i>
+                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Pria</span>
+                                <span class="text-[10px] text-stone-500">Tekanan kuat & bertenaga</span>
+                            </label>
+                        </div>
+
+                        <!-- Specific Therapist Selection -->
+                        <div class="mb-8">
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
+                                Atau Pilih Terapis Spesifik (Opsional):
+                            </label>
+                            <select id="specificTherapistSelect" onchange="handleSpecificTherapistChange()" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                <option value="">-- Biarkan Admin Menentukan Terapis Terbaik --</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                            <button type="button" onclick="goToStep(2)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                                Kembali
+                            </button>
+                            <button type="button" onclick="goToStep(4)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                                <span>Lanjut: Tentukan Jadwal</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: TANGGAL & SLOT JAM -->
+                    <div class="step-panel hidden" id="stepPanel-4">
+                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Tentukan Tanggal & Jam</h2>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih tanggal reservasi dan jam mulai sesi pijat Anda.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
+                                    Tanggal Pemijatan <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="date" id="bookingDateInput" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
+                                    Pilihan Slot Jam <span class="text-rose-500">*</span>
+                                </label>
+                                <select id="bookingTimeSelect" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                                    <option value="09:00">09.00 WIB (Pagi)</option>
+                                    <option value="11:00">11.00 WIB (Siang)</option>
+                                    <option value="13:30">13.30 WIB (Siang)</option>
+                                    <option value="15:30" selected>15.30 WIB (Sore)</option>
+                                    <option value="17:30">17.30 WIB (Sore)</option>
+                                    <option value="19:30">19.30 WIB (Malam)</option>
+                                    <option value="20:30">20.30 WIB (Malam)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                            <button type="button" onclick="goToStep(3)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                                Kembali
+                            </button>
+                            <button type="button" onclick="goToStep(5)" class="px-7 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center space-x-2">
+                                <span>Lanjut: Konfirmasi & Kontak</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: DATA KONTAK, CATATAN & CHECKOUT -->
+                    <div class="step-panel hidden" id="stepPanel-5">
+                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Data Pemesan & Konfirmasi</h2>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pastikan nomor WhatsApp aktif untuk verifikasi langsung struk reservasi.</p>
+
+                        <!-- Struk Ringkasan Reservasi -->
+                        <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 mb-6 text-xs space-y-2">
+                            <div class="font-bold text-stone-900 text-sm border-b border-stone-200 pb-2 flex items-center justify-between">
+                                <span>Ringkasan Reservasi</span>
+                                <span id="summaryBookingType" class="text-emerald-700">Home Service</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-500">Layanan:</span>
+                                <span class="font-bold text-stone-800" id="summaryService">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-500">Terapis:</span>
+                                <span class="font-bold text-stone-800" id="summaryTherapist">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-500">Waktu Pelaksanaan:</span>
+                                <span class="font-bold text-stone-800" id="summarySchedule">-</span>
+                            </div>
+                            <div class="flex justify-between text-sm pt-2 border-t border-stone-200 font-bold">
+                                <span class="text-stone-900">Total Tarif:</span>
+                                <span class="text-emerald-800 font-serif text-base" id="summaryTotal">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
+                                <input type="text" id="custName" required placeholder="Contoh: Bpk. Bambang" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nomor WhatsApp <span class="text-rose-500">*</span></label>
+                                <input type="tel" id="custPhone" required placeholder="081234567890" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Catatan Keluhan Khusus (Opsional)</label>
+                                <input type="text" id="custNotes" placeholder="Contoh: Fokus punggung kiri pegal, tekanan sedang" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                            <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm rounded-xl transition-all">
+                                Kembali
+                            </button>
+                            <button type="submit" id="submitBookingBtn" class="px-8 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm rounded-2xl shadow-xl shadow-emerald-950/20 transition-all transform hover:scale-[1.02] flex items-center space-x-2">
+                                <i class="fa-brands fa-whatsapp text-lg text-emerald-300"></i>
+                                <span>Konfirmasi & Kirim WhatsApp</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Sukses Pemesanan & Direct WhatsApp -->
+    <div id="bookingSuccessModal" class="fixed inset-0 z-50 hidden bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 sm:p-8 text-center">
+            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-stone-900 mb-1">Reservasi Berhasil Dibuat!</h3>
+            <p class="text-xs text-stone-500 mb-4">Kode reservasi unik Anda:</p>
+            <div class="px-4 py-3 bg-stone-100 rounded-2xl font-mono text-xl font-bold text-emerald-800 tracking-wider mb-6" id="successBookingCode">
+                BKG-XXXXXX
+            </div>
+
+            <p class="text-xs text-stone-600 mb-6 leading-relaxed">
+                Silakan klik tombol di bawah untuk mengirim konfirmasi langsung ke Admin WhatsApp kami agar jadwal terapis langsung diprioritaskan.
+            </p>
+
+            <div class="space-y-3">
+                <a href="#" id="successWaBtn" target="_blank" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    <span>Kirim Pesan Konfirmasi ke Admin</span>
+                </a>
+                <a href="my-bookings.html" class="block w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-xs rounded-xl transition-all">
+                    Lihat Riwayat Booking Saya
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer & Modals Containers -->
+    <div id="footer-container"></div>
+    <div id="modals-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/store.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        let currentStep = 1;
+        let selectedServiceId = 1;
+
+        // Tanggal default: besok
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('bookingDateInput').value = tomorrow.toISOString().split('T')[0];
+        document.getElementById('bookingDateInput').min = new Date().toISOString().split('T')[0];
+
+        // Pre-fill user data jika sudah login
+        const loggedUser = SentosaStore.getCurrentUser();
+        if (loggedUser) {
+            document.getElementById('custName').value = loggedUser.name;
+            document.getElementById('custPhone').value = loggedUser.phone;
+        }
+
+        // Render Layanan di Step 2
+        function renderServiceOptions() {
+            const container = document.getElementById('serviceListContainer');
+            const services = SentosaStore.getServices(true);
+            const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
+
+            // Pre-select dari query params
+            const params = new URLSearchParams(window.location.search);
+            const qServiceId = Number(params.get('service_id'));
+            if (qServiceId && services.some(s => s.id == qServiceId)) {
+                selectedServiceId = qServiceId;
+            }
+
+            container.innerHTML = services.map(s => {
+                const isChecked = s.id == selectedServiceId;
+                const isHomeService = (s.type === 'home_service' || s.type === 'both');
+                const isClinic = (s.type === 'clinic_only' || s.type === 'both');
+
+                if (bookingType === 'home_service' && !isHomeService) return '';
+                if (bookingType === 'clinic' && !isClinic) return '';
+
+                return `
+                <label class="flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isChecked ? 'border-emerald-600 bg-emerald-50/40 shadow-sm' : 'border-stone-200 hover:border-stone-300'}" id="srvLabel-${s.id}">
+                    <div class="flex items-center space-x-3.5">
+                        <input type="radio" name="service_id" value="${s.id}" ${isChecked ? 'checked' : ''} onchange="handleServiceSelect(${s.id})" class="sr-only">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden bg-stone-100 shrink-0">
+                            <img src="${s.image_url || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800'}" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-stone-900 text-sm">${s.name}</h4>
+                            <span class="text-xs text-stone-500 flex items-center space-x-1 mt-0.5">
+                                <i class="fa-regular fa-clock text-emerald-600"></i>
+                                <span>${s.duration_minutes} Menit</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-sm font-bold text-stone-900 block">${SentosaStore.formatRupiah(s.price)}</span>
+                    </div>
+                </label>
+                `;
+            }).join('');
+        }
+
+        function handleServiceSelect(id) {
+            selectedServiceId = id;
+            document.querySelectorAll('[id^="srvLabel-"]').forEach(l => {
+                l.className = 'flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-stone-200 hover:border-stone-300';
+            });
+            const active = document.getElementById('srvLabel-' + id);
+            if (active) active.className = 'flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-emerald-600 bg-emerald-50/40 shadow-sm';
+        }
+
+        // Render Terapis Dropdown di Step 3
+        function renderTherapistDropdown() {
+            const select = document.getElementById('specificTherapistSelect');
+            const therapists = SentosaStore.getTherapists();
+            const params = new URLSearchParams(window.location.search);
+            const qTherapistId = Number(params.get('therapist_id'));
+
+            select.innerHTML = '<option value="">-- Biarkan Admin Menentukan Terapis Terbaik --</option>' +
+                therapists.map(t => {
+                    const isSelected = (qTherapistId && t.id == qTherapistId);
+                    return `<option value="${t.id}" ${isSelected ? 'selected' : ''}>${t.name} (${t.gender === 'female' ? 'Wanita' : 'Pria'}) - ${t.specialization} ★${t.rating_formatted}</option>`;
+                }).join('');
+        }
+
+        function handleTypeChange() {
+            const type = document.querySelector('input[name="booking_type"]:checked').value;
+            const cardHome = document.getElementById('typeCardHome');
+            const cardClinic = document.getElementById('typeCardClinic');
+            const addrSection = document.getElementById('addressSection');
+
+            if (type === 'home_service') {
+                cardHome.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50';
+                cardClinic.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white';
+                addrSection.classList.remove('hidden');
+            } else {
+                cardHome.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white';
+                cardClinic.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50';
+                addrSection.classList.add('hidden');
+            }
+            renderServiceOptions();
+        }
+
+        function handleGenderChange(val) {
+            ['any', 'female', 'male'].forEach(g => {
+                const el = document.getElementById('gender' + g.charAt(0).toUpperCase() + g.slice(1));
+                if (el) el.className = (g === val) ? 'p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/50' : 'p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white';
+            });
+            if (val !== 'any') {
+                document.getElementById('specificTherapistSelect').value = '';
+            }
+        }
+
+        function handleSpecificTherapistChange() {
+            const val = document.getElementById('specificTherapistSelect').value;
+            if (val) {
+                const t = SentosaStore.getTherapistById(val);
+                if (t) handleGenderChange(t.gender);
+            }
+        }
+
+        // Navigasi Wizard Steps
+        function goToStep(step) {
+            // Validasi Step 1
+            if (step === 2 && currentStep === 1) {
+                const type = document.querySelector('input[name="booking_type"]:checked').value;
+                const addr = document.getElementById('addressInput').value.trim();
+                if (type === 'home_service' && !addr) {
+                    SentosaStore.showToast('Mohon lengkapi alamat penjemputan untuk Home Service.', 'error');
+                    return;
+                }
+            }
+
+            // Validasi Step 5 (Update Struk)
+            if (step === 5) {
+                const srv = SentosaStore.getServiceById(selectedServiceId);
+                const type = document.querySelector('input[name="booking_type"]:checked').value;
+                const date = document.getElementById('bookingDateInput').value;
+                const time = document.getElementById('bookingTimeSelect').value;
+                const specificTId = document.getElementById('specificTherapistSelect').value;
+                const therapist = specificTId ? SentosaStore.getTherapistById(specificTId) : null;
+
+                document.getElementById('summaryBookingType').textContent = (type === 'home_service') ? 'Home Service (Panggilan)' : 'Di Klinik Sentosa';
+                document.getElementById('summaryService').textContent = srv ? `${srv.name} (${srv.duration_minutes} Menit)` : '-';
+                document.getElementById('summaryTherapist').textContent = therapist ? `${therapist.name} (${therapist.gender === 'female' ? 'Wanita' : 'Pria'})` : 'Dipilihkan Admin';
+                document.getElementById('summarySchedule').textContent = `${date} Pukul ${time} WIB`;
+                document.getElementById('summaryTotal').textContent = srv ? SentosaStore.formatRupiah(srv.price) : 'Rp 0';
+            }
+
+            // Sembunyikan semua step panel
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById('stepPanel-' + step).classList.remove('hidden');
+
+            // Update indikator nomor
+            for (let i = 1; i <= 5; i++) {
+                const ind = document.getElementById('ind-' + i);
+                const circle = ind.querySelector('.ind-circle');
+                const text = ind.querySelector('.ind-text');
+
+                if (i === step) {
+                    circle.className = 'w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold ring-4 ring-emerald-900/50 ind-circle';
+                    if (text) text.className = 'text-xs font-semibold text-emerald-300 hidden sm:inline ind-text';
+                } else if (i < step) {
+                    circle.className = 'w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold ind-circle';
+                    if (text) text.className = 'text-xs font-medium text-stone-300 hidden sm:inline ind-text';
+                } else {
+                    circle.className = 'w-8 h-8 rounded-full bg-stone-800 text-stone-400 flex items-center justify-center text-xs font-bold ind-circle';
+                    if (text) text.className = 'text-xs font-medium text-stone-400 hidden sm:inline ind-text';
+                }
+            }
+
+            currentStep = step;
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        // Submit Wizard & Buat Booking
+        function handleWizardSubmit(e) {
+            e.preventDefault();
+            const srv = SentosaStore.getServiceById(selectedServiceId);
+            if (!srv) {
+                SentosaStore.showToast('Layanan tidak valid.', 'error');
+                return;
+            }
+
+            const type = document.querySelector('input[name="booking_type"]:checked').value;
+            const addr = document.getElementById('addressInput').value.trim();
+            const date = document.getElementById('bookingDateInput').value;
+            const time = document.getElementById('bookingTimeSelect').value;
+            const specificTId = document.getElementById('specificTherapistSelect').value;
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const notes = document.getElementById('custNotes').value.trim();
+
+            const currentUser = SentosaStore.getCurrentUser();
+            let customerId = currentUser ? currentUser.id : Date.now();
+
+            // Simpan booking ke LocalStorage
+            const res = SentosaStore.createBooking({
+                customer_id: customerId,
+                therapist_id: specificTId ? Number(specificTId) : null,
+                service_id: srv.id,
+                booking_type: type,
+                address: (type === 'home_service') ? addr : null,
+                schedule_datetime: `${date} ${time}:00`,
+                duration: srv.duration_minutes,
+                total_price: srv.price,
+                notes: notes
+            });
+
+            if (res.success) {
+                // Tampilkan Modal Sukses
+                document.getElementById('successBookingCode').textContent = res.booking.booking_code;
+
+                // Susun Pesan WhatsApp
+                const waText = encodeURIComponent(
+                    `Halo Admin Sentosa Spa,\nSaya ingin mengonfirmasi reservasi berikut:\n\n` +
+                    `*Kode Booking:* ${res.booking.booking_code}\n` +
+                    `*Nama Pemesan:* ${name}\n` +
+                    `*No WhatsApp:* ${phone}\n` +
+                    `*Tipe Layanan:* ${type === 'home_service' ? 'Home Service (Panggilan)' : 'Di Klinik Sentosa'}\n` +
+                    `*Menu Layanan:* ${srv.name} (${srv.duration_minutes} Menit)\n` +
+                    `*Jadwal:* ${date} Pukul ${time} WIB\n` +
+                    `*Tarif:* ${SentosaStore.formatRupiah(srv.price)}\n` +
+                    (type === 'home_service' ? `*Alamat:* ${addr}\n` : '') +
+                    (notes ? `*Catatan:* ${notes}\n` : '') +
+                    `\nMohon informasi konfirmasi jadwalnya. Terima kasih!`
+                );
+
+                document.getElementById('successWaBtn').href = `https://wa.me/6281234567890?text=${waText}`;
+                document.getElementById('bookingSuccessModal').classList.remove('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderServiceOptions();
+            renderTherapistDropdown();
+        });
+    </script>
+</body>
+</html>

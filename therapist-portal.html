@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Khusus Terapis - Sentosa Spa</title>
+
+    <meta name="description" content="Dashboard kerja dan manajemen jadwal penugasan terapis Sentosa Spa.">
+    <meta name="theme-color" content="#064e3b">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <div class="min-h-screen bg-stone-50/80 py-8 sm:py-12 flex-1">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Breadcrumb -->
+            <div class="flex items-center space-x-2 text-xs text-stone-500 mb-3">
+                <a href="index.html" class="hover:text-emerald-700 transition-colors">Beranda</a>
+                <span>/</span>
+                <span class="text-stone-800 font-semibold">Portal Khusus Terapis</span>
+            </div>
+
+            <!-- Admin Preview Switcher Banner (Tampil Jika Admin) -->
+            <div id="adminPreviewBanner" class="hidden mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm shadow-sm">
+                <div class="flex items-center space-x-3 text-amber-900">
+                    <div class="w-9 h-9 rounded-xl bg-amber-200/80 flex items-center justify-center text-amber-800 shrink-0">
+                        <i class="fa-solid fa-user-shield text-base"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold">Mode Pratinjau Administrator</span>
+                        <p class="text-xs text-amber-700">Melihat tampilan portal terapis untuk <strong id="adminPreviewName">Terapis</strong>.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 flex-wrap">
+                    <label for="adminSelectTherapist" class="text-xs font-semibold text-stone-600">Ganti Terapis:</label>
+                    <select id="adminSelectTherapist" onchange="switchTherapistPreview(this.value)" class="text-xs bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 font-medium text-stone-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></select>
+                    <a href="admin/dashboard.html" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
+                        Dashboard Admin
+                    </a>
+                </div>
+            </div>
+
+            <!-- Banner Profil Terapis & Kontrol Status Ketersediaan -->
+            <div id="therapistHeaderBanner" class="bg-gradient-to-r from-stone-900 via-stone-800 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-stone-950/10 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Kartu Metrik Kinerja Terapis -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
+                <!-- Tugas Aktif -->
+                <button onclick="switchTab('active')" id="metricCardActive" class="p-4 rounded-2xl border transition-all text-left bg-white border-blue-600 shadow-md ring-2 ring-blue-600/10">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Tugas Aktif</span>
+                        <i class="fa-solid fa-clock-rotate-left text-blue-500 text-sm"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-blue-900 mt-1 block" id="statActiveTasks">0</span>
+                    <span class="text-[11px] text-stone-500">Sesi menunggu & berjalan</span>
+                </button>
+
+                <!-- Tugas Selesai -->
+                <button onclick="switchTab('completed')" id="metricCardCompleted" class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Tuntas</span>
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-emerald-900 mt-1 block" id="statCompletedTasks">0</span>
+                    <span class="text-[11px] text-stone-500">Sesi perawatan selesai</span>
+                </button>
+
+                <!-- Total Penugasan -->
+                <button onclick="switchTab('all')" id="metricCardAll" class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-stone-600 uppercase tracking-wider">Total Tugas</span>
+                        <i class="fa-solid fa-calendar-days text-stone-400 text-sm"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-stone-900 mt-1 block" id="statTotalTasks">0</span>
+                    <span class="text-[11px] text-stone-500">Semua riwayat jadwal</span>
+                </button>
+
+                <!-- Rating Pelanggan -->
+                <button onclick="switchTab('reviews')" id="metricCardReviews" class="p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider">Rating Pelanggan</span>
+                        <i class="fa-solid fa-star text-amber-500 text-sm"></i>
+                    </div>
+                    <div class="flex items-center space-x-1.5 mt-1">
+                        <span class="text-2xl font-bold text-amber-800" id="statRatingVal">5.0</span>
+                        <span class="text-xs text-amber-600 font-bold">★</span>
+                    </div>
+                    <span class="text-[11px] text-stone-500" id="statReviewsCount">0 ulasan pelanggan</span>
+                </button>
+            </div>
+
+            <!-- Filter Tab Buttons -->
+            <div class="flex items-center space-x-2 overflow-x-auto pb-3 mb-6 border-b border-stone-200/80 scrollbar-none">
+                <button onclick="switchTab('active')" id="tabBtnActive" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-blue-800 text-white shadow-sm">
+                    <i class="fa-solid fa-list-check mr-1.5"></i> Tugas Aktif & Jadwal
+                </button>
+                <button onclick="switchTab('completed')" id="tabBtnCompleted" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                    <i class="fa-solid fa-circle-check mr-1.5"></i> Tugas Selesai
+                </button>
+                <button onclick="switchTab('all')" id="tabBtnAll" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                    <i class="fa-solid fa-receipt mr-1.5"></i> Semua Jadwal
+                </button>
+                <button onclick="switchTab('reviews')" id="tabBtnReviews" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                    <i class="fa-solid fa-star mr-1.5 text-amber-400"></i> Ulasan & Testimoni Pelanggan
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div id="tabContentContainer">
+                <!-- Injected via JavaScript -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer & Modals Containers -->
+    <div id="footer-container"></div>
+    <div id="modals-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/store.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        let currentTab = 'active';
+        let activeTherapistId = 1;
+
+        function resolveActiveTherapist() {
+            const currentUser = SentosaStore.getCurrentUser();
+            const urlParams = new URLSearchParams(window.location.search);
+            const qTherapistId = urlParams.get('therapist_id');
+
+            const allTherapists = SentosaStore.getTherapists();
+            if (allTherapists.length === 0) return null;
+
+            if (currentUser && currentUser.role === 'admin') {
+                if (qTherapistId) {
+                    activeTherapistId = Number(qTherapistId);
+                    localStorage.setItem('sentosa_admin_preview_therapist_id', activeTherapistId);
+                } else {
+                    const savedPreview = localStorage.getItem('sentosa_admin_preview_therapist_id');
+                    activeTherapistId = savedPreview ? Number(savedPreview) : allTherapists[0].id;
+                }
+            } else if (currentUser && currentUser.role === 'therapist') {
+                const t = SentosaStore.getTherapistByUserId(currentUser.id);
+                activeTherapistId = t ? t.id : allTherapists[0].id;
+            } else {
+                activeTherapistId = qTherapistId ? Number(qTherapistId) : allTherapists[0].id;
+            }
+
+            return SentosaStore.getTherapistById(activeTherapistId);
+        }
+
+        function renderAdminBanner(currentTherapist) {
+            const currentUser = SentosaStore.getCurrentUser();
+            const banner = document.getElementById('adminPreviewBanner');
+            if (!banner) return;
+
+            if (currentUser && currentUser.role === 'admin') {
+                banner.classList.remove('hidden');
+                document.getElementById('adminPreviewName').textContent = currentTherapist.name;
+                const select = document.getElementById('adminSelectTherapist');
+                const allTherapists = SentosaStore.getTherapists();
+                select.innerHTML = allTherapists.map(t => {
+                    return `<option value="${t.id}" ${t.id === currentTherapist.id ? 'selected' : ''}>${t.name} (${t.specialization})</option>`;
+                }).join('');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        function switchTherapistPreview(id) {
+            localStorage.setItem('sentosa_admin_preview_therapist_id', id);
+            window.location.href = `therapist-portal.html?therapist_id=${id}&tab=${currentTab}`;
+        }
+
+        function renderHeaderBanner(therapist) {
+            const container = document.getElementById('therapistHeaderBanner');
+            const isAvailable = therapist.is_available == 1;
+
+            container.innerHTML = `
+                <div class="flex items-center space-x-4 sm:space-x-5">
+                    <div class="relative">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner border border-white/20">
+                            ${therapist.name.charAt(0)}
+                        </div>
+                        <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-[11px] shadow ${therapist.gender === 'female' ? 'bg-pink-500 text-white' : 'bg-blue-500 text-white'}">
+                            <i class="fa-solid ${therapist.gender === 'female' ? 'fa-venus' : 'fa-mars'}"></i>
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h1 class="text-xl sm:text-2xl font-bold font-serif">${therapist.name}</h1>
+                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold tracking-wider uppercase border border-emerald-500/30">
+                                Terapis Berlisensi
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-300 mt-1 font-medium">
+                            <i class="fa-solid fa-spa text-emerald-400 mr-1.5"></i>${therapist.specialization}
+                        </p>
+                        <p class="text-xs text-stone-400 mt-1 flex items-center space-x-3">
+                            <span><i class="fa-brands fa-whatsapp text-emerald-400 mr-1"></i>${therapist.phone}</span>
+                            <span>•</span>
+                            <span><i class="fa-regular fa-envelope text-emerald-400 mr-1"></i>${therapist.email}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Toggle Ketersediaan Mandiri -->
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 flex items-center justify-between md:flex-col md:items-end gap-3 shrink-0">
+                    <div class="text-left md:text-right">
+                        <span class="text-[10px] uppercase tracking-wider text-stone-400 font-bold block">Status Kerja Anda</span>
+                        <span class="text-sm font-bold text-white flex items-center space-x-1.5 mt-0.5" id="availabilityLabel">
+                            <span class="w-2.5 h-2.5 rounded-full ${isAvailable ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}" id="statusDot"></span>
+                            <span id="statusText">${isAvailable ? 'Tersedia (Siap Tugas)' : 'Sedang Libur / Istirahat'}</span>
+                        </span>
+                    </div>
+
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggleAvailabilityInput" ${isAvailable ? 'checked' : ''} onchange="toggleAvailability(${therapist.id})" class="sr-only peer">
+                        <div class="w-12 h-6 bg-stone-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </div>
+            `;
+        }
+
+        function toggleAvailability(therapistId) {
+            const checkbox = document.getElementById('toggleAvailabilityInput');
+            const res = SentosaStore.toggleTherapistAvailability(therapistId, checkbox.checked);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                const therapist = SentosaStore.getTherapistById(therapistId);
+                renderHeaderBanner(therapist);
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // Update tab button styles
+            const tabs = ['active', 'completed', 'all', 'reviews'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+                const card = document.getElementById('metricCard' + t.charAt(0).toUpperCase() + t.slice(1));
+
+                if (btn) {
+                    btn.className = (t === tab)
+                        ? 'px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-emerald-800 text-white shadow-sm'
+                        : 'px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70';
+                }
+
+                if (card) {
+                    card.className = (t === tab)
+                        ? 'p-4 rounded-2xl border transition-all text-left bg-white border-emerald-600 shadow-md ring-2 ring-emerald-600/10'
+                        : 'p-4 rounded-2xl border transition-all text-left bg-white/70 border-stone-200/80 hover:bg-white';
+                }
+            });
+
+            renderTabContent();
+        }
+
+        function renderTabContent() {
+            const container = document.getElementById('tabContentContainer');
+            const therapist = resolveActiveTherapist();
+            if (!therapist) return;
+
+            const allTasks = SentosaStore.getBookings({ therapist_id: therapist.id });
+
+            // Update stats numbers
+            const activeCount = allTasks.filter(b => b.status === 'confirmed' || b.status === 'on_process').length;
+            const completedCount = allTasks.filter(b => b.status === 'completed').length;
+            const totalCount = allTasks.length;
+
+            document.getElementById('statActiveTasks').textContent = activeCount;
+            document.getElementById('statCompletedTasks').textContent = completedCount;
+            document.getElementById('statTotalTasks').textContent = totalCount;
+            document.getElementById('statRatingVal').textContent = therapist.rating_formatted;
+            document.getElementById('statReviewsCount').textContent = `${therapist.total_reviews} ulasan pelanggan`;
+
+            if (currentTab === 'reviews') {
+                const reviews = SentosaStore.getReviews(therapist.id);
+                container.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="font-serif text-lg font-bold text-stone-900">Ulasan & Kepuasan Pelanggan</h3>
+                                <p class="text-xs text-stone-500 mt-1">Ulasan nyata yang diberikan oleh pelanggan setelah Anda menyelesaikan sesi perawatan.</p>
+                            </div>
+                            <div class="flex items-center space-x-3 bg-amber-50 p-4 rounded-2xl border border-amber-200 shrink-0">
+                                <div class="text-3xl font-bold text-amber-800 font-serif">${therapist.rating_formatted}</div>
+                                <div>
+                                    <div class="flex text-amber-500 text-xs">
+                                        ${Array.from({ length: 5 }, (_, i) => `<i class="fa-${i < Math.round(therapist.rating) ? 'solid' : 'regular'} fa-star"></i>`).join('')}
+                                    </div>
+                                    <span class="text-[11px] text-amber-900 font-bold block mt-0.5">${therapist.total_reviews} ulasan terverifikasi</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${reviews.length === 0 ? `
+                            <div class="bg-white rounded-3xl border border-stone-200/80 p-12 text-center max-w-md mx-auto my-6 shadow-sm">
+                                <div class="w-16 h-16 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto text-2xl mb-4">
+                                    <i class="fa-regular fa-star"></i>
+                                </div>
+                                <h4 class="font-bold text-stone-800 text-sm">Belum Ada Ulasan</h4>
+                                <p class="text-xs text-stone-500 mt-1">Ulasan pelanggan akan muncul di sini setelah Anda menyelesaikan sesi perawatan.</p>
+                            </div>
+                        ` : `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${reviews.map(r => `
+                                    <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex flex-col justify-between space-y-3">
+                                        <div class="space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <span class="font-bold text-stone-900 text-xs">${r.customer_name}</span>
+                                                <div class="flex text-amber-500 text-[11px]">
+                                                    ${Array.from({ length: 5 }, (_, i) => `<i class="fa-${i < r.rating ? 'solid' : 'regular'} fa-star"></i>`).join('')}
+                                                </div>
+                                            </div>
+                                            <p class="text-xs text-stone-600 italic">"${r.comment || 'Puas dengan pelayanan terapis.'}"</p>
+                                        </div>
+                                        <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-[10px] text-stone-400">
+                                            <span>${r.service_name}</span>
+                                            <span>${SentosaStore.formatDateTime(r.created_at)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                `;
+                return;
+            }
+
+            // Tasks tab (active, completed, all)
+            let tasks = allTasks;
+            if (currentTab === 'active') {
+                tasks = tasks.filter(b => b.status === 'confirmed' || b.status === 'on_process');
+            } else if (currentTab === 'completed') {
+                tasks = tasks.filter(b => b.status === 'completed');
+            }
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-3xl border border-stone-200/80 p-12 text-center max-w-md mx-auto shadow-sm">
+                        <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center mx-auto text-2xl mb-4">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <h3 class="font-serif text-lg font-bold text-stone-900">Tidak Ada Tugas Pada Tab Ini</h3>
+                        <p class="text-xs text-stone-500 mt-1">Saat ini tidak ada jadwal penugasan sesi pada kategori ini.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const statusBadges = {
+                confirmed: '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800"><i class="fa-solid fa-calendar-check mr-1"></i> Jadwal Dikonfirmasi</span>',
+                on_process: '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Sedang Melayani</span>',
+                completed: '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-circle-check mr-1"></i> Selesai</span>',
+                pending: '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Menunggu</span>',
+                cancelled: '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">Dibatalkan</span>'
+            };
+
+            container.innerHTML = `
+                <div class="space-y-5">
+                    ${tasks.map(t => {
+                        const cleanPhone = (t.customer_phone || '').replace(/[^0-9]/g, '');
+                        const waMsg = encodeURIComponent(`Halo Bpk/Ibu ${t.customer_name}, saya ${therapist.name}, terapis dari Sentosa Spa yang bertugas untuk pesanan Anda (#${t.booking_code}).`);
+
+                        return `
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm hover:shadow-md transition-all space-y-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-100 gap-3">
+                                <div class="flex items-center space-x-3">
+                                    <span class="font-mono text-sm sm:text-base font-bold text-stone-900">${t.booking_code}</span>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${t.booking_type === 'home_service' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                                        ${t.booking_type === 'home_service' ? 'Home Service (Panggilan)' : 'Di Klinik'}
+                                    </span>
+                                </div>
+                                <div>${statusBadges[t.status] || t.status}</div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                                <div class="space-y-1">
+                                    <span class="text-stone-400 uppercase tracking-wider text-[10px] font-bold block">Klien:</span>
+                                    <h4 class="font-bold text-stone-900 text-sm">${t.customer_name}</h4>
+                                    ${cleanPhone ? `
+                                        <a href="https://wa.me/${cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone}?text=${waMsg}" target="_blank" class="inline-flex items-center space-x-1 text-emerald-700 font-bold hover:underline">
+                                            <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                                            <span>${t.customer_phone}</span>
+                                        </a>
+                                    ` : '<span class="text-stone-400">Tidak ada nomor</span>'}
+                                </div>
+
+                                <div class="space-y-1">
+                                    <span class="text-stone-400 uppercase tracking-wider text-[10px] font-bold block">Layanan & Jadwal:</span>
+                                    <span class="font-bold text-stone-900 block">${t.service_name} (${t.duration} Menit)</span>
+                                    <span class="text-stone-600 block"><i class="fa-regular fa-clock mr-1 text-emerald-600"></i>${SentosaStore.formatDateTime(t.schedule_datetime)}</span>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <span class="text-stone-400 uppercase tracking-wider text-[10px] font-bold block">Lokasi:</span>
+                                    ${t.booking_type === 'home_service' && t.address ? `<p class="text-stone-700 leading-relaxed">${t.address}</p>` : '<p class="text-stone-500">Klinik Sentosa Spa</p>'}
+                                    ${t.notes ? `<p class="text-stone-500 italic mt-1">"${t.notes}"</p>` : ''}
+                                </div>
+                            </div>
+
+                            <!-- Operational Action Buttons -->
+                            <div class="pt-4 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                                <span class="text-stone-400">Dibuat: ${SentosaStore.formatDateTime(t.created_at)}</span>
+                                <div class="flex items-center space-x-2">
+                                    ${t.status === 'confirmed' ? `
+                                        <button onclick="changeTaskStatus(${t.id}, 'on_process', '${t.booking_code}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition-all flex items-center space-x-1.5">
+                                            <i class="fa-solid fa-play text-xs"></i>
+                                            <span>Mulai Sesi Perawatan</span>
+                                        </button>
+                                    ` : ''}
+
+                                    ${t.status === 'on_process' ? `
+                                        <button onclick="changeTaskStatus(${t.id}, 'completed', '${t.booking_code}')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center space-x-1.5 animate-pulse hover:animate-none">
+                                            <i class="fa-solid fa-circle-check text-xs"></i>
+                                            <span>Selesaikan Sesi Perawatan</span>
+                                        </button>
+                                    ` : ''}
+
+                                    ${t.status === 'completed' ? `
+                                        <span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 font-semibold border border-emerald-200">
+                                            <i class="fa-solid fa-check-double text-emerald-600 mr-1"></i> Sesi Tuntas Dilayani
+                                        </span>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function changeTaskStatus(id, newStatus, code) {
+            let msg = (newStatus === 'on_process')
+                ? `Apakah Anda siap memulai sesi perawatan untuk pesanan ${code}?`
+                : `Apakah sesi perawatan untuk ${code} telah selesai dengan memuaskan?\n\nSetelah selesai, pelanggan akan dapat memberikan rating & ulasan.`;
+
+            if (confirm(msg)) {
+                const res = SentosaStore.updateBookingStatus(id, newStatus);
+                if (res.success) {
+                    SentosaStore.showToast(res.message, 'success');
+                    renderTabContent();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const therapist = resolveActiveTherapist();
+            if (therapist) {
+                renderAdminBanner(therapist);
+                renderHeaderBanner(therapist);
+                const urlParams = new URLSearchParams(window.location.search);
+                const qTab = urlParams.get('tab');
+                if (qTab && ['active', 'completed', 'all', 'reviews'].includes(qTab)) {
+                    currentTab = qTab;
+                }
+                switchTab(currentTab);
+            }
+        });
+    </script>
+</body>
+</html>

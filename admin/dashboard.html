@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrator - Sentosa Spa</title>
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#1c1917">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-100 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+
+    <!-- 1. LOGIN GATE FOR ADMIN (IF NOT LOGGED IN) -->
+    <div id="adminLoginGate" class="hidden fixed inset-0 z-50 bg-stone-900 flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl p-8 shadow-2xl border border-stone-800">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-stone-900 text-white flex items-center justify-center mx-auto text-2xl mb-3 shadow-lg">
+                    <i class="fa-solid fa-lock text-emerald-400"></i>
+                </div>
+                <h2 class="font-serif text-2xl font-bold text-stone-900">Akses Panel Admin</h2>
+                <p class="text-xs text-stone-500 mt-1">Silakan masuk menggunakan kredensial Administrator Sentosa Spa.</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Email / User Admin</label>
+                    <input type="text" id="adminGateUser" required value="admin@spa.com" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" id="adminGatePass" required value="admin123" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm rounded-xl shadow-md transition-all">
+                    Masuk ke Admin Panel
+                </button>
+                <div class="text-center pt-2">
+                    <a href="../index.html" class="text-xs text-stone-500 hover:text-stone-900 font-semibold">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Beranda
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. MAIN ADMIN DASHBOARD INTERFACE -->
+    <div id="adminApp" class="flex-1 flex flex-col">
+        <!-- Top Sticky Header -->
+        <header class="bg-stone-900 text-white border-b border-stone-800 sticky top-0 z-30 shadow-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-800 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-spa text-emerald-300"></i>
+                        </div>
+                        <span class="font-serif font-bold text-lg tracking-tight">Sentosa Spa <span class="text-xs font-sans font-normal px-2 py-0.5 rounded bg-emerald-900 text-emerald-300 ml-1">Admin</span></span>
+                    </div>
+
+                    <!-- Desktop Tabs -->
+                    <nav class="hidden md:flex items-center space-x-1">
+                        <button onclick="switchTab('overview')" id="navTabOverview" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors bg-emerald-800 text-white">
+                            <i class="fa-solid fa-chart-pie mr-1.5"></i> Ringkasan
+                        </button>
+                        <button onclick="switchTab('bookings')" id="navTabBookings" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
+                            <i class="fa-solid fa-calendar-check mr-1.5"></i> Reservasi
+                        </button>
+                        <button onclick="switchTab('services')" id="navTabServices" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
+                            <i class="fa-solid fa-hand-sparkles mr-1.5"></i> Layanan
+                        </button>
+                        <button onclick="switchTab('therapists')" id="navTabTherapists" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
+                            <i class="fa-solid fa-user-group mr-1.5"></i> Tim Terapis
+                        </button>
+                    </nav>
+
+                    <div class="flex items-center space-x-3">
+                        <a href="../index.html" target="_blank" class="hidden sm:inline-flex items-center space-x-1 text-xs text-stone-300 hover:text-white bg-stone-800 px-3 py-1.5 rounded-lg transition-colors">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            <span>Lihat Website</span>
+                        </a>
+                        <button onclick="handleAdminLogout()" class="text-xs text-rose-300 hover:text-rose-100 bg-rose-950/60 hover:bg-rose-900/80 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1.5">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span class="hidden sm:inline">Keluar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Subnav -->
+            <div class="md:hidden flex overflow-x-auto px-4 py-2 border-t border-stone-800 space-x-2 scrollbar-none">
+                <button onclick="switchTab('overview')" id="mNavOverview" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap bg-emerald-800 text-white">Ringkasan</button>
+                <button onclick="switchTab('bookings')" id="mNavBookings" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Reservasi</button>
+                <button onclick="switchTab('services')" id="mNavServices" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Layanan</button>
+                <button onclick="switchTab('therapists')" id="mNavTherapists" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Terapis</button>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="tabContentOverview" class="space-y-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900">Ringkasan Metrik & Finansial</h1>
+                        <p class="text-stone-500 text-xs sm:text-sm mt-0.5">Pemantauan real-time performa bisnis dan reservasi harian Sentosa Spa.</p>
+                    </div>
+                    <button onclick="loadOverview()" class="self-start sm:self-auto px-4 py-2 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-rotate text-emerald-700"></i>
+                        <span>Perbarui Data</span>
+                    </button>
+                </div>
+
+                <!-- KPI Metric Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-calendar-day"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-stone-500 font-semibold uppercase tracking-wider block">Total Reservasi</span>
+                            <span class="text-2xl font-bold text-stone-900" id="ovTotalBookings">0</span>
+                            <span class="text-[11px] text-stone-400 block mt-0.5">Semua data pemesanan</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-spa"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-stone-500 font-semibold uppercase tracking-wider block">Sesi Berlangsung & Aktif</span>
+                            <span class="text-2xl font-bold text-purple-900" id="ovActiveBookings">0</span>
+                            <span class="text-[11px] text-stone-400 block mt-0.5">Sedang dalam pengerjaan</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-stone-500 font-semibold uppercase tracking-wider block">Menunggu Konfirmasi</span>
+                            <span class="text-2xl font-bold text-amber-900" id="ovPendingBookings">0</span>
+                            <span class="text-[11px] text-stone-400 block mt-0.5">Belum ditentukan terapis</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-stone-500 font-semibold uppercase tracking-wider block">Rasio Terapis Aktif</span>
+                            <span class="text-2xl font-bold text-emerald-900" id="ovTherapistsRatio">0 / 0</span>
+                            <span class="text-[11px] text-stone-400 block mt-0.5">Siap terima panggilan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-stone-900 to-stone-800 rounded-3xl p-6 text-white shadow-xl">
+                        <span class="text-xs uppercase tracking-wider text-stone-400 font-bold block mb-1">Total Pendapatan Kotor</span>
+                        <h2 class="text-3xl font-bold font-serif text-emerald-400" id="ovGrossRevenue">Rp 0</h2>
+                        <p class="text-xs text-stone-400 mt-2">Dihitung dari seluruh reservasi berstatus pembayaran lunas.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-emerald-950 to-stone-900 rounded-3xl p-6 text-white shadow-xl">
+                        <span class="text-xs uppercase tracking-wider text-emerald-300 font-bold block mb-1">Estimasi Bagi Hasil Bersih Klinik</span>
+                        <h2 class="text-3xl font-bold font-serif text-white" id="ovNetRevenue">Rp 0</h2>
+                        <p class="text-xs text-stone-400 mt-2">Estimasi 40% bagi hasil klinik setelah dikurangi komisi terapis (60%).</p>
+                    </div>
+                </div>
+
+                <!-- 5 Recent Bookings Table -->
+                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-serif text-lg font-bold text-stone-900">Reservasi Terbaru</h3>
+                        <button onclick="switchTab('bookings')" class="text-xs text-emerald-800 font-bold hover:underline">
+                            Lihat Semua <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-stone-50 border-b border-stone-100 text-stone-500 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="p-3">Kode</th>
+                                    <th class="p-3">Pelanggan</th>
+                                    <th class="p-3">Layanan</th>
+                                    <th class="p-3">Jadwal</th>
+                                    <th class="p-3">Terapis</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentBookingsTbody" class="divide-y divide-stone-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: BOOKINGS -->
+            <div id="tabContentBookings" class="space-y-6 hidden">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-serif text-2xl font-bold text-stone-900">Manajemen Seluruh Reservasi</h2>
+                        <p class="text-xs text-stone-500 mt-0.5">Penetapan tugas terapis, konfirmasi status sesi, dan pelacakan pembayaran.</p>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2 overflow-x-auto w-full sm:w-auto">
+                        <button onclick="filterAdminBookings('all')" id="bFilterAll" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white">Semua</button>
+                        <button onclick="filterAdminBookings('pending')" id="bFilterPending" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Menunggu</button>
+                        <button onclick="filterAdminBookings('confirmed')" id="bFilterConfirmed" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Dikonfirmasi</button>
+                        <button onclick="filterAdminBookings('on_process')" id="bFilterProcess" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Berlangsung</button>
+                        <button onclick="filterAdminBookings('completed')" id="bFilterCompleted" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100">Selesai</button>
+                    </div>
+
+                    <div class="w-full sm:w-64">
+                        <input type="text" id="bookingSearchInput" oninput="handleBookingSearch()" placeholder="Cari kode / nama pemesan..." class="w-full px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Bookings Table -->
+                <div class="bg-white rounded-3xl border border-stone-200/80 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="p-4">Kode & Tipe</th>
+                                    <th class="p-4">Pelanggan</th>
+                                    <th class="p-4">Layanan & Tarif</th>
+                                    <th class="p-4">Jadwal Sesi</th>
+                                    <th class="p-4">Terapis Bertugas</th>
+                                    <th class="p-4">Status & Bayar</th>
+                                    <th class="p-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allBookingsTbody" class="divide-y divide-stone-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SERVICES -->
+            <div id="tabContentServices" class="space-y-6 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-serif text-2xl font-bold text-stone-900">Katalog Menu Perawatan</h2>
+                        <p class="text-xs text-stone-500 mt-0.5">Kelola tarif, durasi, gambar, dan kategori layanan pijat Sentosa Spa.</p>
+                    </div>
+                    <button onclick="openAddServiceModal()" class="px-4 py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Tambah Layanan</span>
+                    </button>
+                </div>
+
+                <div id="adminServicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- TAB 4: THERAPISTS -->
+            <div id="tabContentTherapists" class="space-y-6 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-serif text-2xl font-bold text-stone-900">Manajemen Tim Terapis</h2>
+                        <p class="text-xs text-stone-500 mt-0.5">Kelola data terapis, kredensial akun login, serta pantau rating kepuasan pelanggan.</p>
+                    </div>
+                    <button onclick="openAddTherapistModal()" class="px-4 py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-user-plus text-xs"></i>
+                        <span>Tambah Terapis Baru</span>
+                    </button>
+                </div>
+
+                <div id="adminTherapistsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL 1: ASSIGN THERAPIST -->
+    <div id="assignTherapistModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <h3 class="font-serif font-bold text-lg text-stone-900">Tetapkan Terapis</h3>
+            <p class="text-xs text-stone-500">Pilih terapis aktif untuk ditugaskan pada pesanan <strong id="assignBookingCode">-</strong>:</p>
+            <input type="hidden" id="assignBookingId">
+            <select id="assignTherapistSelect" class="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none"></select>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeAssignModal()" class="px-4 py-2 bg-stone-100 text-stone-700 text-xs font-bold rounded-xl">Batal</button>
+                <button onclick="saveAssignTherapist()" class="px-4 py-2 bg-emerald-800 text-white text-xs font-bold rounded-xl">Tugaskan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD/EDIT SERVICE -->
+    <div id="serviceModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-serif font-bold text-lg text-stone-900" id="serviceModalTitle">Tambah Layanan Baru</h3>
+                <button onclick="closeServiceModal()" class="text-stone-400 hover:text-stone-800"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveService(event)" class="space-y-3.5 text-xs">
+                <input type="hidden" id="serviceModalId">
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Nama Layanan</label>
+                    <input type="text" id="srvName" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-stone-700 uppercase mb-1">Tarif (Rp)</label>
+                        <input type="number" id="srvPrice" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-stone-700 uppercase mb-1">Durasi (Menit)</label>
+                        <input type="number" id="srvDuration" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Kategori Layanan</label>
+                    <select id="srvType" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                        <option value="both">Klinik & Home Service</option>
+                        <option value="home_service">Khusus Home Service</option>
+                        <option value="clinic_only">Hanya di Klinik</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">URL Gambar (Unsplash)</label>
+                    <input type="url" id="srvImage" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Deskripsi Layanan</label>
+                    <textarea id="srvDesc" rows="2.5" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closeServiceModal()" class="px-4 py-2 bg-stone-100 text-stone-700 font-bold rounded-xl">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-800 text-white font-bold rounded-xl">Simpan Layanan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ADD/EDIT THERAPIST WITH LOGIN CREDENTIALS -->
+    <div id="therapistModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-serif font-bold text-lg text-stone-900" id="therapistModalTitle">Tambah Terapis Baru</h3>
+                <button onclick="closeTherapistModal()" class="text-stone-400 hover:text-stone-800"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveTherapist(event)" class="space-y-3.5 text-xs">
+                <input type="hidden" id="therapistModalId">
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Nama Lengkap Terapis</label>
+                    <input type="text" id="thName" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-stone-700 uppercase mb-1">Jenis Kelamin</label>
+                        <select id="thGender" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                            <option value="female">Wanita</option>
+                            <option value="male">Pria</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-stone-700 uppercase mb-1">No. WhatsApp</label>
+                        <input type="tel" id="thPhone" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Keahlian & Spesialisasi</label>
+                    <input type="text" id="thSpec" required placeholder="Contoh: Balinese Massage, Refleksi, Hot Stone" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl">
+                </div>
+
+                <!-- Akun Login Terapis Section -->
+                <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-3">
+                    <span class="font-bold text-emerald-900 block text-xs"><i class="fa-solid fa-key mr-1"></i> Akun Login Portal Terapis</span>
+                    <div>
+                        <label class="block font-bold text-stone-700 uppercase text-[10px] mb-1">Email Login</label>
+                        <input type="email" id="thEmail" required placeholder="terapis@spa.com" class="w-full px-3.5 py-2 bg-white border border-stone-200 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-stone-700 uppercase text-[10px] mb-1">Password Login</label>
+                        <div class="relative">
+                            <input type="password" id="thPassword" placeholder="Default: therapist123" class="w-full px-3.5 py-2 pr-10 bg-white border border-stone-200 rounded-xl">
+                            <button type="button" onclick="togglePasswordVisibility('thPassword', 'thEyeIcon')" class="absolute right-3 top-2 text-stone-400">
+                                <i class="fa-solid fa-eye text-xs" id="thEyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closeTherapistModal()" class="px-4 py-2 bg-stone-100 text-stone-700 font-bold rounded-xl">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-800 text-white font-bold rounded-xl">Simpan Terapis</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/store.js"></script>
+    <script>
+        let currentTab = 'overview';
+        let currentBookingFilter = 'all';
+
+        function checkAdminAccess() {
+            const user = SentosaStore.getCurrentUser();
+            if (!user || user.role !== 'admin') {
+                document.getElementById('adminLoginGate').classList.remove('hidden');
+                document.getElementById('adminApp').classList.add('hidden');
+            } else {
+                document.getElementById('adminLoginGate').classList.add('hidden');
+                document.getElementById('adminApp').classList.remove('hidden');
+                loadOverview();
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminGateUser').value;
+            const p = document.getElementById('adminGatePass').value;
+            const res = SentosaStore.login(u, p);
+            if (res.success && res.user.role === 'admin') {
+                SentosaStore.showToast('Login Administrator Berhasil!', 'success');
+                checkAdminAccess();
+            } else {
+                SentosaStore.showToast(res.message || 'Akun ini bukan Administrator.', 'error');
+            }
+        }
+
+        function handleAdminLogout() {
+            SentosaStore.logout();
+            SentosaStore.showToast('Anda telah keluar dari Admin Panel.', 'info');
+            setTimeout(() => window.location.reload(), 500);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabs = ['overview', 'bookings', 'services', 'therapists'];
+
+            tabs.forEach(t => {
+                const nav = document.getElementById('navTab' + t.charAt(0).toUpperCase() + t.slice(1));
+                const mNav = document.getElementById('mNav' + t.charAt(0).toUpperCase() + t.slice(1));
+                const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+
+                if (t === tab) {
+                    if (nav) nav.className = 'admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors bg-emerald-800 text-white';
+                    if (mNav) mNav.className = 'px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap bg-emerald-800 text-white';
+                    if (content) content.classList.remove('hidden');
+                } else {
+                    if (nav) nav.className = 'admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800';
+                    if (mNav) mNav.className = 'px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400';
+                    if (content) content.classList.add('hidden');
+                }
+            });
+
+            if (tab === 'overview') loadOverview();
+            if (tab === 'bookings') loadBookingsTable();
+            if (tab === 'services') loadServicesGrid();
+            if (tab === 'therapists') loadTherapistsGrid();
+        }
+
+        function loadOverview() {
+            const stats = SentosaStore.getStats();
+            document.getElementById('ovTotalBookings').textContent = stats.totalBookings;
+            document.getElementById('ovActiveBookings').textContent = stats.activeBookings;
+            document.getElementById('ovPendingBookings').textContent = stats.pendingBookings;
+            document.getElementById('ovTherapistsRatio').textContent = `${stats.availableTherapists} / ${stats.totalTherapists}`;
+            document.getElementById('ovGrossRevenue').textContent = SentosaStore.formatRupiah(stats.grossRevenue);
+            document.getElementById('ovNetRevenue').textContent = SentosaStore.formatRupiah(stats.netRevenue);
+
+            // 5 Recent Bookings
+            const bookings = SentosaStore.getBookings().slice(0, 5);
+            const tbody = document.getElementById('recentBookingsTbody');
+            tbody.innerHTML = bookings.map(b => `
+                <tr class="hover:bg-stone-50">
+                    <td class="p-3 font-mono font-bold">${b.booking_code}</td>
+                    <td class="p-3 font-bold">${b.customer_name}</td>
+                    <td class="p-3">${b.service_name}</td>
+                    <td class="p-3">${SentosaStore.formatDateTime(b.schedule_datetime)}</td>
+                    <td class="p-3">${b.therapist_name || '<em class="text-stone-400">Belum Ada</em>'}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${b.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : (b.status === 'on_process' ? 'bg-purple-100 text-purple-800' : 'bg-amber-100 text-amber-800')}">${b.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterAdminBookings(status) {
+            currentBookingFilter = status;
+            ['all', 'pending', 'confirmed', 'on_process', 'completed'].forEach(s => {
+                const btn = document.getElementById('bFilter' + s.charAt(0).toUpperCase() + s.slice(1));
+                if (btn) {
+                    btn.className = (s === status)
+                        ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white'
+                        : 'px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100';
+                }
+            });
+            loadBookingsTable();
+        }
+
+        function handleBookingSearch() {
+            loadBookingsTable();
+        }
+
+        function loadBookingsTable() {
+            const tbody = document.getElementById('allBookingsTbody');
+            const search = (document.getElementById('bookingSearchInput').value || '').toLowerCase().trim();
+            let bookings = SentosaStore.getBookings();
+
+            if (currentBookingFilter !== 'all') {
+                bookings = bookings.filter(b => b.status === currentBookingFilter);
+            }
+
+            if (search) {
+                bookings = bookings.filter(b =>
+                    b.booking_code.toLowerCase().includes(search) ||
+                    b.customer_name.toLowerCase().includes(search) ||
+                    b.service_name.toLowerCase().includes(search)
+                );
+            }
+
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-stone-400">Tidak ada data reservasi yang sesuai.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(b => `
+                <tr class="hover:bg-stone-50 transition-colors">
+                    <td class="p-4">
+                        <span class="font-mono font-bold text-stone-900 block">${b.booking_code}</span>
+                        <span class="text-[10px] text-stone-500">${b.booking_type === 'home_service' ? 'Home Service' : 'Klinik'}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="font-bold text-stone-900 block">${b.customer_name}</span>
+                        <span class="text-[11px] text-stone-500">${b.customer_phone || '-'}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="font-bold text-stone-900 block">${b.service_name}</span>
+                        <span class="text-[11px] text-stone-500 font-semibold">${SentosaStore.formatRupiah(b.total_price)}</span>
+                    </td>
+                    <td class="p-4 text-stone-700 font-medium">
+                        ${SentosaStore.formatDateTime(b.schedule_datetime)}
+                    </td>
+                    <td class="p-4">
+                        ${b.therapist_name ? `
+                            <span class="font-bold text-stone-800 block">${b.therapist_name}</span>
+                            <span class="text-[10px] text-stone-500">${b.therapist_gender === 'female' ? 'Wanita' : 'Pria'}</span>
+                        ` : `
+                            <button onclick="openAssignModal(${b.id}, '${b.booking_code}')" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-800 text-[11px] font-bold">
+                                + Tetapkan
+                            </button>
+                        `}
+                    </td>
+                    <td class="p-4 space-y-1">
+                        <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${b.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : (b.status === 'on_process' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800')}">${b.status}</span>
+                        <div>
+                            <button onclick="togglePayment(${b.id}, '${b.payment_status}')" class="text-[10px] font-bold ${b.payment_status === 'paid' ? 'text-emerald-700' : 'text-amber-700'} hover:underline">
+                                ${b.payment_status === 'paid' ? '● Lunas' : '○ Belum Bayar'}
+                            </button>
+                        </div>
+                    </td>
+                    <td class="p-4 text-right space-x-1">
+                        <button onclick="openAssignModal(${b.id}, '${b.booking_code}')" class="p-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-600" title="Ganti Terapis"><i class="fa-solid fa-user-gear"></i></button>
+                        <select onchange="updateBookingStatus(${b.id}, this.value)" class="text-[11px] bg-stone-100 rounded px-2 py-1 font-medium">
+                            <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                            <option value="on_process" ${b.status === 'on_process' ? 'selected' : ''}>On Process</option>
+                            <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Completed</option>
+                            <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateBookingStatus(id, newStatus) {
+            const res = SentosaStore.updateBookingStatus(id, newStatus);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                loadBookingsTable();
+            }
+        }
+
+        function togglePayment(id, currentStatus) {
+            const next = currentStatus === 'paid' ? 'unpaid' : 'paid';
+            const res = SentosaStore.updatePaymentStatus(id, next);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                loadBookingsTable();
+            }
+        }
+
+        // Assign Therapist Modal
+        function openAssignModal(id, code) {
+            document.getElementById('assignBookingId').value = id;
+            document.getElementById('assignBookingCode').textContent = code;
+            const select = document.getElementById('assignTherapistSelect');
+            const therapists = SentosaStore.getTherapists();
+            select.innerHTML = therapists.map(t => `<option value="${t.id}">${t.name} (${t.is_available ? 'Tersedia' : 'Libur'})</option>`).join('');
+            document.getElementById('assignTherapistModal').classList.remove('hidden');
+        }
+
+        function closeAssignModal() {
+            document.getElementById('assignTherapistModal').classList.add('hidden');
+        }
+
+        function saveAssignTherapist() {
+            const id = document.getElementById('assignBookingId').value;
+            const therapistId = document.getElementById('assignTherapistSelect').value;
+            const res = SentosaStore.assignTherapist(id, therapistId);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                closeAssignModal();
+                loadBookingsTable();
+            }
+        }
+
+        // Services Grid
+        function loadServicesGrid() {
+            const grid = document.getElementById('adminServicesGrid');
+            const services = SentosaStore.getServices();
+            grid.innerHTML = services.map(s => `
+                <div class="bg-white rounded-3xl p-5 border border-stone-200/80 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="h-40 rounded-2xl overflow-hidden bg-stone-100">
+                            <img src="${s.image_url}" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">${s.type}</span>
+                            <h4 class="font-bold text-stone-900 text-sm mt-1">${s.name}</h4>
+                            <p class="text-xs text-stone-500 mt-1 line-clamp-2">${s.description}</p>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-stone-900 block">${SentosaStore.formatRupiah(s.price)}</span>
+                            <span class="text-[10px] text-stone-400">${s.duration_minutes} Menit</span>
+                        </div>
+                        <div class="space-x-1">
+                            <button onclick='openEditServiceModal(${JSON.stringify(s)})' class="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteService(${s.id})" class="p-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddServiceModal() {
+            document.getElementById('serviceModalTitle').textContent = 'Tambah Layanan Baru';
+            document.getElementById('serviceModalId').value = '';
+            document.getElementById('srvName').value = '';
+            document.getElementById('srvPrice').value = '';
+            document.getElementById('srvDuration').value = '60';
+            document.getElementById('srvType').value = 'both';
+            document.getElementById('srvImage').value = 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800';
+            document.getElementById('srvDesc').value = '';
+            document.getElementById('serviceModal').classList.remove('hidden');
+        }
+
+        function openEditServiceModal(s) {
+            document.getElementById('serviceModalTitle').textContent = 'Edit Layanan';
+            document.getElementById('serviceModalId').value = s.id;
+            document.getElementById('srvName').value = s.name;
+            document.getElementById('srvPrice').value = s.price;
+            document.getElementById('srvDuration').value = s.duration_minutes;
+            document.getElementById('srvType').value = s.type;
+            document.getElementById('srvImage').value = s.image_url;
+            document.getElementById('srvDesc').value = s.description;
+            document.getElementById('serviceModal').classList.remove('hidden');
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceModal').classList.add('hidden');
+        }
+
+        function handleSaveService(e) {
+            e.preventDefault();
+            const id = document.getElementById('serviceModalId').value;
+            const data = {
+                name: document.getElementById('srvName').value,
+                price: Number(document.getElementById('srvPrice').value),
+                duration_minutes: Number(document.getElementById('srvDuration').value),
+                type: document.getElementById('srvType').value,
+                image_url: document.getElementById('srvImage').value,
+                description: document.getElementById('srvDesc').value
+            };
+            if (id) data.id = Number(id);
+
+            const res = SentosaStore.saveService(data);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                closeServiceModal();
+                loadServicesGrid();
+            }
+        }
+
+        function deleteService(id) {
+            if (confirm('Hapus layanan ini?')) {
+                const res = SentosaStore.deleteService(id);
+                if (res.success) {
+                    SentosaStore.showToast(res.message, 'success');
+                    loadServicesGrid();
+                }
+            }
+        }
+
+        // Therapists Grid
+        function loadTherapistsGrid() {
+            const grid = document.getElementById('adminTherapistsGrid');
+            const therapists = SentosaStore.getTherapists();
+
+            grid.innerHTML = therapists.map(t => `
+                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center font-bold text-lg font-serif">
+                                    ${t.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-stone-900 text-sm">${t.name}</h4>
+                                    <span class="text-[11px] text-amber-700 font-bold"><i class="fa-solid fa-star text-amber-500"></i> ${t.rating_formatted} (${t.total_reviews} ulasan)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <a href="../therapist-portal.html?therapist_id=${t.id}" target="_blank" class="w-8 h-8 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 flex items-center justify-center transition-colors" title="Buka Portal Terapis">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </a>
+                                <button onclick='openEditTherapistModal(${JSON.stringify(t)})' class="w-8 h-8 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center"><i class="fa-solid fa-pen text-xs"></i></button>
+                                <button onclick="deleteTherapist(${t.id})" class="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 flex items-center justify-center"><i class="fa-solid fa-trash text-xs"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1 text-xs text-stone-600">
+                            <div><span class="text-stone-400 block text-[10px] uppercase font-bold">Keahlian:</span>${t.specialization}</div>
+                            <div><span class="text-stone-400 block text-[10px] uppercase font-bold">Email Login:</span>${t.email}</div>
+                            <div><span class="text-stone-400 block text-[10px] uppercase font-bold">WhatsApp:</span>${t.phone}</div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+                        <span class="font-semibold ${t.is_available ? 'text-emerald-700' : 'text-stone-400'}">
+                            <span class="w-2 h-2 inline-block rounded-full mr-1 ${t.is_available ? 'bg-emerald-500' : 'bg-stone-300'}"></span>
+                            ${t.is_available ? 'Tersedia' : 'Sedang Libur'}
+                        </span>
+                        <button onclick="toggleTherapist(${t.id}, ${t.is_available})" class="px-3 py-1.5 rounded-xl font-bold ${t.is_available ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                            ${t.is_available ? 'Set Libur' : 'Aktifkan'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTherapist(id, currentAvail) {
+            const res = SentosaStore.toggleTherapistAvailability(id, !currentAvail);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                loadTherapistsGrid();
+            }
+        }
+
+        function openAddTherapistModal() {
+            document.getElementById('therapistModalTitle').textContent = 'Tambah Terapis Baru';
+            document.getElementById('therapistModalId').value = '';
+            document.getElementById('thName').value = '';
+            document.getElementById('thGender').value = 'female';
+            document.getElementById('thPhone').value = '';
+            document.getElementById('thSpec').value = '';
+            document.getElementById('thEmail').value = '';
+            document.getElementById('thPassword').value = 'therapist123';
+            document.getElementById('therapistModal').classList.remove('hidden');
+        }
+
+        function openEditTherapistModal(t) {
+            document.getElementById('therapistModalTitle').textContent = 'Edit Profil Terapis';
+            document.getElementById('therapistModalId').value = t.id;
+            document.getElementById('thName').value = t.name;
+            document.getElementById('thGender').value = t.gender;
+            document.getElementById('thPhone').value = t.phone;
+            document.getElementById('thSpec').value = t.specialization;
+            document.getElementById('thEmail').value = t.email;
+            document.getElementById('thPassword').value = '';
+            document.getElementById('therapistModal').classList.remove('hidden');
+        }
+
+        function closeTherapistModal() {
+            document.getElementById('therapistModal').classList.add('hidden');
+        }
+
+        function handleSaveTherapist(e) {
+            e.preventDefault();
+            const id = document.getElementById('therapistModalId').value;
+            const data = {
+                name: document.getElementById('thName').value,
+                gender: document.getElementById('thGender').value,
+                phone: document.getElementById('thPhone').value,
+                specialization: document.getElementById('thSpec').value,
+                email: document.getElementById('thEmail').value,
+                password: document.getElementById('thPassword').value
+            };
+            if (id) data.id = Number(id);
+
+            const res = SentosaStore.saveTherapist(data);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                closeTherapistModal();
+                loadTherapistsGrid();
+            }
+        }
+
+        function deleteTherapist(id) {
+            if (confirm('Hapus terapis ini beserta akun login miliknya?')) {
+                const res = SentosaStore.deleteTherapist(id);
+                if (res.success) {
+                    SentosaStore.showToast(res.message, 'success');
+                    loadTherapistsGrid();
+                }
+            }
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash text-xs';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye text-xs';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdminAccess();
+        });
+    </script>
+</body>
+</html>

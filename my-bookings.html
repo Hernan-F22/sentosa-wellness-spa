@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Booking Saya - Sentosa Spa</title>
+
+    <meta name="description" content="Riwayat pemesanan layanan dan status reservasi Sentosa Spa.">
+    <meta name="theme-color" content="#064e3b">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-50 font-sans text-stone-800 antialiased selection:bg-emerald-800 selection:text-white flex flex-col min-h-screen">
+
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <div class="min-h-screen bg-stone-50/80 py-8 sm:py-12 flex-1">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Breadcrumb -->
+            <div class="flex items-center space-x-2 text-xs text-stone-500 mb-2">
+                <a href="index.html" class="hover:text-emerald-700 transition-colors">Beranda</a>
+                <span>/</span>
+                <span class="text-stone-800 font-semibold">Riwayat Booking Saya</span>
+            </div>
+
+            <!-- Profile Banner Container -->
+            <div id="userProfileBanner" class="mb-8">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Filter Status Tab Buttons -->
+            <div class="flex items-center space-x-2 overflow-x-auto pb-3 mb-6 border-b border-stone-200/80 scrollbar-none">
+                <button onclick="filterBookings('all')" id="tabFilterAll" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-emerald-800 text-white shadow-sm">
+                    Semua Reservasi
+                </button>
+                <button onclick="filterBookings('active')" id="tabFilterActive" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                    Menunggu & Sedang Berjalan
+                </button>
+                <button onclick="filterBookings('completed')" id="tabFilterCompleted" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                    Selesai
+                </button>
+                <button onclick="filterBookings('cancelled')" id="tabFilterCancelled" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70">
+                    Dibatalkan
+                </button>
+            </div>
+
+            <!-- Bookings List Container -->
+            <div id="bookingsListContainer" class="space-y-6">
+                <!-- Injected via JavaScript -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Beri Rating & Ulasan Pelanggan -->
+    <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-stone-100 overflow-hidden transform transition-all duration-300">
+            <div class="p-6 sm:p-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                            <i class="fa-solid fa-star text-amber-600 text-sm"></i>
+                        </div>
+                        <h3 class="font-serif text-lg font-bold text-stone-900">Beri Rating & Ulasan</h3>
+                    </div>
+                    <button onclick="closeReviewModal()" class="w-8 h-8 rounded-full bg-stone-100 text-stone-500 hover:text-stone-800 hover:bg-stone-200 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <div class="mb-4 text-xs text-stone-500">
+                    Bagikan pengalaman pijat Anda bersama <strong id="modalTherapistName" class="text-stone-800">Terapis</strong> untuk pesanan <strong id="modalBookingCode" class="text-stone-800 font-mono">BKG-XXXX</strong>.
+                </div>
+
+                <form onsubmit="submitCustomerReview(event)" class="space-y-5">
+                    <input type="hidden" id="reviewBookingId" value="">
+
+                    <!-- Star Rating Interactive -->
+                    <div class="text-center py-3 bg-stone-50 rounded-2xl border border-stone-200/80">
+                        <span class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">Bintang Kepuasan:</span>
+                        <div class="flex items-center justify-center space-x-2 text-2xl" id="starContainer">
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetHoverRating()"></i>
+                            <i class="fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125" onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetHoverRating()"></i>
+                        </div>
+                        <span id="ratingLabelText" class="block text-xs font-bold text-amber-800 mt-2">5.0 - Sangat Memuaskan & Sempurna</span>
+                        <input type="hidden" id="ratingValue" value="5">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Komentar & Testimoni (Opsional)</label>
+                        <textarea id="reviewComment" rows="3" placeholder="Tuliskan kepuasan Anda terhadap keramahan, ketepatan waktu, atau teknik pemijatan terapis..." class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitReviewBtn" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                        <span>Kirim Ulasan Pelanggan</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer & Modals Containers -->
+    <div id="footer-container"></div>
+    <div id="modals-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/store.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        let currentFilter = 'all';
+        let currentSelectedRating = 5;
+
+        const ratingLabels = {
+            1: '1.0 - Kurang Memuaskan',
+            2: '2.0 - Cukup',
+            3: '3.0 - Lumayan',
+            4: '4.0 - Bagus & Nyaman',
+            5: '5.0 - Sangat Memuaskan & Sempurna'
+        };
+
+        function renderProfileBanner() {
+            const container = document.getElementById('userProfileBanner');
+            const currentUser = SentosaStore.getCurrentUser();
+
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-stone-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="font-serif text-xl sm:text-2xl font-bold">Pantau Reservasi Spa Anda</h2>
+                            <p class="text-xs sm:text-sm text-stone-300 mt-1">Silakan masuk ke akun pelanggan Anda untuk melihat seluruh riwayat pemesanan atau memberi rating pada terapis.</p>
+                        </div>
+                        <button onclick="openAuthModal('login')" class="px-6 py-3 bg-white hover:bg-stone-100 text-emerald-900 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all self-start sm:self-center">
+                            Masuk Sekarang
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const bookings = SentosaStore.getBookings({ customer_id: currentUser.id });
+            const total = bookings.length;
+            const active = bookings.filter(b => b.status === 'pending' || b.status === 'confirmed' || b.status === 'on_process').length;
+            const completed = bookings.filter(b => b.status === 'completed').length;
+            const cancelled = bookings.filter(b => b.status === 'cancelled').length;
+
+            container.innerHTML = `
+                <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-stone-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+                    <div class="flex items-center space-x-4 sm:space-x-5">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner">
+                            ${currentUser.name.charAt(0)}
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h1 class="text-xl sm:text-2xl font-bold font-serif">${currentUser.name}</h1>
+                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 text-[10px] font-semibold tracking-wide uppercase border border-emerald-400/30">
+                                    ${currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'therapist' ? 'Terapis' : 'Pelanggan')}
+                                </span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-300 mt-1 flex items-center space-x-4">
+                                <span><i class="fa-regular fa-envelope mr-1.5 text-emerald-400"></i>${currentUser.email}</span>
+                                ${currentUser.phone ? `<span><i class="fa-brands fa-whatsapp mr-1.5 text-emerald-400"></i>${currentUser.phone}</span>` : ''}
+                            </p>
+                        </div>
+                    </div>
+
+                    <a href="booking.html" class="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold shadow-lg transition-all self-start md:self-center">
+                        <i class="fa-solid fa-calendar-plus text-emerald-300"></i>
+                        <span>Booking Layanan Baru</span>
+                    </a>
+                </div>
+
+                <!-- Mini Counter Stats -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                        <span class="text-[11px] font-semibold uppercase text-stone-500 block">Total Booking</span>
+                        <span class="text-2xl font-bold text-stone-900">${total}</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                        <span class="text-[11px] font-semibold uppercase text-blue-700 block">Sedang Aktif</span>
+                        <span class="text-2xl font-bold text-blue-900">${active}</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                        <span class="text-[11px] font-semibold uppercase text-emerald-700 block">Selesai</span>
+                        <span class="text-2xl font-bold text-emerald-900">${completed}</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                        <span class="text-[11px] font-semibold uppercase text-rose-700 block">Dibatalkan</span>
+                        <span class="text-2xl font-bold text-rose-900">${cancelled}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterBookings(status) {
+            currentFilter = status;
+            ['all', 'active', 'completed', 'cancelled'].forEach(s => {
+                const btn = document.getElementById('tabFilter' + s.charAt(0).toUpperCase() + s.slice(1));
+                if (btn) {
+                    btn.className = (s === status)
+                        ? 'px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap bg-emerald-800 text-white shadow-sm'
+                        : 'px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-stone-600 hover:bg-stone-200/70';
+                }
+            });
+            renderBookings();
+        }
+
+        function renderBookings() {
+            const container = document.getElementById('bookingsListContainer');
+            if (!container) return;
+
+            const currentUser = SentosaStore.getCurrentUser();
+            let filterQuery = {};
+            if (currentUser && currentUser.role === 'customer') {
+                filterQuery.customer_id = currentUser.id;
+            }
+
+            let bookings = SentosaStore.getBookings(filterQuery);
+
+            if (currentFilter === 'active') {
+                bookings = bookings.filter(b => b.status === 'pending' || b.status === 'confirmed' || b.status === 'on_process');
+            } else if (currentFilter === 'completed') {
+                bookings = bookings.filter(b => b.status === 'completed');
+            } else if (currentFilter === 'cancelled') {
+                bookings = bookings.filter(b => b.status === 'cancelled');
+            }
+
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-3xl border border-stone-200/80 p-12 text-center max-w-md mx-auto shadow-sm">
+                        <div class="w-16 h-16 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto text-2xl mb-4">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <h3 class="font-serif text-lg font-bold text-stone-900">Belum Ada Riwayat Pemesanan</h3>
+                        <p class="text-xs text-stone-500 mt-1 mb-6">Nikmati kenyamanan perawatan tubuh berstandar hotel bersama terapis terpercaya Sentosa Spa.</p>
+                        <a href="booking.html" class="inline-flex items-center space-x-2 px-6 py-3 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+                            <i class="fa-solid fa-calendar-plus text-emerald-300"></i>
+                            <span>Buat Reservasi Sekarang</span>
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const statusBadges = {
+                pending: '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800"><i class="fa-solid fa-clock mr-1"></i> Menunggu Konfirmasi</span>',
+                confirmed: '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800"><i class="fa-solid fa-calendar-check mr-1"></i> Jadwal Dikonfirmasi</span>',
+                on_process: '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800 animate-pulse"><i class="fa-solid fa-spa mr-1"></i> Sedang Berlangsung</span>',
+                completed: '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-circle-check mr-1"></i> Sesi Selesai</span>',
+                cancelled: '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800"><i class="fa-solid fa-ban mr-1"></i> Dibatalkan</span>'
+            };
+
+            container.innerHTML = bookings.map(b => {
+                const waText = encodeURIComponent(`Halo Admin Sentosa Spa, saya ingin menanyakan status reservasi saya dengan Kode Booking: ${b.booking_code}`);
+                const isCompleted = b.status === 'completed';
+                const hasReview = !!b.review;
+
+                return `
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm hover:shadow-md transition-all space-y-6">
+                    <!-- Header Card -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-100 gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="font-mono text-sm sm:text-base font-bold text-stone-900">${b.booking_code}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${b.booking_type === 'home_service' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                                ${b.booking_type === 'home_service' ? '<i class="fa-solid fa-house mr-1"></i>Home Service' : '<i class="fa-solid fa-shop mr-1"></i>Di Klinik'}
+                            </span>
+                        </div>
+                        <div>
+                            ${statusBadges[b.status] || b.status}
+                        </div>
+                    </div>
+
+                    <!-- Details Body -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                        <div class="space-y-1">
+                            <span class="text-stone-400 block uppercase tracking-wider text-[10px] font-bold">Menu Layanan:</span>
+                            <h4 class="font-bold text-stone-900 text-sm sm:text-base">${b.service_name}</h4>
+                            <span class="text-stone-500 block"><i class="fa-regular fa-clock mr-1 text-emerald-600"></i>Durasi: ${b.duration} Menit</span>
+                            <span class="text-stone-900 font-bold block mt-1">${SentosaStore.formatRupiah(b.total_price)} (${b.payment_status === 'paid' ? '<span class="text-emerald-700 font-semibold">Lunas</span>' : '<span class="text-amber-700 font-semibold">Belum Bayar</span>'})</span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <span class="text-stone-400 block uppercase tracking-wider text-[10px] font-bold">Jadwal Perawatan:</span>
+                            <span class="font-bold text-stone-900 text-xs sm:text-sm block">${SentosaStore.formatDateTime(b.schedule_datetime)}</span>
+                            <span class="text-stone-500 block">
+                                <i class="fa-solid fa-user-doctor mr-1 text-emerald-600"></i>Terapis: 
+                                ${b.therapist_name ? `<strong>${b.therapist_name}</strong> (${b.therapist_gender === 'female' ? 'Wanita' : 'Pria'})` : '<em class="text-stone-400">Sedang Ditugaskan Admin</em>'}
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <span class="text-stone-400 block uppercase tracking-wider text-[10px] font-bold">Lokasi / Catatan:</span>
+                            ${b.booking_type === 'home_service' && b.address ? `<p class="text-stone-700 leading-relaxed">${b.address}</p>` : '<p class="text-stone-500">Klinik Sentosa Spa Senopati</p>'}
+                            ${b.notes ? `<p class="text-stone-500 italic mt-1">"Catatan: ${b.notes}"</p>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Review Section if Completed -->
+                    ${isCompleted ? `
+                        <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            ${hasReview ? `
+                                <div>
+                                    <div class="flex items-center space-x-1.5 text-amber-500 text-xs mb-1">
+                                        ${Array.from({ length: 5 }, (_, i) => `<i class="fa-${i < b.review.rating ? 'solid' : 'regular'} fa-star"></i>`).join('')}
+                                        <span class="font-bold text-amber-900 ml-1">${b.review.rating}.0 / 5.0</span>
+                                    </div>
+                                    <p class="text-xs text-stone-700 italic leading-relaxed">"${b.review.comment || 'Tidak ada catatan ulasan.'}"</p>
+                                </div>
+                                <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full self-start sm:self-center">
+                                    <i class="fa-solid fa-check mr-1"></i> Ulasan Terkirim
+                                </span>
+                            ` : `
+                                <div>
+                                    <h5 class="font-bold text-amber-900 text-xs sm:text-sm">Bagaimana Pengalaman Sesi Pijat Anda?</h5>
+                                    <p class="text-stone-600 text-xs mt-0.5">Bantu kami dan terapis dengan memberikan penilaian bintang dan ulasan kepuasan Anda.</p>
+                                </div>
+                                <button onclick="openReviewModal(${b.id}, '${b.booking_code}', '${b.therapist_name || 'Terapis Sentosa'}')" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center space-x-1.5 shrink-0 self-start sm:self-center">
+                                    <i class="fa-solid fa-star text-amber-200 text-xs"></i>
+                                    <span>Beri Rating & Ulasan</span>
+                                </button>
+                            `}
+                        </div>
+                    ` : ''}
+
+                    <!-- Footer Action Buttons -->
+                    <div class="pt-4 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <span class="text-stone-400">Dibuat: ${SentosaStore.formatDateTime(b.created_at)}</span>
+                        <div class="flex items-center space-x-2">
+                            ${b.status === 'pending' ? `
+                                <button onclick="cancelBooking(${b.id})" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl transition-colors">
+                                    Batalkan
+                                </button>
+                            ` : ''}
+                            <a href="https://wa.me/6281234567890?text=${waText}" target="_blank" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl transition-colors flex items-center space-x-1.5">
+                                <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                                <span>Hubungi CS WhatsApp</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function cancelBooking(id) {
+            if (confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) {
+                const res = SentosaStore.updateBookingStatus(id, 'cancelled');
+                if (res.success) {
+                    SentosaStore.showToast('Reservasi berhasil dibatalkan.', 'info');
+                    renderProfileBanner();
+                    renderBookings();
+                }
+            }
+        }
+
+        // Review Modal Functions
+        function openReviewModal(bookingId, code, therapistName) {
+            document.getElementById('reviewBookingId').value = bookingId;
+            document.getElementById('modalBookingCode').textContent = code;
+            document.getElementById('modalTherapistName').textContent = therapistName;
+            document.getElementById('reviewComment').value = '';
+            setRating(5);
+            document.getElementById('reviewModal').classList.remove('hidden');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+        }
+
+        function setRating(val) {
+            currentSelectedRating = val;
+            document.getElementById('ratingValue').value = val;
+            document.getElementById('ratingLabelText').textContent = ratingLabels[val] || '';
+            updateStarsDisplay(val);
+        }
+
+        function hoverRating(val) {
+            updateStarsDisplay(val);
+            document.getElementById('ratingLabelText').textContent = ratingLabels[val] || '';
+        }
+
+        function resetHoverRating() {
+            updateStarsDisplay(currentSelectedRating);
+            document.getElementById('ratingLabelText').textContent = ratingLabels[currentSelectedRating] || '';
+        }
+
+        function updateStarsDisplay(rating) {
+            const stars = document.getElementById('starContainer').querySelectorAll('i');
+            stars.forEach((star, idx) => {
+                if (idx < rating) {
+                    star.className = 'fa-solid fa-star text-amber-400 cursor-pointer transition-transform hover:scale-125';
+                } else {
+                    star.className = 'fa-regular fa-star text-stone-300 cursor-pointer transition-transform hover:scale-125';
+                }
+            });
+        }
+
+        function submitCustomerReview(e) {
+            e.preventDefault();
+            const bookingId = document.getElementById('reviewBookingId').value;
+            const rating = document.getElementById('ratingValue').value;
+            const comment = document.getElementById('reviewComment').value;
+
+            const res = SentosaStore.submitReview(bookingId, rating, comment);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                closeReviewModal();
+                renderBookings();
+            } else {
+                SentosaStore.showToast(res.message, 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProfileBanner();
+            renderBookings();
+        });
+    </script>
+</body>
+</html>
