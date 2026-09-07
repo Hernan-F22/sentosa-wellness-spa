@@ -231,7 +231,7 @@
                             </li>
                             <li class="flex items-center space-x-2.5">
                                 <i class="fa-brands fa-whatsapp text-emerald-500 text-sm"></i>
-                                <span>0812-3456-7890 (Customer Care 24 Jam)</span>
+                                <span>0856-5971-9922 (Customer Care 24 Jam)</span>
                             </li>
                             <li class="flex items-center space-x-2.5">
                                 <i class="fa-solid fa-clock text-emerald-500"></i>
