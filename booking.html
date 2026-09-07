@@ -80,7 +80,7 @@
                         <div class="flex items-center space-x-2 step-indicator active" id="ind-1">
                             <span
                                 class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold ring-4 ring-emerald-900/50 ind-circle">1</span>
-                            <span class="text-xs font-medium hidden sm:inline ind-text">Tipe</span>
+                            <span class="text-xs font-medium hidden sm:inline ind-text">Lokasi</span>
                         </div>
                         <div class="w-8 sm:w-12 h-0.5 bg-stone-700 step-line" id="line-1"></div>
 
@@ -116,68 +116,41 @@
                 <!-- Form Content Body -->
                 <form id="bookingWizardForm" onsubmit="handleWizardSubmit(event)" class="p-6 sm:p-10">
 
-                    <!-- STEP 1: TIPE RESERVASI & LOKASI -->
+                    <!-- STEP 1: LOKASI KUNJUNGAN HOME SERVICE -->
                     <div class="step-panel" id="stepPanel-1">
-                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Tipe Reservasi</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Tentukan apakah Anda ingin terapis datang ke
-                            rumah/hotel atau datang langsung ke klinik kami.</p>
+                        <input type="hidden" name="booking_type" value="home_service">
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-                            <label
-                                class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50"
-                                id="typeCardHome">
-                                <input type="radio" name="booking_type" value="home_service" checked
-                                    onchange="handleTypeChange()" class="sr-only">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div
-                                        class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl">
-                                        <i class="fa-solid fa-house-chimney-medical text-emerald-300"></i>
-                                    </div>
-                                    <span
-                                        class="w-6 h-6 rounded-full border-2 border-emerald-600 flex items-center justify-center check-icon">
-                                        <span class="w-3 h-3 rounded-full bg-emerald-700"></span>
-                                    </span>
-                                </div>
-                                <span class="font-bold text-stone-900 text-lg">Home Service (Panggilan)</span>
-                                <span class="text-xs text-stone-500 mt-1 leading-relaxed">
-                                    Terapis kami tiba di rumah, apartemen, atau hotel Anda dengan perlengkapan lengkap &
-                                    matras steril.
-                                </span>
-                            </label>
+                        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Lokasi Kunjungan Home Service</h2>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Sentosa Spa melayani terapi pijat panggilan eksklusif ke rumah, apartemen, atau kamar hotel Anda.</p>
 
-                            <label
-                                class="relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white"
-                                id="typeCardClinic">
-                                <input type="radio" name="booking_type" value="clinic" onchange="handleTypeChange()"
-                                    class="sr-only">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div
-                                        class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-2xl">
-                                        <i class="fa-solid fa-shop"></i>
-                                    </div>
-                                    <span
-                                        class="w-6 h-6 rounded-full border-2 border-stone-300 flex items-center justify-center check-icon">
-                                        <span class="w-3 h-3 rounded-full bg-transparent"></span>
-                                    </span>
+                        <!-- Banner Info Home Service 100% -->
+                        <div class="p-5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/60 mb-6 flex items-start space-x-4 shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl shrink-0 shadow-md">
+                                <i class="fa-solid fa-house-chimney-medical text-emerald-300"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <h3 class="font-bold text-stone-900 text-base">Layanan Pijat Panggilan (100% Home Service)</h3>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-200 text-emerald-800">Khusus Panggilan</span>
                                 </div>
-                                <span class="font-bold text-stone-900 text-lg">Di Klinik Spa (On-site)</span>
-                                <span class="text-xs text-stone-500 mt-1 leading-relaxed">
-                                    Nikmati suasana mewah, aromaterapi tenang, dan alunan musik relaksasi di studio
-                                    Sentosa Spa Senopati.
-                                </span>
-                            </label>
+                                <p class="text-xs text-stone-600 mt-1.5 leading-relaxed">
+                                    Terapis profesional kami akan tiba di lokasi Anda membawa matras steril, handuk bersih, aromaterapi hangat, dan perlengkapan spa higienis lengkap. Anda cukup bersantai di kediaman Anda.
+                                </p>
+                            </div>
                         </div>
 
                         <!-- Home Service Address Input -->
                         <div id="addressSection" class="space-y-2 mb-6">
                             <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">
-                                Alamat Penjemputan / Lokasi Anda <span class="text-rose-500">*</span>
+                                Alamat Lengkap Kunjungan (Rumah / Apartemen / Hotel) <span class="text-rose-500">*</span>
                             </label>
-                            <textarea id="addressInput" rows="3"
-                                placeholder="Contoh: Jl. Kemang Raya No. 12B, RT 02/05, Mampang Prapatan, Jaksel (Pagar cokelat samping mini market)"
-                                class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none"></textarea>
-                            <p class="text-[11px] text-stone-400">Gratis biaya transport untuk wilayah Jakarta Selatan
-                                dan radius 10 km.</p>
+                            <textarea id="addressInput" rows="3" required
+                                placeholder="Contoh: Jl. Kemang Raya No. 12B, RT 02/05, Mampang Prapatan, Jaksel (Pagar cokelat samping mini market / Cantumkan nomor kamar & nama hotel jika di hotel)"
+                                class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none transition-all"></textarea>
+                            <p class="text-[11px] text-stone-500 flex items-center space-x-1 mt-1.5">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Gratis biaya transport untuk wilayah Jakarta Selatan dan radius 10 km.</span>
+                            </p>
                         </div>
 
                         <div class="flex justify-end pt-4 border-t border-stone-100">
@@ -458,7 +431,6 @@
         function renderServiceOptions() {
             const container = document.getElementById('serviceListContainer');
             const services = SentosaStore.getServices(true);
-            const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
 
             // Pre-select dari query params
             const params = new URLSearchParams(window.location.search);
@@ -469,11 +441,6 @@
 
             container.innerHTML = services.map(s => {
                 const isChecked = s.id == selectedServiceId;
-                const isHomeService = (s.type === 'home_service' || s.type === 'both');
-                const isClinic = (s.type === 'clinic_only' || s.type === 'both');
-
-                if (bookingType === 'home_service' && !isHomeService) return '';
-                if (bookingType === 'clinic' && !isClinic) return '';
 
                 return `
                 <label class="flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isChecked ? 'border-emerald-600 bg-emerald-50/40 shadow-sm' : 'border-stone-200 hover:border-stone-300'}" id="srvLabel-${s.id}">
@@ -522,28 +489,16 @@
         }
 
         function handleTypeChange() {
-            const type = document.querySelector('input[name="booking_type"]:checked').value;
-            const cardHome = document.getElementById('typeCardHome');
-            const cardClinic = document.getElementById('typeCardClinic');
-            const addrSection = document.getElementById('addressSection');
-
-            if (type === 'home_service') {
-                cardHome.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50';
-                cardClinic.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white';
-                addrSection.classList.remove('hidden');
-            } else {
-                cardHome.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-stone-200 bg-white';
-                cardClinic.className = 'relative flex flex-col p-6 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md border-emerald-600 bg-emerald-50/50';
-                addrSection.classList.add('hidden');
-            }
+            // Selalu home_service
             renderServiceOptions();
         }
 
         function handleGenderChange(val) {
-            ['any', 'female', 'male'].forEach(g => {
-                const el = document.getElementById('gender' + g.charAt(0).toUpperCase() + g.slice(1));
-                if (el) el.className = (g === val) ? 'p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/50' : 'p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white';
+            document.querySelectorAll('[id^="genderCard-"]').forEach(c => {
+                c.className = 'p-3.5 rounded-2xl border-2 cursor-pointer transition-all border-stone-200 hover:border-stone-300 bg-white flex items-center space-x-3';
             });
+            const active = document.getElementById('genderCard-' + val);
+            if (active) active.className = 'p-3.5 rounded-2xl border-2 cursor-pointer transition-all border-emerald-600 bg-emerald-50/40 shadow-sm flex items-center space-x-3';
             if (val !== 'any') {
                 document.getElementById('specificTherapistSelect').value = '';
             }
@@ -561,10 +516,9 @@
         function goToStep(step) {
             // Validasi Step 1
             if (step === 2 && currentStep === 1) {
-                const type = document.querySelector('input[name="booking_type"]:checked').value;
                 const addr = document.getElementById('addressInput').value.trim();
-                if (type === 'home_service' && !addr) {
-                    SentosaStore.showToast('Mohon lengkapi alamat penjemputan untuk Home Service.', 'error');
+                if (!addr) {
+                    SentosaStore.showToast('Mohon lengkapi alamat kunjungan Anda untuk Home Service.', 'error');
                     return;
                 }
             }
@@ -572,13 +526,12 @@
             // Validasi Step 5 (Update Struk)
             if (step === 5) {
                 const srv = SentosaStore.getServiceById(selectedServiceId);
-                const type = document.querySelector('input[name="booking_type"]:checked').value;
                 const date = document.getElementById('bookingDateInput').value;
                 const time = document.getElementById('bookingTimeSelect').value;
                 const specificTId = document.getElementById('specificTherapistSelect').value;
                 const therapist = specificTId ? SentosaStore.getTherapistById(specificTId) : null;
 
-                document.getElementById('summaryBookingType').textContent = (type === 'home_service') ? 'Home Service (Panggilan)' : 'Di Klinik Sentosa';
+                document.getElementById('summaryBookingType').textContent = 'Home Service (Panggilan ke Alamat)';
                 document.getElementById('summaryService').textContent = srv ? `${srv.name} (${srv.duration_minutes} Menit)` : '-';
                 document.getElementById('summaryTherapist').textContent = therapist ? `${therapist.name} (${therapist.gender === 'female' ? 'Wanita' : 'Pria'})` : 'Dipilihkan Admin';
                 document.getElementById('summarySchedule').textContent = `${date} Pukul ${time} WIB`;
@@ -620,7 +573,7 @@
                 return;
             }
 
-            const type = document.querySelector('input[name="booking_type"]:checked').value;
+            const type = 'home_service';
             const addr = document.getElementById('addressInput').value.trim();
             const date = document.getElementById('bookingDateInput').value;
             const time = document.getElementById('bookingTimeSelect').value;

@@ -15,7 +15,7 @@ define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 define('APP_NAME', 'Sentosa Wellness & Massage Spa');
-define('APP_TAGLINE', 'Relaksasi Mewah di Klinik Modern & Panggilan Home Service');
+define('APP_TAGLINE', 'Layanan Pijat & Spa Panggilan Profesional Berstandar Bintang Lima (Home Service)');
 define('APP_PHONE', '6285659719922'); // Format nomor WhatsApp internasional tanpa tanda +
 define('APP_ADDRESS', 'Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan');
 define('APP_EMAIL', 'info@sentosaspa.com');

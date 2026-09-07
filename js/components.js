@@ -191,7 +191,7 @@
                             <span class="font-serif text-2xl font-bold text-white">Sentosa</span>
                         </div>
                         <p class="text-xs text-stone-400 leading-relaxed">
-                            Layanan pijat dan refleksi profesional terstandarisasi hotel bintang lima. Kenyamanan relaksasi di rumah Anda (*Home Service*) atau di studio klinik spa kami.
+                            Layanan pijat dan spa panggilan profesional berstandar bintang lima (100% Home Service). Kenyamanan relaksasi langsung ke rumah, apartemen, atau hotel Anda.
                         </p>
                         <div class="flex items-center space-x-3 pt-2 text-stone-400">
                             <a href="#" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-emerald-800 hover:text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-instagram text-xs"></i></a>

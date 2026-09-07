@@ -137,14 +137,14 @@ if ($action === 'check_slots') {
 
 // --- 2. ACTION: create (Buat Reservasi Baru) ---
 if ($action === 'create' || ($method === 'POST' && empty($action))) {
-    $bookingType = $input['booking_type'] ?? 'clinic';
+    $bookingType = $input['booking_type'] ?? 'home_service';
     if (!in_array($bookingType, ['home_service', 'clinic'])) {
-        $bookingType = 'clinic';
+        $bookingType = 'home_service';
     }
 
     $address = trim($input['address'] ?? '');
-    if ($bookingType === 'home_service' && empty($address)) {
-        jsonResponse(['success' => false, 'message' => 'Alamat lengkap wajib diisi untuk layanan Home Service.'], 400);
+    if (empty($address)) {
+        jsonResponse(['success' => false, 'message' => 'Alamat lengkap wajib diisi untuk kunjungan terapis Home Service.'], 400);
     }
 
     $serviceId = (int)($input['service_id'] ?? 0);

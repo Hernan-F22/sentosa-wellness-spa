@@ -46,7 +46,7 @@ $therapists = $therapistsStmt->fetchAll();
                 </h1>
 
                 <p class="text-stone-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                    Layanan pijat dan refleksi profesional berstandar hotel bintang lima. Nikmati kenyamanan terapis terpercaya datang ke kediaman Anda (Home Service) atau kunjungi studio spa bernuansa tenang kami.
+                    Layanan pijat dan spa panggilan profesional berstandar bintang lima. Nikmati kenyamanan terapi relaksasi langsung di kediaman Anda, apartemen, atau hotel tanpa perlu repot keluar rumah (100% Home Service).
                 </p>
 
                 <!-- CTA Button Group -->
@@ -99,10 +99,10 @@ $therapists = $therapistsStmt->fetchAll();
                         </div>
                     </div>
 
-                    <!-- Floating Card 2: Clinic Studio -->
+                    <!-- Floating Card 2: Siap Panggil -->
                     <div class="absolute -top-6 -right-4 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-stone-100 flex items-center space-x-2 text-xs font-semibold text-emerald-800">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-                        <span>Studio Buka Hari Ini</span>
+                        <span>Terapis Siap Panggil Hari Ini</span>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@ $therapists = $therapistsStmt->fetchAll();
         <div class="text-center max-w-2xl mx-auto mb-12">
             <span class="text-xs font-bold uppercase tracking-widest text-emerald-700">Mudah & Cepat</span>
             <h2 class="font-serif text-3xl font-bold text-stone-900 mt-2">Reservasi Dalam 3 Langkah Sederhana</h2>
-            <p class="text-stone-600 text-sm mt-2">Pesan relaksasi idaman tanpa menunggu lama atau repot antre.</p>
+            <p class="text-stone-600 text-sm mt-2">Pesan relaksasi idaman tanpa menunggu lama atau repot keluar rumah.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -126,9 +126,9 @@ $therapists = $therapistsStmt->fetchAll();
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl mb-4 font-serif font-bold">
                     1
                 </div>
-                <h3 class="text-lg font-bold text-stone-900 mb-2">Pilih Layanan & Waktu</h3>
+                <h3 class="text-lg font-bold text-stone-900 mb-2">Tentukan Lokasi & Layanan</h3>
                 <p class="text-stone-600 text-sm leading-relaxed">
-                    Tentukan tipe layanan (Home Service / On-site Klinik), menu pijat favorit, preferensi gender terapis, dan tanggal booking.
+                    Tentukan alamat kunjungan Anda (Rumah / Apartemen / Hotel), pilih menu pijat favorit, preferensi terapis, dan tanggal booking.
                 </p>
             </div>
 
@@ -150,7 +150,7 @@ $therapists = $therapistsStmt->fetchAll();
                 </div>
                 <h3 class="text-lg font-bold text-stone-900 mb-2">Nikmati Terapi Pijat</h3>
                 <p class="text-stone-600 text-sm leading-relaxed">
-                    Terapis kami tiba tepat waktu di lokasi Anda atau siap menyambut di klinik dengan standar kebersihan tertinggi.
+                    Terapis profesional kami tiba tepat waktu di lokasi Anda membawa peralatan lengkap, matras steril, dan aromaterapi siap pakai.
                 </p>
             </div>
         </div>
@@ -170,17 +170,10 @@ $therapists = $therapistsStmt->fetchAll();
                 </p>
             </div>
 
-            <!-- Filter Buttons -->
-            <div class="mt-6 md:mt-0 flex items-center space-x-2 bg-white p-1.5 rounded-2xl border border-stone-200 shadow-sm self-start">
-                <button onclick="filterServiceCatalog('all')" id="btnFilterAll" class="filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-brand-800 text-white transition-all">
-                    Semua
-                </button>
-                <button onclick="filterServiceCatalog('home_service')" id="btnFilterHome" class="filter-btn px-4 py-2 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition-all">
-                    <i class="fa-solid fa-house mr-1"></i> Home Service
-                </button>
-                <button onclick="filterServiceCatalog('clinic')" id="btnFilterClinic" class="filter-btn px-4 py-2 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition-all">
-                    <i class="fa-solid fa-shop mr-1"></i> Di Klinik
-                </button>
+            <!-- Home Service Exclusive Indicator -->
+            <div class="mt-6 md:mt-0 inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-emerald-100/80 text-emerald-900 border border-emerald-200/70 text-xs font-bold self-start">
+                <i class="fa-solid fa-house-chimney-medical text-emerald-700"></i>
+                <span>100% Home Service (Panggilan ke Tempat Anda)</span>
             </div>
         </div>
 
@@ -204,19 +197,10 @@ $therapists = $therapistsStmt->fetchAll();
                             </span>
 
                             <!-- Service Type Badge -->
-                            <?php if ($srv['type'] === 'both'): ?>
-                                <span class="px-3 py-1 rounded-full bg-emerald-900/80 backdrop-blur-md text-emerald-200 text-xs font-semibold">
-                                    Klinik & Home Service
-                                </span>
-                            <?php elseif ($srv['type'] === 'home_service'): ?>
-                                <span class="px-3 py-1 rounded-full bg-amber-900/80 backdrop-blur-md text-amber-200 text-xs font-semibold">
-                                    Khusus Home Service
-                                </span>
-                            <?php else: ?>
-                                <span class="px-3 py-1 rounded-full bg-blue-900/80 backdrop-blur-md text-blue-200 text-xs font-semibold">
-                                    Hanya di Klinik
-                                </span>
-                            <?php endif; ?>
+                            <span class="px-3 py-1 rounded-full bg-emerald-900/80 backdrop-blur-md text-emerald-200 text-xs font-semibold flex items-center space-x-1">
+                                <i class="fa-solid fa-house-chimney mr-1"></i>
+                                <span>Home Service</span>
+                            </span>
                         </div>
                     </div>
 
@@ -451,46 +435,6 @@ $therapists = $therapistsStmt->fetchAll();
 </section>
 
 <script>
-    // Filter Katalog Layanan
-    function filterServiceCatalog(type) {
-        const cards = document.querySelectorAll('.service-card');
-        const btnAll = document.getElementById('btnFilterAll');
-        const btnHome = document.getElementById('btnFilterHome');
-        const btnClinic = document.getElementById('btnFilterClinic');
-
-        // Reset button styles
-        [btnAll, btnHome, btnClinic].forEach(b => {
-            b.className = 'filter-btn px-4 py-2 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition-all';
-        });
-
-        if (type === 'all') {
-            btnAll.className = 'filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-brand-800 text-white transition-all';
-        } else if (type === 'home_service') {
-            btnHome.className = 'filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-brand-800 text-white transition-all';
-        } else if (type === 'clinic') {
-            btnClinic.className = 'filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-brand-800 text-white transition-all';
-        }
-
-        cards.forEach(card => {
-            const cardType = card.dataset.type;
-            if (type === 'all') {
-                card.style.display = 'flex';
-            } else if (type === 'home_service') {
-                if (cardType === 'home_service' || cardType === 'both') {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            } else if (type === 'clinic') {
-                if (cardType === 'clinic_only' || cardType === 'both') {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            }
-        });
-    }
-
     // Toggle FAQ Accordion
     function toggleFaq(el) {
         const p = el.nextElementSibling;

@@ -26,7 +26,7 @@ if ($baseUrl === '/' || $baseUrl === '\\') {
     <title><?= htmlspecialchars($pageTitle) ?></title>
 
     <!-- Meta SEO & Theme -->
-    <meta name="description" content="Layanan pijat profesional dan relaksasi wellness terbaik. Tersedia opsi Home Service panggil ke rumah atau on-site di klinik modern.">
+    <meta name="description" content="Layanan pijat dan spa panggilan profesional berstandar bintang lima (100% Home Service). Terapis terpercaya datang langsung ke rumah, apartemen, atau kamar hotel Anda.">
     <meta name="theme-color" content="#064e3b">
 
     <!-- Google Fonts: Plus Jakarta Sans (Modern Clean) & Playfair Display (Luxury Wellness) -->

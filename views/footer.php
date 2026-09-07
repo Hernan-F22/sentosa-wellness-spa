@@ -25,7 +25,7 @@ $footRoot = !empty($baseUrl) ? $baseUrl : '.';
                     </div>
                 </div>
                 <p class="text-stone-400 text-sm leading-relaxed">
-                    Menghadirkan relaksasi alami dan kesegaran tubuh paripurna langsung ke hunian Anda atau melalui studio klinik eksklusif berstandar higienis tinggi.
+                    Menghadirkan relaksasi alami dan kesegaran tubuh paripurna langsung ke kediaman, apartemen, atau kamar hotel Anda dengan standar higienis dan kenyamanan bintang lima (100% Home Service).
                 </p>
                 <div class="flex space-x-4 pt-2">
                     <a href="#" class="w-9 h-9 rounded-full bg-stone-800 hover:bg-brand-700 flex items-center justify-center text-stone-300 hover:text-white transition-colors">

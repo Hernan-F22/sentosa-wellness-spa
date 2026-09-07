@@ -131,7 +131,7 @@
             duration_minutes: 90,
             price: 225000,
             description: 'Kombinasi teknik pijatan dengan tekanan mendalam dan akupresur titik saraf Jepang. Sangat efektif untuk mengatasi otot kaku kronis, leher kaku, dan migrain.',
-            type: 'clinic_only',
+            type: 'home_service',
             image_url: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800&auto=format&fit=crop&q=80',
             is_active: 1,
             created_at: '2026-08-01 10:00:00'
@@ -142,7 +142,7 @@
             duration_minutes: 60,
             price: 125000,
             description: 'Terapi pemijatan titik-titik refleksi pada telapak kaki dan tangan untuk menstimulasi organ vital tubuh, meredakan stres, dan memulihkan stamina.',
-            type: 'both',
+            type: 'home_service',
             image_url: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=800&auto=format&fit=crop&q=80',
             is_active: 1,
             created_at: '2026-08-01 10:00:00'
@@ -153,7 +153,7 @@
             duration_minutes: 120,
             price: 280000,
             description: 'Perawatan tubuh menyeluruh menggunakan paduan minyak aroma terapi lavender/eucalyptus dan kompres rempah herbal hangat nusantara untuk detoksifikasi optimal.',
-            type: 'both',
+            type: 'home_service',
             image_url: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&auto=format&fit=crop&q=80',
             is_active: 1,
             created_at: '2026-08-01 10:00:00'
@@ -164,7 +164,7 @@
             duration_minutes: 45,
             price: 95000,
             description: 'Pijat intensif fokus pada leher, bahu, dan punggung atas. Solusi kilat dan manjur untuk Anda yang lelah bekerja di depan meja laptop seharian.',
-            type: 'both',
+            type: 'home_service',
             image_url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80',
             is_active: 1,
             created_at: '2026-08-01 10:00:00'
@@ -175,7 +175,7 @@
             duration_minutes: 75,
             price: 195000,
             description: 'Terapi relaksasi khusus bagi penggiat olahraga untuk meregangkan serat otot tegang, mencegah kram, dan mempercepat pembuangan asam laktat.',
-            type: 'clinic_only',
+            type: 'home_service',
             image_url: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&auto=format&fit=crop&q=80',
             is_active: 1,
             created_at: '2026-08-01 10:00:00'
@@ -289,6 +289,17 @@
             setItem('bookings', SEED_BOOKINGS);
             setItem('reviews', SEED_REVIEWS);
             localStorage.setItem(STORAGE_PREFIX + 'initialized_v1', 'true');
+        } else {
+            // Migrasi layanan ke home_service jika sebelumnya ada yang clinic_only
+            let currentServices = getItem('services', []);
+            let modified = false;
+            currentServices.forEach(s => {
+                if (s.type === 'clinic_only' || s.type === 'both') {
+                    s.type = 'home_service';
+                    modified = true;
+                }
+            });
+            if (modified) setItem('services', currentServices);
         }
     }
 
@@ -659,7 +670,7 @@
             customer_id: data.customer_id,
             therapist_id: data.therapist_id || null,
             service_id: Number(data.service_id),
-            booking_type: data.booking_type || 'clinic',
+            booking_type: 'home_service',
             address: data.address || null,
             schedule_datetime: data.schedule_datetime,
             duration: Number(data.duration) || 60,

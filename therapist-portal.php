@@ -335,8 +335,8 @@ if ($currentUser['role'] === 'admin') {
                                 <!-- Info Layanan -->
                                 <div class="flex items-start space-x-4 md:col-span-1">
                                     <img src="<?= htmlspecialchars($t['image_url'] ?: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400') ?>"
-                                         alt="<?= htmlspecialchars($t['service_name']) ?>"
-                                         class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shrink-0 border border-stone-100 shadow-sm">
+                                        alt="<?= htmlspecialchars($t['service_name']) ?>"
+                                        class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shrink-0 border border-stone-100 shadow-sm">
                                     <div>
                                         <h4 class="font-serif font-bold text-stone-900 text-base leading-snug"><?= htmlspecialchars($t['service_name']) ?></h4>
                                         <div class="flex items-center space-x-2 mt-1 text-xs text-stone-500">
@@ -466,7 +466,7 @@ if ($currentUser['role'] === 'admin') {
                 </div>
             <?php endif; ?>
 
-        <!-- KONTEN TAB 4: ULASAN & TESTIMONI PELANGGAN -->
+            <!-- KONTEN TAB 4: ULASAN & TESTIMONI PELANGGAN -->
         <?php else: ?>
             <div class="space-y-6">
                 <!-- Header Box Ulasan -->
@@ -556,7 +556,9 @@ if ($currentUser['role'] === 'admin') {
         try {
             const res = await fetch('api/therapists.php?action=toggle_status', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'same-origin',
                 body: JSON.stringify({
                     id: therapistId,
@@ -600,7 +602,9 @@ if ($currentUser['role'] === 'admin') {
         try {
             const res = await fetch('api/booking.php?action=update_status', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'same-origin',
                 body: JSON.stringify({
                     id: bookingId,
