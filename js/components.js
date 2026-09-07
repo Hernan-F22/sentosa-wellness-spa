@@ -296,7 +296,7 @@
                             <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Email atau No. WhatsApp</label>
                             <div class="relative">
                                 <i class="fa-solid fa-user absolute left-3.5 top-3 text-stone-400 text-sm"></i>
-                                <input type="text" id="loginIdentifier" required placeholder="admin@spa.com / user@gmail.com" class="w-full pl-10 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none transition-all">
+                                <input type="text" id="loginIdentifier" required placeholder="nama@email.com atau 0812..." class="w-full pl-10 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none transition-all">
                             </div>
                         </div>
 
@@ -309,13 +309,6 @@
                                     <i class="fa-solid fa-eye text-sm" id="loginEyeIcon"></i>
                                 </button>
                             </div>
-                        </div>
-
-                        <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-3 text-[11px] text-stone-600 space-y-1">
-                            <span class="font-bold text-emerald-800 block">Kredensial Demo:</span>
-                            <div>• <strong>Admin</strong>: <code>admin@spa.com</code> / <code>admin123</code></div>
-                            <div>• <strong>Terapis</strong>: <code>siti@spa.com</code> / <code>user123</code></div>
-                            <div>• <strong>Pelanggan</strong>: <code>bambang@gmail.com</code> / <code>user123</code></div>
                         </div>
 
                         <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center justify-center space-x-2">

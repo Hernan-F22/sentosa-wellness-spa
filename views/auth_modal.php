@@ -41,7 +41,7 @@ $modalRoot = !empty($baseUrl) ? $baseUrl : '.';
                         <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Email / No. WhatsApp</label>
                         <div class="relative">
                             <i class="fa-regular fa-envelope absolute left-3.5 top-3.5 text-stone-400 text-sm"></i>
-                            <input type="text" id="loginIdentifier" required placeholder="admin@spa.com atau 08123..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
+                            <input type="text" id="loginIdentifier" required placeholder="nama@email.com atau 0812..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
                         </div>
                     </div>
 
@@ -51,15 +51,6 @@ $modalRoot = !empty($baseUrl) ? $baseUrl : '.';
                             <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-stone-400 text-sm"></i>
                             <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
                         </div>
-                    </div>
-
-                    <div class="p-3 bg-emerald-50 rounded-xl text-[11px] text-emerald-800 space-y-1 border border-emerald-100">
-                        <div class="font-bold flex items-center space-x-1">
-                            <i class="fa-solid fa-key"></i>
-                            <span>Akun Demo Cepat:</span>
-                        </div>
-                        <div><strong>Admin:</strong> admin@spa.com (pass: admin123)</div>
-                        <div><strong>Pelanggan:</strong> bambang@gmail.com (pass: user123)</div>
                     </div>
 
                     <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-brand-800 hover:bg-brand-900 text-white font-semibold text-sm rounded-xl shadow-md shadow-brand-900/20 transition-all flex items-center justify-center space-x-2">

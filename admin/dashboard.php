@@ -99,17 +99,12 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
                 <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Email / No. Telepon Admin</label>
-                        <input type="text" id="adminIdentifier" value="admin@spa.com" required class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
+                        <input type="text" id="adminIdentifier" placeholder="admin@spa.com atau no. telepon" required class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Kata Sandi</label>
-                        <input type="password" id="adminPassword" value="admin123" required class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
-                    </div>
-
-                    <div class="p-3 bg-emerald-50 rounded-xl text-xs text-emerald-800 border border-emerald-100 flex items-center space-x-2">
-                        <i class="fa-solid fa-circle-info text-emerald-600"></i>
-                        <span>Default login: <strong>admin@spa.com</strong> / <strong>admin123</strong></span>
+                        <input type="password" id="adminPassword" placeholder="••••••••" required class="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none transition-all">
                     </div>
 
                     <button type="submit" id="adminLoginBtn" class="w-full py-3 bg-brand-800 hover:bg-brand-900 text-white font-semibold text-sm rounded-xl shadow-md transition-all">
