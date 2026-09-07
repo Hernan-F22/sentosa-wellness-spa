@@ -198,11 +198,12 @@ $currentUser = getCurrentUser();
                         </div>
 
                         <div class="space-y-3" id="therapistsList">
+                            <?php $isAuto = empty($preSelectedTherapistId); ?>
                             <!-- Opsi Auto Assign -->
-                            <label class="therapist-radio-card flex items-center justify-between p-4 rounded-2xl border-2 border-emerald-700 bg-emerald-50/60 cursor-pointer">
-                                <input type="radio" name="selected_therapist" value="" checked class="sr-only">
+                            <label class="therapist-radio-card flex items-center justify-between p-4 rounded-2xl border-2 <?= $isAuto ? 'border-emerald-700 bg-emerald-50/60 shadow-sm' : 'border-stone-200 bg-white hover:border-stone-300' ?> cursor-pointer transition-all" id="thCard-auto">
+                                <input type="radio" name="selected_therapist" value="" <?= $isAuto ? 'checked' : '' ?> class="sr-only">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-11 h-11 rounded-full bg-brand-800 text-white flex items-center justify-center text-lg">
+                                    <div class="w-11 h-11 rounded-full bg-brand-800 text-white flex items-center justify-center text-lg shrink-0">
                                         <i class="fa-solid fa-wand-magic-sparkles text-emerald-300"></i>
                                     </div>
                                     <div>
@@ -210,19 +211,21 @@ $currentUser = getCurrentUser();
                                         <span class="text-xs text-stone-500">Admin akan menugaskan terapis terbaik yang paling dekat dan tersedia.</span>
                                     </div>
                                 </div>
-                                <span class="w-5 h-5 rounded-full border-2 border-emerald-700 flex items-center justify-center th-check">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-700"></span>
+                                <span class="w-5 h-5 rounded-full border-2 <?= $isAuto ? 'border-emerald-700' : 'border-stone-300' ?> flex items-center justify-center th-check shrink-0">
+                                    <span class="w-2.5 h-2.5 rounded-full <?= $isAuto ? 'bg-emerald-700' : 'bg-transparent' ?>"></span>
                                 </span>
                             </label>
 
                             <!-- Daftar Terapis Perorangan -->
                             <?php foreach ($allTherapists as $th): ?>
-                                <label class="therapist-radio-card flex items-center justify-between p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-300 cursor-pointer <?= ($th['is_available'] == 0) ? 'opacity-60 pointer-events-none' : '' ?>"
+                                <?php $isThSelected = ($preSelectedTherapistId == $th['id'] && $th['is_available'] == 1); ?>
+                                <label class="therapist-radio-card flex items-center justify-between p-4 rounded-2xl border-2 <?= $isThSelected ? 'border-emerald-700 bg-emerald-50/60 shadow-sm' : 'border-stone-200 bg-white hover:border-stone-300' ?> cursor-pointer transition-all <?= ($th['is_available'] == 0) ? 'opacity-60 pointer-events-none' : '' ?>"
+                                    id="thCard-<?= $th['id'] ?>"
                                     data-gender="<?= $th['gender'] ?>"
                                     data-available="<?= $th['is_available'] ?>">
-                                    <input type="radio" name="selected_therapist" value="<?= $th['id'] ?>" class="sr-only" <?= ($preSelectedTherapistId == $th['id'] && $th['is_available'] == 1) ? 'checked' : '' ?> <?= ($th['is_available'] == 0) ? 'disabled' : '' ?>>
+                                    <input type="radio" name="selected_therapist" value="<?= $th['id'] ?>" class="sr-only" <?= $isThSelected ? 'checked' : '' ?> <?= ($th['is_available'] == 0) ? 'disabled' : '' ?>>
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-11 h-11 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-base font-bold font-serif">
+                                        <div class="w-11 h-11 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-base font-bold font-serif shrink-0">
                                             <?= substr($th['name'], 0, 1) ?>
                                         </div>
                                         <div>
@@ -236,14 +239,14 @@ $currentUser = getCurrentUser();
                                             <span class="text-xs text-stone-500 block line-clamp-1"><?= htmlspecialchars($th['specialization']) ?></span>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-3 shrink-0">
                                         <?php if ($th['is_available'] == 1): ?>
                                             <span class="text-xs text-emerald-700 font-semibold hidden sm:inline">Tersedia</span>
                                         <?php else: ?>
                                             <span class="text-xs text-stone-400 italic">Sedang Libur</span>
                                         <?php endif; ?>
-                                        <span class="w-5 h-5 rounded-full border-2 border-stone-300 flex items-center justify-center th-check">
-                                            <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                                        <span class="w-5 h-5 rounded-full border-2 <?= $isThSelected ? 'border-emerald-700' : 'border-stone-300' ?> flex items-center justify-center th-check">
+                                            <span class="w-2.5 h-2.5 rounded-full <?= $isThSelected ? 'bg-emerald-700' : 'bg-transparent' ?>"></span>
                                         </span>
                                     </div>
                                 </label>
@@ -512,6 +515,40 @@ $currentUser = getCurrentUser();
             }
         });
 
+        // Jika terapis terpilih disembunyikan oleh filter gender, kembalikan ke auto assign
+        const checkedTh = document.querySelector('input[name="selected_therapist"]:checked');
+        const checkedCard = checkedTh ? checkedTh.closest('.therapist-radio-card') : null;
+        if (checkedCard && checkedCard.classList.contains('hidden')) {
+            const autoCard = document.getElementById('thCard-auto');
+            if (autoCard) {
+                const allCards = document.querySelectorAll('.therapist-radio-card');
+                allCards.forEach(c => {
+                    c.classList.remove('border-emerald-700', 'bg-emerald-50/60', 'shadow-sm');
+                    c.classList.add('border-stone-200', 'bg-white');
+                    const thBorder = c.querySelector('.th-check');
+                    if (thBorder) {
+                        thBorder.classList.remove('border-emerald-700');
+                        thBorder.classList.add('border-stone-300');
+                    }
+                    const thSpan = c.querySelector('.th-check span');
+                    if (thSpan) thSpan.className = 'w-2.5 h-2.5 rounded-full bg-transparent';
+                    const rad = c.querySelector('input[type="radio"]');
+                    if (rad) rad.checked = false;
+                });
+                autoCard.classList.add('border-emerald-700', 'bg-emerald-50/60', 'shadow-sm');
+                autoCard.classList.remove('border-stone-200', 'bg-white');
+                const activeBorder = autoCard.querySelector('.th-check');
+                if (activeBorder) {
+                    activeBorder.classList.remove('border-stone-300');
+                    activeBorder.classList.add('border-emerald-700');
+                }
+                const activeSpan = autoCard.querySelector('.th-check span');
+                if (activeSpan) activeSpan.className = 'w-2.5 h-2.5 rounded-full bg-emerald-700';
+                const rad = autoCard.querySelector('input[type="radio"]');
+                if (rad) rad.checked = true;
+            }
+        }
+
         loadTimeSlots();
     }
 
@@ -521,13 +558,25 @@ $currentUser = getCurrentUser();
             card.addEventListener('click', (e) => {
                 if (card.classList.contains('pointer-events-none')) return;
                 cards.forEach(c => {
-                    c.classList.remove('border-emerald-700', 'bg-emerald-50/60');
+                    c.classList.remove('border-emerald-700', 'bg-emerald-50/60', 'shadow-sm');
                     c.classList.add('border-stone-200', 'bg-white');
+                    const thBorder = c.querySelector('.th-check');
+                    if (thBorder) {
+                        thBorder.classList.remove('border-emerald-700');
+                        thBorder.classList.add('border-stone-300');
+                    }
                     const thSpan = c.querySelector('.th-check span');
                     if (thSpan) thSpan.className = 'w-2.5 h-2.5 rounded-full bg-transparent';
+                    const rad = c.querySelector('input[type="radio"]');
+                    if (rad) rad.checked = false;
                 });
-                card.classList.add('border-emerald-700', 'bg-emerald-50/60');
+                card.classList.add('border-emerald-700', 'bg-emerald-50/60', 'shadow-sm');
                 card.classList.remove('border-stone-200', 'bg-white');
+                const activeBorder = card.querySelector('.th-check');
+                if (activeBorder) {
+                    activeBorder.classList.remove('border-stone-300');
+                    activeBorder.classList.add('border-emerald-700');
+                }
                 const activeSpan = card.querySelector('.th-check span');
                 if (activeSpan) activeSpan.className = 'w-2.5 h-2.5 rounded-full bg-emerald-700';
 

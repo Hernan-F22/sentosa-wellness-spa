@@ -185,55 +185,58 @@
                         </div>
                     </div>
 
-                    <!-- STEP 3: PREFERENSI TERAPIS -->
+                    <!-- STEP 3: PREFERENSI & PILIHAN TERAPIS -->
                     <div class="step-panel hidden" id="stepPanel-3">
                         <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Pilih Terapis</h2>
-                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih preferensi gender terapis atau pilih
-                            langsung terapis favorit Anda.</p>
+                        <p class="text-stone-500 text-xs sm:text-sm mb-6">Pilih preferensi gender terapis atau pilih langsung terapis favorit Anda di bawah.</p>
 
                         <!-- Gender Preference Cards -->
-                        <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-                            <label
-                                class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/50"
-                                id="genderAny">
-                                <input type="radio" name="therapist_gender_pref" value="any" checked
-                                    onchange="handleGenderChange('any')" class="sr-only">
-                                <i class="fa-solid fa-users text-xl text-emerald-800 mb-2"></i>
-                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Bebas / Siapa
-                                    Saja</span>
-                                <span class="text-[10px] text-stone-500">Terapis terbaik tersedia</span>
-                            </label>
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Preferensi Gender Terapis</label>
+                            <div class="grid grid-cols-3 gap-3 sm:gap-4">
+                                <label
+                                    class="gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/60 shadow-sm"
+                                    id="genderCard-any">
+                                    <input type="radio" name="therapist_gender_pref" value="any" checked
+                                        onchange="handleGenderChange('any')" class="sr-only">
+                                    <i class="fa-solid fa-users text-xl text-emerald-800 mb-2"></i>
+                                    <span class="block font-bold text-xs sm:text-sm text-stone-900">Bebas / Siapa Saja</span>
+                                    <span class="text-[10px] text-stone-500">Terapis terbaik tersedia</span>
+                                </label>
 
-                            <label
-                                class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white"
-                                id="genderFemale">
-                                <input type="radio" name="therapist_gender_pref" value="female"
-                                    onchange="handleGenderChange('female')" class="sr-only">
-                                <i class="fa-solid fa-venus text-xl text-pink-600 mb-2"></i>
-                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Wanita</span>
-                                <span class="text-[10px] text-stone-500">Pijatan lembut & relaks</span>
-                            </label>
+                                <label
+                                    class="gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white hover:border-stone-300"
+                                    id="genderCard-female">
+                                    <input type="radio" name="therapist_gender_pref" value="female"
+                                        onchange="handleGenderChange('female')" class="sr-only">
+                                    <i class="fa-solid fa-venus text-xl text-pink-600 mb-2"></i>
+                                    <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Wanita</span>
+                                    <span class="text-[10px] text-stone-500">Pijatan lembut & relaks</span>
+                                </label>
 
-                            <label
-                                class="p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white"
-                                id="genderMale">
-                                <input type="radio" name="therapist_gender_pref" value="male"
-                                    onchange="handleGenderChange('male')" class="sr-only">
-                                <i class="fa-solid fa-mars text-xl text-blue-600 mb-2"></i>
-                                <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Pria</span>
-                                <span class="text-[10px] text-stone-500">Tekanan kuat & bertenaga</span>
-                            </label>
+                                <label
+                                    class="gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white hover:border-stone-300"
+                                    id="genderCard-male">
+                                    <input type="radio" name="therapist_gender_pref" value="male"
+                                        onchange="handleGenderChange('male')" class="sr-only">
+                                    <i class="fa-solid fa-mars text-xl text-blue-600 mb-2"></i>
+                                    <span class="block font-bold text-xs sm:text-sm text-stone-900">Terapis Pria</span>
+                                    <span class="text-[10px] text-stone-500">Tekanan kuat & bertenaga</span>
+                                </label>
+                            </div>
                         </div>
 
-                        <!-- Specific Therapist Selection -->
+                        <!-- Specific Therapist Selection (Cards) -->
                         <div class="mb-8">
-                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                                Atau Pilih Terapis Spesifik (Opsional):
-                            </label>
-                            <select id="specificTherapistSelect" onchange="handleSpecificTherapistChange()"
-                                class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none">
-                                <option value="">-- Biarkan Admin Menentukan Terapis Terbaik --</option>
-                            </select>
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">
+                                    Pilih Terapis Spesifik (Opsional):
+                                </label>
+                                <span class="text-xs text-stone-500">Biarkan "Otomatis Ditentukan" jika fleksibel</span>
+                            </div>
+                            <div class="space-y-3" id="therapistCardsContainer">
+                                <!-- Rendered dynamically by renderTherapistCards() -->
+                            </div>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-stone-100">
@@ -474,41 +477,177 @@
             if (active) active.className = 'flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-emerald-600 bg-emerald-50/40 shadow-sm';
         }
 
-        // Render Terapis Dropdown di Step 3
-        function renderTherapistDropdown() {
-            const select = document.getElementById('specificTherapistSelect');
+        let selectedTherapistId = null;
+
+        // Render Kartu Pilihan Terapis di Step 3
+        function renderTherapistCards() {
+            const container = document.getElementById('therapistCardsContainer');
+            if (!container) return;
+
             const therapists = SentosaStore.getTherapists();
             const params = new URLSearchParams(window.location.search);
             const qTherapistId = Number(params.get('therapist_id'));
+            if (qTherapistId && therapists.some(t => t.id == qTherapistId)) {
+                selectedTherapistId = qTherapistId;
+            }
 
-            select.innerHTML = '<option value="">-- Biarkan Admin Menentukan Terapis Terbaik --</option>' +
-                therapists.map(t => {
-                    const isSelected = (qTherapistId && t.id == qTherapistId);
-                    return `<option value="${t.id}" ${isSelected ? 'selected' : ''}>${t.name} (${t.gender === 'female' ? 'Wanita' : 'Pria'}) - ${t.specialization} ★${t.rating_formatted}</option>`;
-                }).join('');
-        }
+            const isAutoSelected = (selectedTherapistId === null || selectedTherapistId === '');
+            let html = `
+            <!-- Kartu 1: Auto Assign Rekomendasi -->
+            <label class="therapist-radio-card flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isAutoSelected ? 'border-emerald-600 bg-emerald-50/60 shadow-sm' : 'border-stone-200 bg-white hover:border-stone-300'}" 
+                id="thCard-auto" 
+                onclick="handleTherapistSelect('')">
+                <input type="radio" name="selected_therapist" value="" ${isAutoSelected ? 'checked' : ''} class="sr-only">
+                <div class="flex items-center space-x-3.5">
+                    <div class="w-11 h-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg shadow-sm shrink-0">
+                        <i class="fa-solid fa-wand-magic-sparkles text-emerald-300"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-stone-900 text-sm block">Tentukan Otomatis oleh Sistem (Rekomendasi)</span>
+                        <span class="text-xs text-stone-500">Admin akan menugaskan terapis terbaik yang paling dekat dan siap menuju lokasi Anda.</span>
+                    </div>
+                </div>
+                <span class="w-5 h-5 rounded-full border-2 ${isAutoSelected ? 'border-emerald-600' : 'border-stone-300'} flex items-center justify-center th-check shrink-0">
+                    <span class="w-2.5 h-2.5 rounded-full ${isAutoSelected ? 'bg-emerald-600' : 'bg-transparent'}"></span>
+                </span>
+            </label>
+            `;
 
-        function handleTypeChange() {
-            // Selalu home_service
-            renderServiceOptions();
-        }
+            // Kartu Masing-masing Terapis
+            therapists.forEach(t => {
+                const isSelected = (selectedTherapistId == t.id);
+                const isAvailable = (t.is_available == 1);
+                const initial = t.name ? t.name.charAt(0).toUpperCase() : 'T';
 
-        function handleGenderChange(val) {
-            document.querySelectorAll('[id^="genderCard-"]').forEach(c => {
-                c.className = 'p-3.5 rounded-2xl border-2 cursor-pointer transition-all border-stone-200 hover:border-stone-300 bg-white flex items-center space-x-3';
+                html += `
+                <label class="therapist-radio-card flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isAvailable ? '' : 'opacity-60 pointer-events-none'} ${isSelected ? 'border-emerald-600 bg-emerald-50/60 shadow-sm' : 'border-stone-200 bg-white hover:border-stone-300'}" 
+                    id="thCard-${t.id}" 
+                    data-gender="${t.gender}" 
+                    data-available="${t.is_available}"
+                    onclick="handleTherapistSelect(${t.id})">
+                    <input type="radio" name="selected_therapist" value="${t.id}" ${isSelected ? 'checked' : ''} ${isAvailable ? '' : 'disabled'} class="sr-only">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white flex items-center justify-center text-base font-bold font-serif shadow-sm shrink-0">
+                            ${initial}
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-bold text-stone-900 text-sm">${t.name}</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${t.gender === 'female' ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700'}">
+                                    ${t.gender === 'female' ? 'Wanita' : 'Pria'}
+                                </span>
+                                <span class="text-xs text-amber-600 font-bold flex items-center space-x-1">
+                                    <i class="fa-solid fa-star text-[10px] text-amber-500"></i>
+                                    <span>${t.rating_formatted || '5.0'}</span>
+                                    <span class="text-stone-400 font-normal text-[10px]">(${t.total_reviews || 0})</span>
+                                </span>
+                            </div>
+                            <span class="text-xs text-stone-500 block line-clamp-1 mt-0.5">${t.specialization || 'Terapis Berlisensi'}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 shrink-0">
+                        <span class="text-xs ${isAvailable ? 'text-emerald-700 font-semibold' : 'text-stone-400 italic'} hidden sm:inline">
+                            ${isAvailable ? 'Tersedia' : 'Sedang Libur'}
+                        </span>
+                        <span class="w-5 h-5 rounded-full border-2 ${isSelected ? 'border-emerald-600' : 'border-stone-300'} flex items-center justify-center th-check">
+                            <span class="w-2.5 h-2.5 rounded-full ${isSelected ? 'bg-emerald-600' : 'bg-transparent'}"></span>
+                        </span>
+                    </div>
+                </label>
+                `;
             });
-            const active = document.getElementById('genderCard-' + val);
-            if (active) active.className = 'p-3.5 rounded-2xl border-2 cursor-pointer transition-all border-emerald-600 bg-emerald-50/40 shadow-sm flex items-center space-x-3';
-            if (val !== 'any') {
-                document.getElementById('specificTherapistSelect').value = '';
+
+            container.innerHTML = html;
+
+            // Jika ada preselected therapist, sinkronkan filter gender
+            if (selectedTherapistId) {
+                const selT = therapists.find(t => t.id == selectedTherapistId);
+                if (selT) {
+                    handleGenderChange(selT.gender, false);
+                }
             }
         }
 
-        function handleSpecificTherapistChange() {
-            const val = document.getElementById('specificTherapistSelect').value;
-            if (val) {
-                const t = SentosaStore.getTherapistById(val);
-                if (t) handleGenderChange(t.gender);
+        function handleTherapistSelect(id) {
+            selectedTherapistId = id ? Number(id) : null;
+
+            document.querySelectorAll('.therapist-radio-card').forEach(c => {
+                c.classList.remove('border-emerald-600', 'bg-emerald-50/60', 'shadow-sm');
+                c.classList.add('border-stone-200', 'bg-white');
+                const checkBorder = c.querySelector('.th-check');
+                const checkDot = c.querySelector('.th-check span');
+                if (checkBorder) {
+                    checkBorder.classList.remove('border-emerald-600');
+                    checkBorder.classList.add('border-stone-300');
+                }
+                if (checkDot) {
+                    checkDot.className = 'w-2.5 h-2.5 rounded-full bg-transparent';
+                }
+                const rad = c.querySelector('input[type="radio"]');
+                if (rad) rad.checked = false;
+            });
+
+            const activeCard = document.getElementById(id ? 'thCard-' + id : 'thCard-auto');
+            if (activeCard) {
+                activeCard.classList.remove('border-stone-200', 'bg-white');
+                activeCard.classList.add('border-emerald-600', 'bg-emerald-50/60', 'shadow-sm');
+                const checkBorder = activeCard.querySelector('.th-check');
+                const checkDot = activeCard.querySelector('.th-check span');
+                if (checkBorder) {
+                    checkBorder.classList.remove('border-stone-300');
+                    checkBorder.classList.add('border-emerald-600');
+                }
+                if (checkDot) {
+                    checkDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-600';
+                }
+                const rad = activeCard.querySelector('input[type="radio"]');
+                if (rad) rad.checked = true;
+            }
+        }
+
+        function handleTypeChange() {
+            renderServiceOptions();
+        }
+
+        function handleGenderChange(val, resetSelection = true) {
+            const btnAny = document.getElementById('genderCard-any');
+            const btnFemale = document.getElementById('genderCard-female');
+            const btnMale = document.getElementById('genderCard-male');
+
+            [btnAny, btnFemale, btnMale].forEach(b => {
+                if (b) b.className = 'gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-stone-200 bg-white hover:border-stone-300';
+            });
+
+            if (val === 'any' && btnAny) {
+                btnAny.className = 'gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-emerald-600 bg-emerald-50/60 shadow-sm';
+            } else if (val === 'female' && btnFemale) {
+                btnFemale.className = 'gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-pink-600 bg-pink-50/60 shadow-sm';
+            } else if (val === 'male' && btnMale) {
+                btnMale.className = 'gender-btn p-4 rounded-2xl border-2 cursor-pointer text-center transition-all border-blue-600 bg-blue-50/60 shadow-sm';
+            }
+
+            const radio = document.querySelector(`input[name="therapist_gender_pref"][value="${val}"]`);
+            if (radio) radio.checked = true;
+
+            // Filter kartu-kartu terapis perorangan
+            const thCards = document.querySelectorAll('.therapist-radio-card[data-gender]');
+            let isCurrentSelectedHidden = false;
+
+            thCards.forEach(c => {
+                const thGender = c.dataset.gender;
+                if (val === 'any' || thGender === val) {
+                    c.classList.remove('hidden');
+                } else {
+                    c.classList.add('hidden');
+                    if (selectedTherapistId && c.id === 'thCard-' + selectedTherapistId) {
+                        isCurrentSelectedHidden = true;
+                    }
+                }
+            });
+
+            // Jika terapis yang terpilih disembunyikan oleh filter gender, kembalikan ke auto assign
+            if (resetSelection && isCurrentSelectedHidden) {
+                handleTherapistSelect('');
             }
         }
 
@@ -528,12 +667,13 @@
                 const srv = SentosaStore.getServiceById(selectedServiceId);
                 const date = document.getElementById('bookingDateInput').value;
                 const time = document.getElementById('bookingTimeSelect').value;
-                const specificTId = document.getElementById('specificTherapistSelect').value;
-                const therapist = specificTId ? SentosaStore.getTherapistById(specificTId) : null;
+                const therapist = selectedTherapistId ? SentosaStore.getTherapistById(selectedTherapistId) : null;
+                const genderPref = document.querySelector('input[name="therapist_gender_pref"]:checked')?.value || 'any';
+                const genderLabel = (genderPref === 'female') ? 'Terapis Wanita' : ((genderPref === 'male') ? 'Terapis Pria' : 'Bebas');
 
                 document.getElementById('summaryBookingType').textContent = 'Home Service (Panggilan ke Alamat)';
                 document.getElementById('summaryService').textContent = srv ? `${srv.name} (${srv.duration_minutes} Menit)` : '-';
-                document.getElementById('summaryTherapist').textContent = therapist ? `${therapist.name} (${therapist.gender === 'female' ? 'Wanita' : 'Pria'})` : 'Dipilihkan Admin';
+                document.getElementById('summaryTherapist').textContent = therapist ? `${therapist.name} (${therapist.gender === 'female' ? 'Wanita' : 'Pria'})` : `Otomatis Ditentukan (${genderLabel})`;
                 document.getElementById('summarySchedule').textContent = `${date} Pukul ${time} WIB`;
                 document.getElementById('summaryTotal').textContent = srv ? SentosaStore.formatRupiah(srv.price) : 'Rp 0';
             }
@@ -577,7 +717,12 @@
             const addr = document.getElementById('addressInput').value.trim();
             const date = document.getElementById('bookingDateInput').value;
             const time = document.getElementById('bookingTimeSelect').value;
-            const specificTId = document.getElementById('specificTherapistSelect').value;
+            const specificTId = selectedTherapistId;
+            const therapist = specificTId ? SentosaStore.getTherapistById(specificTId) : null;
+            const genderPref = document.querySelector('input[name="therapist_gender_pref"]:checked')?.value || 'any';
+            const genderLabel = (genderPref === 'female') ? 'Terapis Wanita' : ((genderPref === 'male') ? 'Terapis Pria' : 'Bebas');
+            const therapistText = therapist ? `${therapist.name} (${therapist.gender === 'female' ? 'Wanita' : 'Pria'})` : `Otomatis Ditentukan (${genderLabel})`;
+
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
             const notes = document.getElementById('custNotes').value.trim();
@@ -591,7 +736,7 @@
                 therapist_id: specificTId ? Number(specificTId) : null,
                 service_id: srv.id,
                 booking_type: type,
-                address: (type === 'home_service') ? addr : null,
+                address: addr,
                 schedule_datetime: `${date} ${time}:00`,
                 duration: srv.duration_minutes,
                 total_price: srv.price,
@@ -608,11 +753,12 @@
                     `*Kode Booking:* ${res.booking.booking_code}\n` +
                     `*Nama Pemesan:* ${name}\n` +
                     `*No WhatsApp:* ${phone}\n` +
-                    `*Tipe Layanan:* ${type === 'home_service' ? 'Home Service (Panggilan)' : 'Di Klinik Sentosa'}\n` +
+                    `*Tipe Layanan:* Home Service (Panggilan ke Alamat)\n` +
                     `*Menu Layanan:* ${srv.name} (${srv.duration_minutes} Menit)\n` +
+                    `*Terapis:* ${therapistText}\n` +
                     `*Jadwal:* ${date} Pukul ${time} WIB\n` +
                     `*Tarif:* ${SentosaStore.formatRupiah(srv.price)}\n` +
-                    (type === 'home_service' ? `*Alamat:* ${addr}\n` : '') +
+                    `*Alamat:* ${addr}\n` +
                     (notes ? `*Catatan:* ${notes}\n` : '') +
                     `\nMohon informasi konfirmasi jadwalnya. Terima kasih!`
                 );
@@ -624,7 +770,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderServiceOptions();
-            renderTherapistDropdown();
+            renderTherapistCards();
         });
     </script>
 </body>
