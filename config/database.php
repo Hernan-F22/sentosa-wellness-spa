@@ -16,7 +16,7 @@ define('DB_CHARSET', 'utf8mb4');
 
 define('APP_NAME', 'Sentosa Wellness & Massage Spa');
 define('APP_TAGLINE', 'Relaksasi Mewah di Klinik Modern & Panggilan Home Service');
-define('APP_PHONE', '6281234567890'); // Format nomor WhatsApp internasional tanpa tanda +
+define('APP_PHONE', '6285659719922'); // Format nomor WhatsApp internasional tanpa tanda +
 define('APP_ADDRESS', 'Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan');
 define('APP_EMAIL', 'info@sentosaspa.com');
 define('APP_HOURS', 'Setiap Hari: 08:00 - 22:00 WIB');
@@ -266,4 +266,3 @@ function getBaseUrl(): string
     }
     return $scriptDir;
 }
-
