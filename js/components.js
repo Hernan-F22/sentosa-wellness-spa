@@ -249,7 +249,7 @@
         </footer>
 
         <!-- Floating WhatsApp Widget -->
-        <a href="https://wa.me/6281234567890?text=Halo%20Admin%20Sentosa%20Spa,%20saya%20ingin%20tanya%20mengenai%20reservasi%20layanan%20pijat" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition-all duration-200 transform hover:scale-110 active:scale-95 group" title="Chat WhatsApp Customer Care">
+        <a href="https://wa.me/6285659719922?text=Halo%20Admin%20Sentosa%20Spa,%20saya%20ingin%20tanya%20mengenai%20reservasi%20layanan%20pijat" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition-all duration-200 transform hover:scale-110 active:scale-95 group" title="Chat WhatsApp Customer Care">
             <i class="fa-brands fa-whatsapp"></i>
             <span class="absolute right-16 bg-stone-900 text-white text-xs px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg pointer-events-none">
                 Butuh Bantuan? Chat Kami

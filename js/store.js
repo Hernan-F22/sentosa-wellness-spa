@@ -876,14 +876,13 @@
         }
 
         const toast = document.createElement('div');
-        toast.className = `pointer-events-auto transform transition-all duration-300 ease-out translate-y-4 opacity-0 p-4 rounded-2xl shadow-xl flex items-center space-x-3 text-sm font-medium ${
-            type === 'success' ? 'bg-emerald-900 text-white border border-emerald-700' :
-            type === 'error' ? 'bg-rose-900 text-white border border-rose-700' :
-            'bg-stone-900 text-white border border-stone-700'
-        }`;
+        toast.className = `pointer-events-auto transform transition-all duration-300 ease-out translate-y-4 opacity-0 p-4 rounded-2xl shadow-xl flex items-center space-x-3 text-sm font-medium ${type === 'success' ? 'bg-emerald-900 text-white border border-emerald-700' :
+                type === 'error' ? 'bg-rose-900 text-white border border-rose-700' :
+                    'bg-stone-900 text-white border border-stone-700'
+            }`;
 
         const icon = type === 'success' ? 'fa-circle-check text-emerald-400' :
-                     type === 'error' ? 'fa-circle-xmark text-rose-400' : 'fa-circle-info text-blue-400';
+            type === 'error' ? 'fa-circle-xmark text-rose-400' : 'fa-circle-info text-blue-400';
 
         toast.innerHTML = `
             <i class="fa-solid ${icon} text-lg shrink-0"></i>
