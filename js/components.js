@@ -94,6 +94,11 @@
                                         <span>${isTherapist ? 'Riwayat Reservasi Saya' : 'Riwayat Booking Saya'}</span>
                                     </a>
 
+                                    <a href="${ROOT_PATH}/my-bookings.html?action=edit_profile" class="flex items-center px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">
+                                        <i class="fa-solid fa-user-pen w-5 text-emerald-700"></i>
+                                        <span>Edit Profil & Sandi</span>
+                                    </a>
+
                                     ${isAdmin ? `
                                         <a href="${ROOT_PATH}/admin/dashboard.html" class="flex items-center px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors border-t border-stone-100">
                                             <i class="fa-solid fa-gauge-high w-5 text-emerald-700"></i>
@@ -154,6 +159,9 @@
                         ` : ''}
                         <a href="${ROOT_PATH}/my-bookings.html" class="block py-2 text-sm font-semibold text-stone-800 hover:text-emerald-800">
                             <i class="fa-solid fa-calendar-days mr-2 text-emerald-700"></i> ${isTherapist ? 'Riwayat Reservasi Saya' : 'Riwayat Booking Saya'}
+                        </a>
+                        <a href="${ROOT_PATH}/my-bookings.html?action=edit_profile" class="block py-2 text-sm font-semibold text-stone-800 hover:text-emerald-800">
+                            <i class="fa-solid fa-user-pen mr-2 text-emerald-700"></i> Edit Profil & Sandi
                         </a>
                         ${isAdmin ? `
                             <a href="${ROOT_PATH}/admin/dashboard.html" class="block py-2 text-sm font-semibold text-emerald-800">

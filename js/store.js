@@ -336,8 +336,20 @@
             name: user.name,
             email: user.email,
             phone: user.phone,
-            role: user.role
+            role: user.role,
+            avatar_url: user.avatar_url || null
         };
+
+        if (user.role === 'therapist') {
+            const therapists = getItem('therapists', []);
+            const t = therapists.find(item => item.user_id === user.id);
+            if (t) {
+                sessionUser.therapist_id = t.id;
+                sessionUser.specialization = t.specialization;
+                if (t.avatar_url) sessionUser.avatar_url = t.avatar_url;
+            }
+        }
+
         setCurrentUser(sessionUser);
 
         return {
@@ -363,6 +375,7 @@
             phone: String(phone).trim(),
             password: String(password).trim(),
             role: 'customer',
+            avatar_url: null,
             created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
         };
 
@@ -374,7 +387,8 @@
             name: newUser.name,
             email: newUser.email,
             phone: newUser.phone,
-            role: newUser.role
+            role: newUser.role,
+            avatar_url: null
         };
         setCurrentUser(sessionUser);
 
@@ -407,6 +421,72 @@
         users[userIndex].password = String(newPassword).trim();
         setItem('users', users);
         return { success: true, message: 'Kata sandi berhasil diperbarui!' };
+    }
+
+    function updateProfile(userId, data) {
+        initStore();
+        const users = getItem('users', []);
+        const userIndex = users.findIndex(u => u.id === Number(userId));
+        if (userIndex === -1) {
+            return { success: false, message: 'Pengguna tidak ditemukan.' };
+        }
+
+        const user = users[userIndex];
+        const newName = data.name !== undefined ? String(data.name).trim() : user.name;
+        const newEmail = data.email !== undefined ? String(data.email).trim().toLowerCase() : user.email;
+        const newPhone = data.phone !== undefined ? String(data.phone).trim() : user.phone;
+
+        if (!newName || !newEmail || !newPhone) {
+            return { success: false, message: 'Nama, email, dan nomor telepon tidak boleh kosong.' };
+        }
+
+        // Cek duplikasi email
+        if (users.some(u => u.id !== Number(userId) && u.email.toLowerCase() === newEmail)) {
+            return { success: false, message: 'Email ini sudah digunakan oleh akun lain.' };
+        }
+
+        // Cek duplikasi no telepon
+        const cleanNewPhone = newPhone.replace(/[^0-9]/g, '');
+        if (cleanNewPhone && users.some(u => u.id !== Number(userId) && u.phone.replace(/[^0-9]/g, '') === cleanNewPhone)) {
+            return { success: false, message: 'Nomor telepon ini sudah digunakan oleh akun lain.' };
+        }
+
+        user.name = newName;
+        user.email = newEmail;
+        user.phone = newPhone;
+
+        if (data.avatar_url !== undefined) {
+            user.avatar_url = data.avatar_url;
+            // Jika role terapis, sinkronkan ke therapists
+            if (user.role === 'therapist') {
+                const therapists = getItem('therapists', []);
+                const tIndex = therapists.findIndex(t => t.user_id === user.id);
+                if (tIndex !== -1) {
+                    therapists[tIndex].avatar_url = data.avatar_url;
+                    setItem('therapists', therapists);
+                }
+            }
+        }
+
+        setItem('users', users);
+
+        // Update current_user session jika sama
+        const currentUser = getCurrentUser();
+        if (currentUser && currentUser.id === Number(userId)) {
+            currentUser.name = user.name;
+            currentUser.email = user.email;
+            currentUser.phone = user.phone;
+            if (data.avatar_url !== undefined) {
+                currentUser.avatar_url = data.avatar_url;
+            }
+            setCurrentUser(currentUser);
+        }
+
+        return {
+            success: true,
+            user: currentUser && currentUser.id === Number(userId) ? currentUser : user,
+            message: 'Profil berhasil diperbarui!'
+        };
     }
 
     // 5. SERVICES
@@ -631,6 +711,158 @@
             };
         }
         return { success: false, message: 'Terapis tidak ditemukan.' };
+    }
+
+    // 6b. CUSTOMER MANAGEMENT (ADMIN)
+    function getCustomers(search = '') {
+        initStore();
+        const users = getItem('users', []);
+        const bookings = getItem('bookings', []);
+
+        let customers = users.filter(u => u.role === 'customer');
+
+        if (search) {
+            const s = String(search).toLowerCase().trim();
+            customers = customers.filter(c =>
+                (c.name && c.name.toLowerCase().includes(s)) ||
+                (c.email && c.email.toLowerCase().includes(s)) ||
+                (c.phone && c.phone.includes(s))
+            );
+        }
+
+        return customers.map(c => {
+            const userBookings = bookings.filter(b => b.customer_id === c.id);
+            const totalBookings = userBookings.length;
+            const totalSpent = userBookings
+                .filter(b => b.status === 'completed')
+                .reduce((sum, b) => sum + Number(b.total_price || 0), 0);
+            const activeBookings = userBookings
+                .filter(b => ['pending', 'confirmed', 'on_process'].includes(b.status))
+                .length;
+
+            let lastBookingAt = null;
+            if (userBookings.length > 0) {
+                const sorted = [...userBookings].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                lastBookingAt = sorted[0].created_at || null;
+            }
+
+            return {
+                ...c,
+                total_bookings: totalBookings,
+                total_spent: totalSpent,
+                formatted_spent: 'Rp ' + Number(totalSpent).toLocaleString('id-ID'),
+                active_bookings: activeBookings,
+                last_booking_at: lastBookingAt
+            };
+        }).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    }
+
+    function saveCustomer(data) {
+        initStore();
+        const users = getItem('users', []);
+        const name = String(data.name || '').trim();
+        const email = String(data.email || '').trim().toLowerCase();
+        const phone = String(data.phone || '').trim();
+        const password = String(data.password || '').trim();
+        const avatarUrl = data.avatar_url !== undefined ? data.avatar_url : null;
+
+        if (!name || !email || !phone) {
+            return { success: false, message: 'Nama, email, dan nomor telepon wajib diisi.' };
+        }
+
+        if (data.id) {
+            // Update
+            const idx = users.findIndex(u => u.id === Number(data.id));
+            if (idx === -1) {
+                return { success: false, message: 'Pelanggan tidak ditemukan.' };
+            }
+
+            if (users.some(u => u.id !== Number(data.id) && u.email.toLowerCase() === email)) {
+                return { success: false, message: 'Email ini sudah digunakan oleh akun lain.' };
+            }
+
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            if (cleanPhone && users.some(u => u.id !== Number(data.id) && u.phone.replace(/[^0-9]/g, '') === cleanPhone)) {
+                return { success: false, message: 'Nomor telepon ini sudah digunakan oleh akun lain.' };
+            }
+
+            users[idx].name = name;
+            users[idx].email = email;
+            users[idx].phone = phone;
+            if (avatarUrl !== undefined) {
+                users[idx].avatar_url = avatarUrl;
+            }
+            if (password) {
+                if (password.length < 6) {
+                    return { success: false, message: 'Kata sandi baru minimal 6 karakter.' };
+                }
+                users[idx].password = password;
+            }
+
+            setItem('users', users);
+            return { success: true, message: 'Data pelanggan berhasil diperbarui.' };
+        } else {
+            // Create
+            if (users.some(u => u.email.toLowerCase() === email)) {
+                return { success: false, message: 'Email ini sudah terdaftar.' };
+            }
+
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            if (cleanPhone && users.some(u => u.phone.replace(/[^0-9]/g, '') === cleanPhone)) {
+                return { success: false, message: 'Nomor telepon ini sudah terdaftar.' };
+            }
+
+            const finalPassword = password || 'user123';
+            if (finalPassword.length < 6) {
+                return { success: false, message: 'Password minimal 6 karakter.' };
+            }
+
+            const newCust = {
+                id: Date.now(),
+                name,
+                email,
+                phone,
+                password: finalPassword,
+                role: 'customer',
+                avatar_url: avatarUrl,
+                created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+
+            users.push(newCust);
+            setItem('users', users);
+            return { success: true, customer_id: newCust.id, message: 'Data pelanggan baru berhasil ditambahkan.' };
+        }
+    }
+
+    function deleteCustomer(customerId) {
+        initStore();
+        const users = getItem('users', []);
+        const idx = users.findIndex(u => u.id === Number(customerId) && u.role === 'customer');
+        if (idx === -1) {
+            return { success: false, message: 'Data pelanggan tidak ditemukan.' };
+        }
+
+        const bookings = getItem('bookings', []);
+        const activeBookings = bookings.filter(b => b.customer_id === Number(customerId) && ['pending', 'confirmed', 'on_process'].includes(b.status));
+        if (activeBookings.length > 0) {
+            return {
+                success: false,
+                message: `Pelanggan "${users[idx].name}" tidak dapat dihapus karena masih memiliki ${activeBookings.length} pesanan aktif.`
+            };
+        }
+
+        // Hapus pesanan terkait
+        const remainingBookings = bookings.filter(b => b.customer_id !== Number(customerId));
+        setItem('bookings', remainingBookings);
+
+        const deletedName = users[idx].name;
+        users.splice(idx, 1);
+        setItem('users', users);
+
+        return {
+            success: true,
+            message: `Pelanggan "${deletedName}" berhasil dihapus.`
+        };
     }
 
     // 7. BOOKINGS & ASSIGNMENT
@@ -958,6 +1190,10 @@
         register,
         logout,
         changePassword,
+        updateProfile,
+        getCustomers,
+        saveCustomer,
+        deleteCustomer,
         getServices,
         getServiceById,
         saveService,

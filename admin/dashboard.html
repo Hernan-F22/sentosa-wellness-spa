@@ -123,6 +123,10 @@
                             class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
                             <i class="fa-solid fa-user-group mr-1.5"></i> Tim Terapis
                         </button>
+                        <button onclick="switchTab('customers')" id="navTabCustomers"
+                            class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
+                            <i class="fa-solid fa-users mr-1.5"></i> Pelanggan
+                        </button>
                     </nav>
 
                     <div class="flex items-center space-x-3">
@@ -156,6 +160,8 @@
                     class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Layanan</button>
                 <button onclick="switchTab('therapists')" id="mNavTherapists"
                     class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Terapis</button>
+                <button onclick="switchTab('customers')" id="mNavCustomers"
+                    class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Pelanggan</button>
                 <button onclick="openChangePasswordModal()"
                     class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-amber-300 bg-stone-800 flex items-center space-x-1">
                     <i class="fa-solid fa-key text-xs"></i>
@@ -382,6 +388,69 @@
                 <div id="adminTherapistsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
+            <!-- TAB 5: CUSTOMERS -->
+            <div id="tabContentCustomers" class="space-y-6 hidden">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <h2 class="font-serif font-bold text-2xl text-stone-900">Manajemen Pelanggan</h2>
+                        <p class="text-xs text-stone-500">Kelola data akun pelanggan, kontak WhatsApp, dan pantau histori pesanan.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-stone-400 text-xs"></i>
+                            <input type="text" id="customerSearchInput" oninput="handleCustomerSearch(this.value)" placeholder="Cari nama / WA / email..."
+                                class="pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none w-48 sm:w-64">
+                        </div>
+                        <button onclick="openCustomerModal()"
+                            class="px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold transition-all shadow-md flex items-center space-x-2 shrink-0">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Tambah Pelanggan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kartu Ringkasan Pelanggan -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block">Total Pelanggan</span>
+                        <span class="text-2xl font-bold text-stone-900 mt-1 block" id="custStatTotal">0</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                        <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider block">Pelanggan Aktif Pesan</span>
+                        <span class="text-2xl font-bold text-emerald-800 mt-1 block" id="custStatActive">0</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm col-span-2 sm:col-span-1">
+                        <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider block">Total Belanja Selesai</span>
+                        <span class="text-xl sm:text-2xl font-bold text-blue-900 mt-1 block" id="custStatSpent">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- Tabel Pelanggan -->
+                <div class="bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-stone-50 border-b border-stone-100 text-stone-400 uppercase font-semibold text-[10px] tracking-wider">
+                                <tr>
+                                    <th class="py-3.5 px-4">Profil Pelanggan</th>
+                                    <th class="py-3.5 px-4">Kontak & WhatsApp</th>
+                                    <th class="py-3.5 px-4 text-center">Total Pesanan</th>
+                                    <th class="py-3.5 px-4">Total Belanja</th>
+                                    <th class="py-3.5 px-4">Terdaftar</th>
+                                    <th class="py-3.5 px-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody" class="divide-y divide-stone-100 text-stone-700">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="customersEmptyState" class="hidden p-8 text-center text-stone-400 text-xs">
+                        <i class="fa-solid fa-users text-3xl mb-2 text-stone-300"></i>
+                        <p>Belum ada data pelanggan yang cocok.</p>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -530,6 +599,53 @@
         </div>
     </div>
 
+    <!-- MODAL 4: ADD/EDIT CUSTOMER -->
+    <div id="customerModal"
+        class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-serif font-bold text-lg text-stone-900" id="customerModalTitle">Tambah Pelanggan Baru</h3>
+                <button onclick="closeCustomerModal()" class="text-stone-400 hover:text-stone-800"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveCustomer(event)" class="space-y-3.5 text-xs">
+                <input type="hidden" id="custModalId">
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Nama Lengkap</label>
+                    <input type="text" id="custName" required placeholder="Contoh: Siti Rahma"
+                        class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Email</label>
+                    <input type="email" id="custEmail" required placeholder="pelanggan@gmail.com"
+                        class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Nomor WhatsApp / HP</label>
+                    <input type="tel" id="custPhone" required placeholder="081234567890"
+                        class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">Foto Profil (URL Gambar Opsional)</label>
+                    <input type="url" id="custAvatar" placeholder="https://images.unsplash.com/..."
+                        class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:outline-none font-medium">
+                </div>
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <label class="block font-bold text-stone-700 uppercase mb-1" id="custPasswordLabel">Kata Sandi Akun</label>
+                    <input type="password" id="custPassword" placeholder="Default: user123 (Kosongkan jika tidak diubah)" minlength="6"
+                        class="w-full px-3.5 py-2 bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:outline-none font-medium">
+                    <p class="text-[10px] text-stone-400 mt-1" id="custPasswordHelp">Digunakan pelanggan untuk login di Sentosa Spa.</p>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-stone-100">
+                    <button type="button" onclick="closeCustomerModal()"
+                        class="px-4 py-2 bg-stone-100 text-stone-700 font-bold rounded-xl">Batal</button>
+                    <button type="submit" id="custSubmitBtn"
+                        class="px-5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold rounded-xl shadow-md transition-all">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal Ganti Kata Sandi Admin -->
     <div id="changePasswordModal"
         class="hidden fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -661,7 +777,7 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            const tabs = ['overview', 'bookings', 'services', 'therapists'];
+            const tabs = ['overview', 'bookings', 'services', 'therapists', 'customers'];
 
             tabs.forEach(t => {
                 const nav = document.getElementById('navTab' + t.charAt(0).toUpperCase() + t.slice(1));
@@ -683,6 +799,7 @@
             if (tab === 'bookings') loadBookingsTable();
             if (tab === 'services') loadServicesGrid();
             if (tab === 'therapists') loadTherapistsGrid();
+            if (tab === 'customers') loadCustomersTable();
         }
 
         function loadOverview() {
@@ -1058,6 +1175,173 @@
                     SentosaStore.showToast(res.message, 'success');
                     loadTherapistsGrid();
                 }
+            }
+        // ==========================================
+        // FITUR MANAJEMEN PELANGGAN (ADMIN)
+        // ==========================================
+        let customerSearchQuery = '';
+
+        function handleCustomerSearch(val) {
+            customerSearchQuery = val;
+            loadCustomersTable();
+        }
+
+        function loadCustomersTable() {
+            const customers = SentosaStore.getCustomers(customerSearchQuery);
+            const allCustomers = SentosaStore.getCustomers();
+
+            const totalEl = document.getElementById('custStatTotal');
+            const activeEl = document.getElementById('custStatActive');
+            const spentEl = document.getElementById('custStatSpent');
+
+            if (totalEl) totalEl.textContent = allCustomers.length;
+            const activeCustCount = allCustomers.filter(c => c.active_bookings > 0).length;
+            if (activeEl) activeEl.textContent = activeCustCount;
+            const totalSpentAll = allCustomers.reduce((acc, c) => acc + (c.total_spent || 0), 0);
+            if (spentEl) spentEl.textContent = SentosaStore.formatRupiah(totalSpentAll);
+
+            const tbody = document.getElementById('customersTableBody');
+            const emptyState = document.getElementById('customersEmptyState');
+            if (!tbody) return;
+
+            if (customers.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
+            }
+
+            if (emptyState) emptyState.classList.add('hidden');
+            tbody.innerHTML = customers.map(c => {
+                const cleanPhone = String(c.phone || '').replace(/[^0-9]/g, '');
+                const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
+                const avatarEl = c.avatar_url
+                    ? `<img src="${c.avatar_url}" alt="${c.name}" class="w-10 h-10 rounded-xl object-cover border border-stone-200 shrink-0">`
+                    : `<div class="w-10 h-10 rounded-xl bg-emerald-800 text-white flex items-center justify-center font-serif font-bold text-base shrink-0">${c.name.charAt(0)}</div>`;
+
+                const activeBadge = c.active_bookings > 0
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 ml-1.5">${c.active_bookings} Aktif</span>`
+                    : '';
+
+                return `
+                    <tr class="hover:bg-stone-50/60 transition-colors">
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center space-x-3">
+                                ${avatarEl}
+                                <div>
+                                    <div class="font-bold text-stone-900 flex items-center">
+                                        <span>${c.name}</span>
+                                        ${activeBadge}
+                                    </div>
+                                    <span class="text-stone-400 text-[11px]">${c.email}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <div class="space-y-1">
+                                <span class="font-medium text-stone-800 block">${c.phone}</span>
+                                <a href="https://wa.me/${waNumber}?text=Halo%20${encodeURIComponent(c.name)},%20kami%20dari%20Sentosa%20Spa" target="_blank"
+                                   class="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-md transition-colors">
+                                    <i class="fa-brands fa-whatsapp text-xs"></i>
+                                    <span>Chat WhatsApp</span>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg bg-stone-100 font-bold text-stone-800 text-xs">
+                                ${c.total_bookings} Pesanan
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 font-semibold text-stone-900">
+                            ${c.formatted_spent}
+                        </td>
+                        <td class="py-3.5 px-4 text-stone-500 text-[11px]">
+                            ${SentosaStore.formatDateTime(c.created_at)}
+                        </td>
+                        <td class="py-3.5 px-4 text-right">
+                            <div class="flex items-center justify-end space-x-1.5">
+                                <button onclick='openEditCustomerModal(${JSON.stringify(c)})' class="p-2 text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-colors" title="Edit Data Pelanggan">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button onclick="deleteCustomerConfirm(${c.id}, '${c.name.replace(/'/g, "\\'")}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Pelanggan">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openCustomerModal() {
+            document.getElementById('custModalId').value = '';
+            document.getElementById('customerModalTitle').textContent = 'Tambah Pelanggan Baru';
+            document.getElementById('custName').value = '';
+            document.getElementById('custEmail').value = '';
+            document.getElementById('custPhone').value = '';
+            document.getElementById('custAvatar').value = '';
+            document.getElementById('custPassword').value = '';
+            document.getElementById('custPassword').placeholder = 'Default: user123';
+            document.getElementById('custPasswordLabel').textContent = 'Kata Sandi Akun';
+            document.getElementById('custPasswordHelp').textContent = 'Kosongkan untuk menggunakan kata sandi default: user123';
+            document.getElementById('customerModal').classList.remove('hidden');
+        }
+
+        function openEditCustomerModal(c) {
+            document.getElementById('custModalId').value = c.id;
+            document.getElementById('customerModalTitle').textContent = 'Edit Data Pelanggan';
+            document.getElementById('custName').value = c.name || '';
+            document.getElementById('custEmail').value = c.email || '';
+            document.getElementById('custPhone').value = c.phone || '';
+            document.getElementById('custAvatar').value = c.avatar_url || '';
+            document.getElementById('custPassword').value = '';
+            document.getElementById('custPassword').placeholder = 'Kosongkan jika tidak ingin mengubah';
+            document.getElementById('custPasswordLabel').textContent = 'Ganti Kata Sandi (Opsional)';
+            document.getElementById('custPasswordHelp').textContent = 'Hanya isi jika ingin mereset/mengganti kata sandi akun pelanggan ini.';
+            document.getElementById('customerModal').classList.remove('hidden');
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.add('hidden');
+        }
+
+        function handleSaveCustomer(e) {
+            e.preventDefault();
+            const id = document.getElementById('custModalId').value;
+            const name = document.getElementById('custName').value.trim();
+            const email = document.getElementById('custEmail').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const avatar_url = document.getElementById('custAvatar').value.trim();
+            const password = document.getElementById('custPassword').value.trim();
+
+            const payload = {
+                name,
+                email,
+                phone,
+                avatar_url: avatar_url || null
+            };
+            if (id) payload.id = id;
+            if (password) payload.password = password;
+
+            const res = SentosaStore.saveCustomer(payload);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                closeCustomerModal();
+                loadCustomersTable();
+            } else {
+                SentosaStore.showToast(res.message, 'error');
+            }
+        }
+
+        function deleteCustomerConfirm(id, name) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus data pelanggan "${name}"? Tindakan ini tidak dapat dibatalkan.`)) {
+                return;
+            }
+            const res = SentosaStore.deleteCustomer(id);
+            if (res.success) {
+                SentosaStore.showToast(res.message, 'success');
+                loadCustomersTable();
+            } else {
+                SentosaStore.showToast(res.message, 'error');
             }
         }
 

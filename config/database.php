@@ -121,6 +121,12 @@ class Database
         } catch (Exception $ex) {
             // Abaikan jika sudah ada kolom avatar_url
         }
+
+        try {
+            $pdo->exec("ALTER TABLE `users` ADD COLUMN `avatar_url` VARCHAR(500) NULL AFTER `role`");
+        } catch (Exception $ex) {
+            // Abaikan jika sudah ada kolom avatar_url di tabel users
+        }
     }
 }
 

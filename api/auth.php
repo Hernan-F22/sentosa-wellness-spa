@@ -52,7 +52,8 @@ switch ($action) {
             'name'  => $user['name'],
             'email' => $user['email'],
             'phone' => $user['phone'],
-            'role'  => $user['role']
+            'role'  => $user['role'],
+            'avatar_url' => $user['avatar_url'] ?? null
         ];
 
         // Jika terapis, sertakan ID terapis & avatar_url
@@ -63,7 +64,9 @@ switch ($action) {
             if ($therapist) {
                 $_SESSION['user']['therapist_id'] = (int)$therapist['id'];
                 $_SESSION['user']['specialization'] = $therapist['specialization'];
-                $_SESSION['user']['avatar_url'] = $therapist['avatar_url'] ?? null;
+                if (!empty($therapist['avatar_url'])) {
+                    $_SESSION['user']['avatar_url'] = $therapist['avatar_url'];
+                }
             }
         }
 
@@ -197,9 +200,81 @@ switch ($action) {
         ]);
         break;
 
+    case 'update_profile':
+        if ($method !== 'POST') {
+            jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $currentUser = getCurrentUser();
+        if (!$currentUser) {
+            jsonResponse(['success' => false, 'message' => 'Sesi Anda telah berakhir. Silakan login terlebih dahulu.'], 401);
+        }
+
+        $name = trim($input['name'] ?? $currentUser['name']);
+        $email = trim($input['email'] ?? $currentUser['email']);
+        $phone = trim($input['phone'] ?? $currentUser['phone']);
+        $avatarUrl = array_key_exists('avatar_url', $input) ? (trim($input['avatar_url'] ?? '') ?: null) : ($currentUser['avatar_url'] ?? null);
+
+        if (empty($name) || empty($email) || empty($phone)) {
+            jsonResponse(['success' => false, 'message' => 'Nama, email, dan nomor telepon tidak boleh kosong.'], 400);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            jsonResponse(['success' => false, 'message' => 'Format email tidak valid.'], 400);
+        }
+
+        // Cek duplikasi email pada akun lain
+        $chkEmail = $db->prepare("SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1");
+        $chkEmail->execute([$email, $currentUser['id']]);
+        if ($chkEmail->fetch()) {
+            jsonResponse(['success' => false, 'message' => 'Email ini sudah digunakan oleh akun lain.'], 400);
+        }
+
+        // Cek duplikasi nomor telepon pada akun lain
+        $chkPhone = $db->prepare("SELECT id FROM users WHERE phone = ? AND id != ? LIMIT 1");
+        $chkPhone->execute([$phone, $currentUser['id']]);
+        if ($chkPhone->fetch()) {
+            jsonResponse(['success' => false, 'message' => 'Nomor telepon ini sudah digunakan oleh akun lain.'], 400);
+        }
+
+        // Update tabel users
+        $updateStmt = $db->prepare("UPDATE users SET name = ?, email = ?, phone = ?, avatar_url = ? WHERE id = ?");
+        $updateStmt->execute([$name, $email, $phone, $avatarUrl, $currentUser['id']]);
+
+        // Jika terapis, perbarui juga therapists.avatar_url
+        if ($currentUser['role'] === 'therapist') {
+            $tUpdate = $db->prepare("UPDATE therapists SET avatar_url = ? WHERE user_id = ?");
+            $tUpdate->execute([$avatarUrl, $currentUser['id']]);
+        }
+
+        // Perbarui data sesi
+        $_SESSION['user']['name'] = $name;
+        $_SESSION['user']['email'] = $email;
+        $_SESSION['user']['phone'] = $phone;
+        $_SESSION['user']['avatar_url'] = $avatarUrl;
+
+        jsonResponse([
+            'success' => true,
+            'message' => 'Profil berhasil diperbarui!',
+            'user'    => $_SESSION['user']
+        ]);
+        break;
+
     case 'me':
         $currentUser = getCurrentUser();
         if ($currentUser) {
+            // Ambil data terbaru dari tabel users
+            $uStmt = $db->prepare("SELECT id, name, email, phone, role, avatar_url FROM users WHERE id = ?");
+            $uStmt->execute([$currentUser['id']]);
+            $freshUser = $uStmt->fetch();
+            if ($freshUser) {
+                $currentUser['name'] = $freshUser['name'];
+                $currentUser['email'] = $freshUser['email'];
+                $currentUser['phone'] = $freshUser['phone'];
+                $currentUser['role'] = $freshUser['role'];
+                $currentUser['avatar_url'] = $freshUser['avatar_url'] ?? null;
+            }
+
             if ($currentUser['role'] === 'therapist') {
                 $tStmt = $db->prepare("SELECT id, specialization, gender, is_available, rating, avatar_url FROM therapists WHERE user_id = ?");
                 $tStmt->execute([$currentUser['id']]);
@@ -207,10 +282,13 @@ switch ($action) {
                 if ($therapist) {
                     $currentUser['therapist_id'] = (int)$therapist['id'];
                     $currentUser['specialization'] = $therapist['specialization'];
-                    $currentUser['avatar_url'] = $therapist['avatar_url'] ?? null;
-                    $_SESSION['user'] = $currentUser;
+                    if (!empty($therapist['avatar_url'])) {
+                        $currentUser['avatar_url'] = $therapist['avatar_url'];
+                    }
                 }
             }
+            $_SESSION['user'] = $currentUser;
+
             jsonResponse([
                 'success'   => true,
                 'logged_in' => true,

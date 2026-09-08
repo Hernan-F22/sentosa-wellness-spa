@@ -14,6 +14,15 @@ require_once __DIR__ . '/views/navbar.php';
 $db = Database::getConnection();
 $customerId = (int)$currentUser['id'];
 
+// Pastikan data profil & avatar pengguna selalu mutakhir dari database
+$uStmt = $db->prepare("SELECT id, name, email, phone, role, avatar_url FROM users WHERE id = ?");
+$uStmt->execute([$customerId]);
+$freshUser = $uStmt->fetch();
+if ($freshUser) {
+    $currentUser = array_merge($currentUser, $freshUser);
+    $_SESSION['user'] = $currentUser;
+}
+
 // Filter Status
 $filterStatus = $_GET['status'] ?? 'all';
 $validFilters = ['all', 'active', 'completed', 'cancelled'];
@@ -78,29 +87,47 @@ $bookings = $stmt->fetchAll();
             </div>
 
             <!-- Profile Summary Card -->
-            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-brand-950/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-stone-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="flex items-center space-x-4 sm:space-x-5">
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner">
-                        <?= strtoupper(substr($currentUser['name'], 0, 1)) ?>
+                    <div class="relative group cursor-pointer" onclick="openCustomerProfileModal()" title="Klik untuk ubah foto profil">
+                        <div id="bannerCustAvatarContainer">
+                            <?php if (!empty($currentUser['avatar_url'])): ?>
+                                <img src="<?= htmlspecialchars($currentUser['avatar_url']) ?>" alt="<?= htmlspecialchars($currentUser['name']) ?>" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-white/20 shadow-inner">
+                            <?php else: ?>
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner">
+                                    <?= strtoupper(substr($currentUser['name'], 0, 1)) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="absolute inset-0 bg-stone-900/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-[1px]">
+                            <i class="fa-solid fa-camera text-base mb-0.5"></i>
+                            <span class="text-[10px] font-semibold">Ubah</span>
+                        </div>
                     </div>
                     <div>
-                        <div class="flex items-center space-x-2">
-                            <h1 class="text-xl sm:text-2xl font-bold font-serif"><?= htmlspecialchars($currentUser['name']) ?></h1>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h1 id="bannerCustName" class="text-xl sm:text-2xl font-bold font-serif"><?= htmlspecialchars($currentUser['name']) ?></h1>
                             <span class="px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 text-[10px] font-semibold tracking-wide uppercase border border-emerald-400/30">Pelanggan</span>
+                            <button onclick="openCustomerProfileModal()" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 text-[11px] font-semibold border border-white/15 transition-colors">
+                                <i class="fa-solid fa-user-pen text-xs"></i>
+                                <span>Edit Profil & Sandi</span>
+                            </button>
                         </div>
-                        <p class="text-xs sm:text-sm text-stone-300 mt-1 flex items-center space-x-4">
-                            <span><i class="fa-regular fa-envelope mr-1.5 text-emerald-400"></i><?= htmlspecialchars($currentUser['email']) ?></span>
-                            <?php if (!empty($currentUser['phone'])): ?>
-                                <span><i class="fa-brands fa-whatsapp mr-1.5 text-emerald-400"></i><?= htmlspecialchars($currentUser['phone']) ?></span>
-                            <?php endif; ?>
+                        <p class="text-xs sm:text-sm text-stone-300 mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                            <span><i class="fa-regular fa-envelope mr-1.5 text-emerald-400"></i><span id="bannerCustEmail"><?= htmlspecialchars($currentUser['email']) ?></span></span>
+                            <span><i class="fa-brands fa-whatsapp mr-1.5 text-emerald-400"></i><span id="bannerCustPhone"><?= !empty($currentUser['phone']) ? htmlspecialchars($currentUser['phone']) : 'Belum diatur' ?></span></span>
                         </p>
                     </div>
                 </div>
 
                 <!-- Action CTA -->
-                <div class="flex items-center space-x-3">
-                    <a href="booking.php" class="px-5 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-950/20 transition-all flex items-center space-x-2">
-                        <i class="fa-solid fa-plus text-xs"></i>
+                <div class="flex items-center space-x-2.5 self-start md:self-center">
+                    <button onclick="openCustomerProfileModal()" class="inline-flex items-center justify-center space-x-2 px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs sm:text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-user-gear text-emerald-300"></i>
+                        <span>Edit Profil</span>
+                    </button>
+                    <a href="booking.php" class="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-950/20 transition-all">
+                        <i class="fa-solid fa-calendar-plus text-emerald-300"></i>
                         <span>Reservasi Baru</span>
                     </a>
                 </div>
@@ -429,6 +456,134 @@ $bookings = $stmt->fetchAll();
     </div>
 </div>
 
+<!-- ========================================================== -->
+<!-- MODAL: PROFIL & GANTI KATA SANDI MANDIRI PELANGGAN -->
+<!-- ========================================================== -->
+<div id="customerProfileModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div onclick="closeCustomerProfileModal()" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity"></div>
+
+        <div class="relative bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-stone-100 z-10 space-y-5">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg font-bold text-stone-900">Profil & Keamanan Akun</h3>
+                        <p class="text-xs text-stone-500">Perbarui data diri, foto profil, dan kata sandi Anda.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCustomerProfileModal()" class="text-stone-400 hover:text-stone-700 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tabs: Profil & Sandi -->
+            <div class="grid grid-cols-2 gap-1 p-1 bg-stone-100 rounded-xl text-xs font-semibold">
+                <button type="button" id="tabCustProfileBtn" onclick="switchCustProfileTab('profile')" class="py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold">
+                    <i class="fa-regular fa-id-badge"></i>
+                    <span>Profil & Foto</span>
+                </button>
+                <button type="button" id="tabCustPasswordBtn" onclick="switchCustProfileTab('password')" class="py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Ganti Kata Sandi</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: PROFIL & FOTO -->
+            <div id="custProfileTabContent" class="space-y-4">
+                <!-- Bagian Foto Profil -->
+                <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200/80 space-y-3">
+                    <span class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider">Foto Profil Anda</span>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative shrink-0">
+                            <div id="custAvatarPreview" class="w-16 h-16 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl font-bold font-serif shadow-md overflow-hidden border border-stone-200">
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="flex items-center space-x-2 flex-wrap gap-y-1.5">
+                                <label class="px-3 py-1.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-colors flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>Unggah Foto</span>
+                                    <input type="file" id="custAvatarFile" accept="image/*" onchange="handleCustAvatarUpload(event)" class="sr-only">
+                                </label>
+                                <button type="button" onclick="toggleCustPresetGrid()" class="px-3 py-1.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 text-xs font-semibold rounded-xl transition-colors">
+                                    Pilihan Foto
+                                </button>
+                                <button type="button" onclick="removeCustAvatar()" class="px-2.5 py-1.5 text-rose-600 hover:bg-rose-50 text-xs font-semibold rounded-xl transition-colors">
+                                    Hapus
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-stone-400">Format JPG, PNG (otomatis dikompresi ringan & tajam).</p>
+                        </div>
+                    </div>
+
+                    <!-- Grid Preset Foto Pelanggan (Collapsible) -->
+                    <div id="custPresetGridContainer" class="hidden pt-2 border-t border-stone-200/70 space-y-1.5">
+                        <span class="text-[10px] font-semibold text-stone-500 block">Pilih salah satu foto profil:</span>
+                        <div class="grid grid-cols-5 gap-2 max-h-36 overflow-y-auto p-1" id="custPresetPhotosGrid">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Data Diri -->
+                <form id="custDataForm" onsubmit="handleSaveCustProfile(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nama Lengkap</label>
+                        <input type="text" id="custProfileName" required class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Alamat Email</label>
+                        <input type="email" id="custProfileEmail" required class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nomor WhatsApp / HP</label>
+                        <input type="tel" id="custProfilePhone" required class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                    </div>
+                    <div class="pt-2 flex justify-end space-x-2 border-t border-stone-100">
+                        <button type="button" onclick="closeCustomerProfileModal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" id="custProfileSaveBtn" class="px-5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center space-x-1.5">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Simpan Profil</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB 2: GANTI KATA SANDI -->
+            <form id="custPasswordForm" onsubmit="handleSaveCustPassword(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Kata Sandi Saat Ini</label>
+                    <input type="password" id="custCurrentPass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Kata Sandi Baru</label>
+                    <input type="password" id="custNewPass" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Konfirmasi Kata Sandi Baru</label>
+                    <input type="password" id="custConfirmPass" required minlength="6" placeholder="Ulangi kata sandi baru" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div class="pt-2 flex justify-end space-x-2 border-t border-stone-100">
+                    <button type="button" onclick="closeCustomerProfileModal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="custPasswordSaveBtn" class="px-5 py-2 bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Perbarui Sandi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     function copyCode(code) {
         if (navigator.clipboard) {
@@ -568,6 +723,260 @@ $bookings = $stmt->fetchAll();
             submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-[10px]"></i> <span>Kirim Penilaian</span>';
         }
     }
+
+    // ==========================================
+    // FITUR PROFIL & GANTI KATA SANDI MANDIRI PELANGGAN
+    // ==========================================
+    let currentCustomerUser = <?= json_encode([
+        'id' => (int)$currentUser['id'],
+        'name' => $currentUser['name'],
+        'email' => $currentUser['email'],
+        'phone' => $currentUser['phone'] ?? '',
+        'avatar_url' => $currentUser['avatar_url'] ?? null,
+        'role' => $currentUser['role'] ?? 'customer'
+    ]) ?>;
+
+    let tempCustAvatarUrl = currentCustomerUser.avatar_url || null;
+
+    const PRESET_CUSTOMER_AVATARS = [
+        { name: 'Casual 1', url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80' },
+        { name: 'Casual 2', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80' },
+        { name: 'Casual 3', url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80' },
+        { name: 'Casual 4', url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80' },
+        { name: 'Casual 5', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80' }
+    ];
+
+    function openCustomerProfileModal() {
+        tempCustAvatarUrl = currentCustomerUser.avatar_url || null;
+        document.getElementById('custProfileName').value = currentCustomerUser.name || '';
+        document.getElementById('custProfileEmail').value = currentCustomerUser.email || '';
+        document.getElementById('custProfilePhone').value = currentCustomerUser.phone || '';
+        document.getElementById('custCurrentPass').value = '';
+        document.getElementById('custNewPass').value = '';
+        document.getElementById('custConfirmPass').value = '';
+
+        updateCustAvatarPreview(tempCustAvatarUrl, currentCustomerUser.name);
+
+        const presetGrid = document.getElementById('custPresetPhotosGrid');
+        if (presetGrid) {
+            presetGrid.innerHTML = PRESET_CUSTOMER_AVATARS.map(p => `
+                <div onclick="selectCustPresetAvatar('${p.url}', this)"
+                     class="cust-preset-item relative rounded-xl overflow-hidden aspect-square border-2 ${tempCustAvatarUrl === p.url ? 'border-emerald-600 ring-2 ring-emerald-600/30' : 'border-stone-200'} cursor-pointer hover:opacity-90 transition-all">
+                    <img src="${p.url}" alt="${p.name}" class="w-full h-full object-cover">
+                </div>
+            `).join('');
+        }
+
+        switchCustProfileTab('profile');
+        document.getElementById('customerProfileModal').classList.remove('hidden');
+    }
+
+    function closeCustomerProfileModal() {
+        document.getElementById('customerProfileModal').classList.add('hidden');
+    }
+
+    function switchCustProfileTab(tab) {
+        const profBtn = document.getElementById('tabCustProfileBtn');
+        const passBtn = document.getElementById('tabCustPasswordBtn');
+        const profContent = document.getElementById('custProfileTabContent');
+        const passForm = document.getElementById('custPasswordForm');
+
+        if (tab === 'profile') {
+            profBtn.className = 'py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold';
+            passBtn.className = 'py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold';
+            profContent.classList.remove('hidden');
+            passForm.classList.add('hidden');
+        } else {
+            passBtn.className = 'py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold';
+            profBtn.className = 'py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold';
+            passForm.classList.remove('hidden');
+            profContent.classList.add('hidden');
+        }
+    }
+
+    function updateCustAvatarPreview(url, name) {
+        const el = document.getElementById('custAvatarPreview');
+        const userName = name || currentCustomerUser.name || 'P';
+        if (url) {
+            el.innerHTML = `<img src="${url}" alt="${userName}" class="w-full h-full object-cover">`;
+        } else {
+            el.innerHTML = userName.charAt(0).toUpperCase();
+        }
+    }
+
+    function toggleCustPresetGrid() {
+        const el = document.getElementById('custPresetGridContainer');
+        el.classList.toggle('hidden');
+    }
+
+    function selectCustPresetAvatar(url, el) {
+        tempCustAvatarUrl = url;
+        updateCustAvatarPreview(tempCustAvatarUrl);
+        document.querySelectorAll('.cust-preset-item').forEach(item => {
+            item.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/30');
+            item.classList.add('border-stone-200');
+        });
+        if (el) {
+            el.classList.remove('border-stone-200');
+            el.classList.add('border-emerald-600', 'ring-2', 'ring-emerald-600/30');
+        }
+    }
+
+    function removeCustAvatar() {
+        tempCustAvatarUrl = null;
+        updateCustAvatarPreview(null);
+        document.querySelectorAll('.cust-preset-item').forEach(item => {
+            item.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/30');
+            item.classList.add('border-stone-200');
+        });
+    }
+
+    function handleCustAvatarUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showToast('Hanya file gambar yang didukung.', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const maxDim = 400;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxDim) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    }
+                } else {
+                    if (height > maxDim) {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                tempCustAvatarUrl = canvas.toDataURL('image/jpeg', 0.85);
+                updateCustAvatarPreview(tempCustAvatarUrl);
+            };
+            img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function handleSaveCustProfile(e) {
+        e.preventDefault();
+        const btn = document.getElementById('custProfileSaveBtn');
+        const name = document.getElementById('custProfileName').value.trim();
+        const email = document.getElementById('custProfileEmail').value.trim();
+        const phone = document.getElementById('custProfilePhone').value.trim();
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+        try {
+            const res = await fetch('api/auth.php?action=update_profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    avatar_url: tempCustAvatarUrl
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message || 'Profil berhasil diperbarui!', 'success');
+                currentCustomerUser.name = name;
+                currentCustomerUser.email = email;
+                currentCustomerUser.phone = phone;
+                currentCustomerUser.avatar_url = tempCustAvatarUrl;
+
+                // Update banner DOM live
+                document.getElementById('bannerCustName').textContent = name;
+                document.getElementById('bannerCustEmail').textContent = email;
+                document.getElementById('bannerCustPhone').textContent = phone || 'Belum diatur';
+                const bannerAvatar = document.getElementById('bannerCustAvatarContainer');
+                if (bannerAvatar) {
+                    if (tempCustAvatarUrl) {
+                        bannerAvatar.innerHTML = `<img src="${tempCustAvatarUrl}" alt="${name}" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-white/20 shadow-inner">`;
+                    } else {
+                        bannerAvatar.innerHTML = `<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner">${name.charAt(0).toUpperCase()}</div>`;
+                    }
+                }
+                closeCustomerProfileModal();
+            } else {
+                showToast(data.message || 'Gagal memperbarui profil.', 'error');
+            }
+        } catch (err) {
+            showToast('Terjadi gangguan koneksi.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>Simpan Profil</span>';
+        }
+    }
+
+    async function handleSaveCustPassword(e) {
+        e.preventDefault();
+        const curPass = document.getElementById('custCurrentPass').value;
+        const newPass = document.getElementById('custNewPass').value;
+        const confPass = document.getElementById('custConfirmPass').value;
+        const btn = document.getElementById('custPasswordSaveBtn');
+
+        if (newPass !== confPass) {
+            showToast('Konfirmasi kata sandi baru tidak sesuai.', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+        try {
+            const res = await fetch('api/auth.php?action=change_password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    current_password: curPass,
+                    new_password: newPass
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message || 'Kata sandi berhasil diperbarui!', 'success');
+                closeCustomerProfileModal();
+            } else {
+                showToast(data.message || 'Gagal mengubah kata sandi.', 'error');
+            }
+        } catch (err) {
+            showToast('Terjadi kesalahan jaringan.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-lock"></i> <span>Perbarui Sandi</span>';
+        }
+    }
+
+    // Auto-open jika query param meminta action=edit_profile
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'edit_profile') {
+            openCustomerProfileModal();
+        }
+    });
 </script>
 
 <?php require_once __DIR__ . '/views/footer.php'; ?>

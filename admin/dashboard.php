@@ -195,6 +195,9 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
                     <button onclick="switchTab('therapists')" id="navTabTherapists" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
                         <i class="fa-solid fa-user-group mr-1.5"></i> Tim Terapis
                     </button>
+                    <button onclick="switchTab('customers')" id="navTabCustomers" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-colors text-stone-300 hover:text-white hover:bg-stone-800">
+                        <i class="fa-solid fa-users mr-1.5"></i> Pelanggan
+                    </button>
                 </nav>
 
                 <!-- Right Profile & Logout -->
@@ -221,6 +224,7 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
             <button onclick="switchTab('bookings')" id="mNavBookings" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Reservasi</button>
             <button onclick="switchTab('services')" id="mNavServices" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Layanan</button>
             <button onclick="switchTab('therapists')" id="mNavTherapists" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Terapis</button>
+            <button onclick="switchTab('customers')" id="mNavCustomers" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-stone-400">Pelanggan</button>
             <button onclick="openChangePasswordModal()" class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-amber-300 bg-stone-800 flex items-center space-x-1">
                 <i class="fa-solid fa-key text-xs"></i>
                 <span>Ganti Sandi</span>
@@ -550,6 +554,74 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
             </div>
         </div>
 
+        <!-- ========================================================== -->
+        <!-- TAB 5: MANAJEMEN PELANGGAN (CUSTOMERS) -->
+        <!-- ========================================================== -->
+        <div id="tabContentCustomers" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900">Manajemen Pelanggan</h1>
+                    <p class="text-stone-500 text-xs sm:text-sm mt-0.5">Kelola akun pelanggan terdaftar, kontak WhatsApp, serta pantau riwayat dan total belanja.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-stone-400 text-xs"></i>
+                        <input type="text" id="customerSearchInput" oninput="handleCustomerSearch(this.value)" placeholder="Cari nama / WA / email..."
+                            class="pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-800 focus:outline-none w-48 sm:w-64">
+                    </div>
+                    <button onclick="openAddCustomerModal()" class="px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-user-plus text-emerald-300"></i>
+                        <span>Tambah Pelanggan</span>
+                    </button>
+                    <button onclick="loadAllCustomers()" class="px-3.5 py-2 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center space-x-1.5 shrink-0">
+                        <i class="fa-solid fa-rotate text-emerald-700"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kartu Statistik Pelanggan -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                    <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block">Total Pelanggan</span>
+                    <span class="text-2xl font-bold text-stone-900 mt-1 block" id="custStatTotal">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm">
+                    <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider block">Pelanggan Aktif Pesan</span>
+                    <span class="text-2xl font-bold text-emerald-800 mt-1 block" id="custStatActive">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm col-span-2 sm:col-span-1">
+                    <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider block">Total Belanja Selesai</span>
+                    <span class="text-xl sm:text-2xl font-bold text-blue-900 mt-1 block" id="custStatSpent">Rp 0</span>
+                </div>
+            </div>
+
+            <!-- Tabel Data Pelanggan -->
+            <div class="bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-stone-600">
+                        <thead class="bg-stone-50 uppercase tracking-wider text-[10px] text-stone-500 border-b border-stone-200">
+                            <tr>
+                                <th class="py-3.5 px-4">Profil Pelanggan</th>
+                                <th class="py-3.5 px-4">Kontak & WhatsApp</th>
+                                <th class="py-3.5 px-4 text-center">Total Pesanan</th>
+                                <th class="py-3.5 px-4">Total Belanja</th>
+                                <th class="py-3.5 px-4">Terdaftar</th>
+                                <th class="py-3.5 px-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody" class="divide-y divide-stone-100">
+                            <!-- Dynamic loaded -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="customersEmptyState" class="hidden p-10 text-center text-stone-400 text-xs">
+                    <i class="fa-solid fa-users text-3xl mb-2 text-stone-300"></i>
+                    <p>Tidak ada data pelanggan yang cocok.</p>
+                </div>
+            </div>
+        </div>
+
     </main>
 
 </div>
@@ -775,6 +847,56 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
     </div>
 </div>
 
+<!-- ========================================================== -->
+<!-- MODAL 4: ADD/EDIT CUSTOMER -->
+<!-- ========================================================== -->
+<div id="customerModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div onclick="closeCustomerModal()" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm"></div>
+        <div class="relative bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-stone-100 z-10 space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <h3 class="font-serif text-lg font-bold text-stone-900" id="customerModalTitle">Tambah Pelanggan Baru</h3>
+                <button onclick="closeCustomerModal()" class="text-stone-400 hover:text-stone-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form onsubmit="submitCustomerForm(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="custFormId">
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Nama Lengkap Pelanggan <span class="text-rose-500">*</span></label>
+                    <input type="text" id="custFormName" required placeholder="Contoh: Siti Rahma" class="w-full px-3 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:outline-none font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Email Akun <span class="text-rose-500">*</span></label>
+                    <input type="email" id="custFormEmail" required placeholder="pelanggan@gmail.com" class="w-full px-3 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:outline-none font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Nomor WhatsApp / HP <span class="text-rose-500">*</span></label>
+                    <input type="tel" id="custFormPhone" required placeholder="081234567890" class="w-full px-3 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:outline-none font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Foto Profil (URL Gambar Opsional)</label>
+                    <input type="url" id="custFormAvatar" placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:outline-none font-medium">
+                </div>
+
+                <div class="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-1.5">
+                    <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider" id="custFormPasswordLabel">Kata Sandi Akun</label>
+                    <input type="password" id="custFormPassword" placeholder="Default: user123 (Kosongkan jika tidak diubah)" minlength="6" class="w-full px-3 py-2 bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:outline-none font-medium text-xs">
+                    <span class="text-[10px] text-stone-400 block" id="custFormPasswordHelp">Kosongkan jika tidak ingin mengubah password akun pelanggan ini.</span>
+                </div>
+
+                <div class="pt-2 flex space-x-2">
+                    <button type="button" onclick="closeCustomerModal()" class="flex-1 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-semibold text-xs hover:bg-stone-50 transition-all">Batal</button>
+                    <button type="submit" id="custSubmitBtn" class="flex-1 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-900 text-white font-semibold text-xs shadow-md transition-all">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Ganti Kata Sandi Admin -->
 <div id="changePasswordModal" class="hidden fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-stone-200">
@@ -831,7 +953,7 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
 
     // Tab Switching
     function switchTab(tabId) {
-        const tabs = ['overview', 'bookings', 'services', 'therapists'];
+        const tabs = ['overview', 'bookings', 'services', 'therapists', 'customers'];
         tabs.forEach(t => {
             const content = document.getElementById(`tabContent${t.charAt(0).toUpperCase() + t.slice(1)}`);
             const navBtn = document.getElementById(`navTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
@@ -852,6 +974,7 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
         if (tabId === 'bookings') loadAllBookings();
         if (tabId === 'services') loadAllServices();
         if (tabId === 'therapists') loadAllTherapists();
+        if (tabId === 'customers') loadAllCustomers();
     }
 
     // 1. STATS & OVERVIEW LOADER
@@ -1672,6 +1795,221 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
         } finally {
             btn.disabled = false;
             btn.innerHTML = 'Simpan Sandi';
+        }
+    }
+
+    // ==========================================================
+    // 7. CUSTOMERS MANAGEMENT (ADMIN)
+    // ==========================================================
+    let cachedCustomers = [];
+    let customerSearchQuery = '';
+
+    function handleCustomerSearch(val) {
+        customerSearchQuery = val.trim().toLowerCase();
+        renderCustomersTable();
+    }
+
+    async function loadAllCustomers() {
+        try {
+            const res = await fetch('../api/customers.php');
+            const json = await res.json();
+            if (json.success && json.data) {
+                cachedCustomers = json.data;
+                renderCustomersTable();
+            } else {
+                showToast(json.message || 'Gagal memuat data pelanggan.', 'error');
+            }
+        } catch (e) {
+            showToast('Terjadi kesalahan jaringan saat memuat data pelanggan.', 'error');
+        }
+    }
+
+    function renderCustomersTable() {
+        let filtered = cachedCustomers;
+        if (customerSearchQuery) {
+            filtered = cachedCustomers.filter(c =>
+                (c.name && c.name.toLowerCase().includes(customerSearchQuery)) ||
+                (c.email && c.email.toLowerCase().includes(customerSearchQuery)) ||
+                (c.phone && c.phone.includes(customerSearchQuery))
+            );
+        }
+
+        const totalEl = document.getElementById('custStatTotal');
+        const activeEl = document.getElementById('custStatActive');
+        const spentEl = document.getElementById('custStatSpent');
+
+        if (totalEl) totalEl.textContent = cachedCustomers.length;
+        const activeCount = cachedCustomers.filter(c => Number(c.active_bookings || 0) > 0).length;
+        if (activeEl) activeEl.textContent = activeCount;
+        const totalSpentAll = cachedCustomers.reduce((sum, c) => sum + Number(c.total_spent || 0), 0);
+        if (spentEl) spentEl.textContent = 'Rp ' + Number(totalSpentAll).toLocaleString('id-ID');
+
+        const tbody = document.getElementById('customersTableBody');
+        const emptyMsg = document.getElementById('customersEmptyState');
+        if (!tbody) return;
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '';
+            if (emptyMsg) emptyMsg.classList.remove('hidden');
+            return;
+        }
+
+        if (emptyMsg) emptyMsg.classList.add('hidden');
+        tbody.innerHTML = filtered.map(c => {
+            const cleanPhone = String(c.phone || '').replace(/[^0-9]/g, '');
+            const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
+            const avatarEl = c.avatar_url
+                ? `<img src="${escapeHtml(c.avatar_url)}" alt="${escapeHtml(c.name)}" class="w-10 h-10 rounded-xl object-cover border border-stone-200 shrink-0">`
+                : `<div class="w-10 h-10 rounded-xl bg-brand-800 text-white flex items-center justify-center font-serif font-bold text-base shrink-0">${escapeHtml(c.name.charAt(0).toUpperCase())}</div>`;
+
+            const activeBadge = Number(c.active_bookings || 0) > 0
+                ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 ml-1.5">${c.active_bookings} Aktif</span>`
+                : '';
+
+            return `
+                <tr class="hover:bg-stone-50/60 transition-colors">
+                    <td class="py-3.5 px-4">
+                        <div class="flex items-center space-x-3">
+                            ${avatarEl}
+                            <div>
+                                <div class="font-bold text-stone-900 flex items-center">
+                                    <span>${escapeHtml(c.name)}</span>
+                                    ${activeBadge}
+                                </div>
+                                <span class="text-stone-400 text-[11px]">${escapeHtml(c.email)}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="space-y-1">
+                            <span class="font-medium text-stone-800 block">${escapeHtml(c.phone)}</span>
+                            <a href="https://wa.me/${waNumber}?text=Halo%20${encodeURIComponent(c.name)},%20kami%20dari%20Sentosa%20Spa" target="_blank"
+                               class="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-md transition-colors">
+                                <i class="fa-brands fa-whatsapp text-xs"></i>
+                                <span>Chat WhatsApp</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td class="py-3.5 px-4 text-center">
+                        <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg bg-stone-100 font-bold text-stone-800 text-xs">
+                            ${c.total_bookings} Pesanan
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-4 font-semibold text-stone-900">
+                        ${c.formatted_spent}
+                    </td>
+                    <td class="py-3.5 px-4 text-stone-500 text-[11px]">
+                        ${c.created_at || '-'}
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                        <div class="flex items-center justify-end space-x-1.5">
+                            <button onclick='openEditCustomerModal(${JSON.stringify(c)})' class="p-2 text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-colors" title="Edit Data Pelanggan">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <button onclick="deleteCustomerConfirm(${c.id}, '${escapeHtml(c.name)}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Pelanggan">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function openAddCustomerModal() {
+        document.getElementById('custFormId').value = '';
+        document.getElementById('customerModalTitle').textContent = 'Tambah Pelanggan Baru';
+        document.getElementById('custFormName').value = '';
+        document.getElementById('custFormEmail').value = '';
+        document.getElementById('custFormPhone').value = '';
+        document.getElementById('custFormAvatar').value = '';
+        document.getElementById('custFormPassword').value = '';
+        document.getElementById('custFormPassword').placeholder = 'Default: user123';
+        document.getElementById('custFormPasswordLabel').textContent = 'Kata Sandi Akun';
+        document.getElementById('custFormPasswordHelp').textContent = 'Kosongkan untuk menggunakan kata sandi default: user123';
+        document.getElementById('customerModal').classList.remove('hidden');
+    }
+
+    function openEditCustomerModal(c) {
+        document.getElementById('custFormId').value = c.id;
+        document.getElementById('customerModalTitle').textContent = 'Edit Data Pelanggan';
+        document.getElementById('custFormName').value = c.name || '';
+        document.getElementById('custFormEmail').value = c.email || '';
+        document.getElementById('custFormPhone').value = c.phone || '';
+        document.getElementById('custFormAvatar').value = c.avatar_url || '';
+        document.getElementById('custFormPassword').value = '';
+        document.getElementById('custFormPassword').placeholder = 'Kosongkan jika tidak diubah';
+        document.getElementById('custFormPasswordLabel').textContent = 'Ganti Kata Sandi (Opsional)';
+        document.getElementById('custFormPasswordHelp').textContent = 'Hanya isi jika ingin mereset/mengganti kata sandi akun pelanggan ini.';
+        document.getElementById('customerModal').classList.remove('hidden');
+    }
+
+    function closeCustomerModal() {
+        document.getElementById('customerModal').classList.add('hidden');
+    }
+
+    async function submitCustomerForm(e) {
+        e.preventDefault();
+        const btn = document.getElementById('custSubmitBtn');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+        const id = document.getElementById('custFormId').value;
+        const name = document.getElementById('custFormName').value.trim();
+        const email = document.getElementById('custFormEmail').value.trim();
+        const phone = document.getElementById('custFormPhone').value.trim();
+        const avatar_url = document.getElementById('custFormAvatar').value.trim();
+        const password = document.getElementById('custFormPassword').value.trim();
+
+        const payload = { name, email, phone, avatar_url: avatar_url || null };
+        if (id) payload.id = id;
+        if (password) payload.password = password;
+
+        const url = id ? '../api/customers.php?action=update' : '../api/customers.php?action=create';
+
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+                closeCustomerModal();
+                loadAllCustomers();
+            } else {
+                showToast(data.message || 'Gagal menyimpan data pelanggan.', 'error');
+            }
+        } catch (err) {
+            showToast('Terjadi kesalahan jaringan saat menyimpan pelanggan.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
+    }
+
+    async function deleteCustomerConfirm(id, name) {
+        if (!confirm(`Apakah Anda yakin ingin menghapus pelanggan "${name}"? Tindakan ini tidak dapat dibatalkan.`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch('../api/customers.php?action=delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+                loadAllCustomers();
+            } else {
+                showToast(data.message || 'Gagal menghapus pelanggan.', 'error');
+            }
+        } catch (e) {
+            showToast('Terjadi kesalahan jaringan saat menghapus pelanggan.', 'error');
         }
     }
 </script>

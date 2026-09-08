@@ -205,6 +205,10 @@ if ($currentUser['role'] === 'admin') {
                             <i class="fa-solid fa-camera text-xs"></i>
                             <span>Ganti Foto</span>
                         </button>
+                        <button onclick="openTherapistAccountModal()" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-blue-300 text-[11px] font-semibold border border-white/15 transition-colors">
+                            <i class="fa-solid fa-key text-xs"></i>
+                            <span>Akun & Sandi</span>
+                        </button>
                     </div>
                     <p class="text-xs sm:text-sm text-stone-300 mt-1 font-medium">
                         <i class="fa-solid fa-spa text-emerald-400 mr-1.5"></i><?= htmlspecialchars($therapist['specialization']) ?>
@@ -667,6 +671,95 @@ if ($currentUser['role'] === 'admin') {
     </div>
 </div>
 
+<!-- Modal Pengaturan Akun & Sandi Terapis -->
+<div id="therapistAccountModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div onclick="closeTherapistAccountModal()" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm"></div>
+        
+        <div class="relative bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-stone-100 z-10 space-y-5">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg font-bold text-stone-900">Pengaturan Akun & Sandi</h3>
+                        <p class="text-xs text-stone-500">Kelola email masuk, nomor WhatsApp, dan kata sandi Anda.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeTherapistAccountModal()" class="text-stone-400 hover:text-stone-700 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tabs: Kontak & Sandi -->
+            <div class="grid grid-cols-2 gap-1 p-1 bg-stone-100 rounded-xl text-xs font-semibold">
+                <button type="button" id="tabTherapistContactBtn" onclick="switchTherapistAccountTab('contact')" class="py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold">
+                    <i class="fa-regular fa-id-badge"></i>
+                    <span>Email & Kontak</span>
+                </button>
+                <button type="button" id="tabTherapistPasswordBtn" onclick="switchTherapistAccountTab('password')" class="py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Ganti Kata Sandi</span>
+                </button>
+            </div>
+
+            <!-- Content Tab 1: Email & Kontak -->
+            <form id="therapistContactForm" onsubmit="handleSaveTherapistContact(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+                    <input type="text" id="therapistAccountName" required value="<?= htmlspecialchars($therapist['name']) ?>" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Email Login</label>
+                    <input type="email" id="therapistAccountEmail" required value="<?= htmlspecialchars($therapist['email']) ?>" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                    <p class="text-[11px] text-stone-400 mt-1">Digunakan untuk login ke portal terapis ini.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Nomor WhatsApp / HP</label>
+                    <input type="tel" id="therapistAccountPhone" required value="<?= htmlspecialchars($therapist['phone']) ?>" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                    <p class="text-[11px] text-stone-400 mt-1">Digunakan untuk koordinasi penugasan pijat pelanggan.</p>
+                </div>
+                <div class="pt-3 border-t border-stone-100 flex justify-end space-x-2">
+                    <button type="button" onclick="closeTherapistAccountModal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="saveTherapistContactBtn" class="px-5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Simpan Kontak</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Content Tab 2: Ganti Sandi -->
+            <form id="therapistPasswordForm" onsubmit="handleSaveTherapistPassword(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Kata Sandi Saat Ini</label>
+                    <input type="password" id="therapistCurrentPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Kata Sandi Baru</label>
+                    <input type="password" id="therapistNewPassword" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Konfirmasi Kata Sandi Baru</label>
+                    <input type="password" id="therapistConfirmPassword" required minlength="6" placeholder="Ulangi kata sandi baru" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none font-medium">
+                </div>
+                <div class="pt-3 border-t border-stone-100 flex justify-end space-x-2">
+                    <button type="button" onclick="closeTherapistAccountModal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="saveTherapistPasswordBtn" class="px-5 py-2 bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Perbarui Kata Sandi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     // 1. Toggle Ketersediaan Kerja Terapis
     async function toggleTherapistAvailability(therapistId) {
@@ -963,6 +1056,115 @@ if ($currentUser['role'] === 'admin') {
             }
         } catch (e) {
             showToast('Terjadi gangguan koneksi.', 'error');
+        }
+    }
+
+    // ==========================================
+    // FITUR AKUN & KATA SANDI MANDIRI TERAPIS
+    // ==========================================
+    function openTherapistAccountModal() {
+        document.getElementById('therapistCurrentPassword').value = '';
+        document.getElementById('therapistNewPassword').value = '';
+        document.getElementById('therapistConfirmPassword').value = '';
+        switchTherapistAccountTab('contact');
+        document.getElementById('therapistAccountModal').classList.remove('hidden');
+    }
+
+    function closeTherapistAccountModal() {
+        document.getElementById('therapistAccountModal').classList.add('hidden');
+    }
+
+    function switchTherapistAccountTab(tab) {
+        const contactBtn = document.getElementById('tabTherapistContactBtn');
+        const passBtn = document.getElementById('tabTherapistPasswordBtn');
+        const contactForm = document.getElementById('therapistContactForm');
+        const passForm = document.getElementById('therapistPasswordForm');
+
+        if (tab === 'contact') {
+            contactBtn.className = 'py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold';
+            passBtn.className = 'py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold';
+            contactForm.classList.remove('hidden');
+            passForm.classList.add('hidden');
+        } else {
+            passBtn.className = 'py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold';
+            contactBtn.className = 'py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold';
+            passForm.classList.remove('hidden');
+            contactForm.classList.add('hidden');
+        }
+    }
+
+    async function handleSaveTherapistContact(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveTherapistContactBtn');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+        const name = document.getElementById('therapistAccountName').value.trim();
+        const email = document.getElementById('therapistAccountEmail').value.trim();
+        const phone = document.getElementById('therapistAccountPhone').value.trim();
+
+        try {
+            const res = await fetch('api/auth.php?action=update_profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ name, email, phone })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message || 'Kontak berhasil diperbarui!', 'success');
+                closeTherapistAccountModal();
+                setTimeout(() => window.location.reload(), 600);
+            } else {
+                showToast(data.message || 'Gagal memperbarui profil.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = origText;
+            }
+        } catch (err) {
+            showToast('Terjadi kesalahan jaringan.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
+    }
+
+    async function handleSaveTherapistPassword(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveTherapistPasswordBtn');
+        const origText = btn.innerHTML;
+
+        const current_password = document.getElementById('therapistCurrentPassword').value;
+        const new_password = document.getElementById('therapistNewPassword').value;
+        const confirm_password = document.getElementById('therapistConfirmPassword').value;
+
+        if (new_password !== confirm_password) {
+            showToast('Konfirmasi kata sandi baru tidak cocok.', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
+
+        try {
+            const res = await fetch('api/auth.php?action=change_password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ current_password, new_password, confirm_password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message || 'Kata sandi berhasil diubah!', 'success');
+                closeTherapistAccountModal();
+            } else {
+                showToast(data.message || 'Gagal mengubah kata sandi.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = origText;
+            }
+        } catch (err) {
+            showToast('Terjadi kesalahan jaringan.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = origText;
         }
     }
 </script>
