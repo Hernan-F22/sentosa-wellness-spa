@@ -23,6 +23,8 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SheetJS (Excel .xlsx Export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -245,10 +247,16 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
                     <h1 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900">Ringkasan Metrik & Finansial</h1>
                     <p class="text-stone-500 text-xs sm:text-sm mt-0.5">Pemantauan real-time performa bisnis dan reservasi harian Sentosa Spa.</p>
                 </div>
-                <button onclick="loadDashboardStats()" class="self-start sm:self-auto px-4 py-2 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center space-x-2">
-                    <i class="fa-solid fa-rotate text-emerald-700" id="refreshStatsIcon"></i>
-                    <span>Perbarui Data</span>
-                </button>
+                <div class="flex items-center space-x-2.5 self-start sm:self-auto flex-wrap gap-y-2">
+                    <button onclick="loadDashboardStats()" class="px-4 py-2 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-rotate text-emerald-700" id="refreshStatsIcon"></i>
+                        <span>Perbarui Data</span>
+                    </button>
+                    <button onclick="openExportModal()" class="px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-900/15 transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-file-excel text-emerald-300 text-sm"></i>
+                        <span>Export Laporan Excel</span>
+                    </button>
+                </div>
             </div>
 
             <!-- KPI Metric Cards Grid -->
@@ -940,6 +948,90 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
 </div>
 
 <!-- ========================================================== -->
+<!-- MODAL: EXPORT LAPORAN KEUANGAN EXCEL -->
+<!-- ========================================================== -->
+<div id="exportReportModal" class="hidden fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-stone-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid fa-file-excel text-emerald-700"></i>
+                </div>
+                <div>
+                    <h3 class="font-serif font-bold text-stone-900 text-lg">Export Laporan Keuangan</h3>
+                    <p class="text-xs text-stone-500">Unduh data transaksi & bagi hasil dalam format Excel (.xlsx) rapih.</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 flex items-center justify-center text-sm transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <!-- Filter Periode -->
+            <div>
+                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Pilih Periode Transaksi</label>
+                <select id="exportPeriodFilter" onchange="updateExportSummaryPreview()" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none font-medium">
+                    <option value="all">Semua Periode (Keseluruhan Riwayat)</option>
+                    <option value="this_month">Bulan Ini</option>
+                    <option value="last_30_days">30 Hari Terakhir</option>
+                    <option value="last_7_days">7 Hari Terakhir</option>
+                    <option value="today">Hari Ini Saja</option>
+                </select>
+            </div>
+
+            <!-- Filter Status Pembayaran -->
+            <div>
+                <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Status Pembayaran</label>
+                <select id="exportPaymentFilter" onchange="updateExportSummaryPreview()" class="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-brand-800 focus:bg-white focus:outline-none font-medium">
+                    <option value="paid" selected>Hanya Pembayaran Lunas (Paid) - Rekomendasi Finansial</option>
+                    <option value="all">Semua Status (Lunas & Belum Lunas)</option>
+                    <option value="unpaid">Hanya Belum Lunas (Unpaid)</option>
+                </select>
+            </div>
+
+            <!-- Preview Ringkasan Finansial yang akan di-export -->
+            <div class="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-100 space-y-2">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-900 block">Ringkasan Data yang Akan Diekspor:</span>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <span class="text-stone-500 block text-[11px]">Total Transaksi:</span>
+                        <span class="font-bold text-stone-800" id="expSummaryCount">0 Transaksi</span>
+                    </div>
+                    <div>
+                        <span class="text-stone-500 block text-[11px]">Total Omset Kotor:</span>
+                        <span class="font-bold text-emerald-900" id="expSummaryGross">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-stone-500 block text-[11px]">Bagi Hasil Terapis (60%):</span>
+                        <span class="font-semibold text-stone-700" id="expSummaryTherapist">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-stone-500 block text-[11px]">Pendapatan Bersih Klinik (40%):</span>
+                        <span class="font-bold text-emerald-800" id="expSummaryNet">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-[11px] text-stone-400">
+                <i class="fa-solid fa-circle-info mr-1 text-emerald-600"></i> File Excel (.xlsx) otomatis dilengkapi judul resmi, kolom proporsional, format angka akuntansi, dan baris total keseluruhan.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="pt-2 flex space-x-2 border-t border-stone-100">
+                <button type="button" onclick="closeExportModal()" class="flex-1 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="executeExportExcel()" id="btnDoExportExcel" class="flex-1 py-2.5 bg-brand-800 hover:bg-brand-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-file-arrow-down text-emerald-200"></i>
+                    <span>Unduh Excel (.xlsx)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================== -->
 <!-- JAVASCRIPT LOGIC ADMIN PANEL -->
 <!-- ========================================================== -->
 <script>
@@ -1061,6 +1153,288 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
         } finally {
             if (icon) icon.classList.remove('fa-spin');
         }
+    }
+
+    // ==========================================
+    // FITUR EXPORT LAPORAN KEUANGAN KE EXCEL (.XLSX)
+    // ==========================================
+    let cachedExportBookings = null;
+
+    async function fetchExportBookings() {
+        if (!cachedExportBookings) {
+            try {
+                const res = await fetch('../api/booking.php');
+                const json = await res.json();
+                if (json.success) {
+                    cachedExportBookings = json.data || [];
+                } else {
+                    cachedExportBookings = [];
+                }
+            } catch (e) {
+                cachedExportBookings = [];
+            }
+        }
+        return cachedExportBookings;
+    }
+
+    async function openExportModal() {
+        document.getElementById('exportReportModal').classList.remove('hidden');
+        document.getElementById('expSummaryCount').textContent = 'Memuat...';
+        await fetchExportBookings();
+        updateExportSummaryPreview();
+    }
+
+    function closeExportModal() {
+        document.getElementById('exportReportModal').classList.add('hidden');
+    }
+
+    function getFilteredExportData() {
+        if (!cachedExportBookings) return [];
+        const period = document.getElementById('exportPeriodFilter').value;
+        const payment = document.getElementById('exportPaymentFilter').value;
+
+        const now = new Date();
+        const todayStr = now.toISOString().slice(0, 10);
+
+        return cachedExportBookings.filter(b => {
+            // Payment filter
+            if (payment === 'paid' && b.payment_status !== 'paid') return false;
+            if (payment === 'unpaid' && b.payment_status !== 'unpaid') return false;
+
+            // Period filter
+            const bDateStr = (b.schedule_datetime || b.created_at || '').slice(0, 10);
+            const bDate = new Date(b.schedule_datetime || b.created_at);
+
+            if (period === 'today') {
+                return bDateStr === todayStr;
+            } else if (period === 'last_7_days') {
+                const diffTime = now - bDate;
+                const diffDays = diffTime / (1000 * 3600 * 24);
+                return diffDays <= 7 && diffDays >= 0;
+            } else if (period === 'last_30_days') {
+                const diffTime = now - bDate;
+                const diffDays = diffTime / (1000 * 3600 * 24);
+                return diffDays <= 30 && diffDays >= 0;
+            } else if (period === 'this_month') {
+                return bDate.getFullYear() === now.getFullYear() && bDate.getMonth() === now.getMonth();
+            }
+            return true;
+        });
+    }
+
+    function formatRupiahLocal(val) {
+        return 'Rp ' + Number(val).toLocaleString('id-ID');
+    }
+
+    function updateExportSummaryPreview() {
+        const bookings = getFilteredExportData();
+        let gross = 0;
+        let therapist = 0;
+        let net = 0;
+
+        bookings.forEach(b => {
+            const price = Number(b.total_price) || 0;
+            gross += price;
+            therapist += Math.round(price * 0.60);
+            net += Math.round(price * 0.40);
+        });
+
+        document.getElementById('expSummaryCount').textContent = `${bookings.length} Transaksi`;
+        document.getElementById('expSummaryGross').textContent = formatRupiahLocal(gross);
+        document.getElementById('expSummaryTherapist').textContent = formatRupiahLocal(therapist);
+        document.getElementById('expSummaryNet').textContent = formatRupiahLocal(net);
+    }
+
+    function executeExportExcel() {
+        const bookings = getFilteredExportData();
+        if (bookings.length === 0) {
+            showToast('Tidak ada data transaksi pada filter yang dipilih.', 'warning');
+            return;
+        }
+
+        const periodSelect = document.getElementById('exportPeriodFilter');
+        const periodText = periodSelect.options[periodSelect.selectedIndex].text;
+        const paymentSelect = document.getElementById('exportPaymentFilter');
+        const paymentText = paymentSelect.options[paymentSelect.selectedIndex].text;
+
+        const now = new Date();
+        const exportTimeStr = now.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }) + ', Pukul ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+        let totalGross = 0;
+        let totalTherapist = 0;
+        let totalNet = 0;
+        let paidCount = 0;
+
+        bookings.forEach(b => {
+            const price = Number(b.total_price) || 0;
+            totalGross += price;
+            totalTherapist += Math.round(price * 0.60);
+            totalNet += Math.round(price * 0.40);
+            if (b.payment_status === 'paid') paidCount++;
+        });
+
+        const rows = [
+            ["SENTOSA SPA - LAPORAN KEUANGAN & TRANSAKSI RESERVASI"],
+            ["Layanan Home Service (Panggilan) & Wellness"],
+            [`Dicetak Pada: ${exportTimeStr} | Filter Periode: ${periodText} | Status: ${paymentText}`],
+            [],
+            ["RINGKASAN EKSEKUTIF KEUANGAN"],
+            ["Parameter Indikator", "Nilai / Jumlah", "Keterangan"],
+            ["Total Transaksi Terdata", bookings.length + " Transaksi", "Jumlah pesanan dalam filter"],
+            ["Total Transaksi Lunas", paidCount + " Transaksi", "Pesanan berstatus pembayaran lunas"],
+            ["Total Omset Kotor (Gross)", totalGross, "Akumulasi seluruh nilai pesanan"],
+            ["Total Hak Komisi Terapis (60%)", totalTherapist, "Bagi hasil untuk mitra terapis"],
+            ["Total Pendapatan Bersih Sentosa Spa (40%)", totalNet, "Laba bersih operasional klinik"],
+            [],
+            ["TABEL RINCIAN TRANSAKSI KEUANGAN"],
+            [
+                "No",
+                "Kode Booking",
+                "Waktu Layanan",
+                "Nama Pelanggan",
+                "No. WhatsApp",
+                "Alamat Lokasi",
+                "Paket Layanan",
+                "Durasi",
+                "Terapis Bertugas",
+                "Tipe Layanan",
+                "Status Sesi",
+                "Status Bayar",
+                "Pendapatan Kotor (Rp)",
+                "Komisi Terapis 60% (Rp)",
+                "Bersih Sentosa Spa 40% (Rp)"
+            ]
+        ];
+
+        bookings.forEach((b, idx) => {
+            const price = Number(b.total_price) || 0;
+            const therapistShare = Math.round(price * 0.60);
+            const clinicShare = Math.round(price * 0.40);
+            const durationText = (b.duration_minutes || b.duration || 60) + ' Menit';
+            const typeText = (b.booking_type === 'home_service') ? 'Home Service (Panggilan)' : 'Klinik';
+
+            rows.push([
+                idx + 1,
+                b.booking_code || '-',
+                b.schedule_formatted || b.schedule_datetime,
+                b.customer_name || 'Pelanggan',
+                b.customer_phone || '-',
+                b.address || 'Di Lokasi Pelanggan',
+                b.service_name || '-',
+                durationText,
+                b.therapist_name || 'Belum Ditentukan',
+                typeText,
+                b.status ? b.status.toUpperCase() : '-',
+                b.payment_status === 'paid' ? 'LUNAS (PAID)' : 'BELUM LUNAS (UNPAID)',
+                price,
+                therapistShare,
+                clinicShare
+            ]);
+        });
+
+        // Baris Total di paling bawah
+        rows.push([
+            "TOTAL KESELURUHAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            totalGross,
+            totalTherapist,
+            totalNet
+        ]);
+
+        if (typeof XLSX !== 'undefined') {
+            const ws = XLSX.utils.aoa_to_sheet(rows);
+
+            // Merges
+            ws['!merges'] = [
+                { s: { r: 0, c: 0 }, e: { r: 0, c: 14 } }, // Title
+                { s: { r: 1, c: 0 }, e: { r: 1, c: 14 } }, // Subtitle
+                { s: { r: 2, c: 0 }, e: { r: 2, c: 14 } }, // Info
+                { s: { r: 4, c: 0 }, e: { r: 4, c: 2 } },  // Ringkasan header
+                { s: { r: 12, c: 0 }, e: { r: 12, c: 14 } }, // Rincian header
+                { s: { r: rows.length - 1, c: 0 }, e: { r: rows.length - 1, c: 11 } } // Total label merge
+            ];
+
+            // Column Widths
+            ws['!cols'] = [
+                { wch: 6 },  // No
+                { wch: 20 }, // Kode Booking
+                { wch: 22 }, // Waktu Layanan
+                { wch: 24 }, // Pelanggan
+                { wch: 16 }, // WhatsApp
+                { wch: 36 }, // Alamat
+                { wch: 32 }, // Layanan
+                { wch: 14 }, // Durasi
+                { wch: 22 }, // Terapis
+                { wch: 25 }, // Tipe Layanan
+                { wch: 18 }, // Status Sesi
+                { wch: 24 }, // Status Bayar
+                { wch: 24 }, // Pendapatan Kotor
+                { wch: 24 }, // Komisi Terapis
+                { wch: 26 }  // Bersih Klinik
+            ];
+
+            // Format number cells
+            for (let R = 6; R < rows.length; ++R) {
+                for (let C = 0; C <= 14; ++C) {
+                    const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (!ws[cellRef]) continue;
+                    if (typeof ws[cellRef].v === 'number') {
+                        ws[cellRef].z = '#,##0';
+                    }
+                }
+            }
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Laporan Keuangan");
+
+            const dateSlug = now.toISOString().slice(0, 10);
+            const fileName = `Laporan_Keuangan_Sentosa_Spa_${dateSlug}.xlsx`;
+
+            XLSX.writeFile(wb, fileName);
+            showToast('Laporan Keuangan Excel (.xlsx) berhasil diunduh!', 'success');
+            closeExportModal();
+        } else {
+            downloadCSVFallback(rows);
+        }
+    }
+
+    function downloadCSVFallback(rows) {
+        let csvContent = "\uFEFF"; // UTF-8 BOM
+        rows.forEach(r => {
+            const line = r.map(val => {
+                if (val === null || val === undefined) return '""';
+                let str = String(val).replace(/"/g, '""');
+                return `"${str}"`;
+            }).join(';');
+            csvContent += line + "\r\n";
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        const dateSlug = new Date().toISOString().slice(0, 10);
+        link.setAttribute("download", `Laporan_Keuangan_Sentosa_Spa_${dateSlug}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Laporan CSV/Excel berhasil diunduh.', 'success');
+        closeExportModal();
     }
 
     // 2. BOOKINGS MANAGEMENT
