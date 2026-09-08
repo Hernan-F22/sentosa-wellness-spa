@@ -66,8 +66,8 @@
                         ${currentUser ? `
                             <div class="relative group">
                                 <button class="flex items-center space-x-2.5 px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200/80 transition-colors text-stone-800 text-sm font-medium">
-                                    <span class="w-7 h-7 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold uppercase">
-                                        ${currentUser.name.charAt(0)}
+                                    <span class="w-7 h-7 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold uppercase overflow-hidden">
+                                        ${currentUser.avatar_url ? `<img src="${currentUser.avatar_url}" alt="${currentUser.name}" class="w-full h-full object-cover">` : currentUser.name.charAt(0)}
                                     </span>
                                     <span class="max-w-[120px] truncate">${currentUser.name}</span>
                                     <i class="fa-solid fa-chevron-down text-xs text-stone-500"></i>

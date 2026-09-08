@@ -19,7 +19,7 @@ $therapistsStmt = $db->query("SELECT t.*, u.name, u.phone, COUNT(r.id) as total_
                               FROM therapists t 
                               JOIN users u ON t.user_id = u.id 
                               LEFT JOIN reviews r ON t.id = r.therapist_id
-                              GROUP BY t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, t.created_at, u.name, u.phone
+                              GROUP BY t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, t.avatar_url, t.created_at, u.name, u.phone
                               ORDER BY t.is_available DESC, t.rating DESC");
 $allTherapists = $therapistsStmt->fetchAll();
 
@@ -225,8 +225,12 @@ $currentUser = getCurrentUser();
                                     data-available="<?= $th['is_available'] ?>">
                                     <input type="radio" name="selected_therapist" value="<?= $th['id'] ?>" class="sr-only" <?= $isThSelected ? 'checked' : '' ?> <?= ($th['is_available'] == 0) ? 'disabled' : '' ?>>
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-11 h-11 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-base font-bold font-serif shrink-0">
-                                            <?= substr($th['name'], 0, 1) ?>
+                                        <div class="w-11 h-11 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-base font-bold font-serif shrink-0 overflow-hidden">
+                                            <?php if (!empty($th['avatar_url'])): ?>
+                                                <img src="<?= htmlspecialchars($th['avatar_url']) ?>" alt="<?= htmlspecialchars($th['name']) ?>" class="w-full h-full object-cover">
+                                            <?php else: ?>
+                                                <?= substr($th['name'], 0, 1) ?>
+                                            <?php endif; ?>
                                         </div>
                                         <div>
                                             <div class="flex items-center space-x-2">

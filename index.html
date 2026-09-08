@@ -476,8 +476,8 @@
                 return `
                 <div class="p-6 rounded-3xl bg-stone-50 border border-stone-200 hover:border-emerald-700 hover:shadow-xl transition-all text-center flex flex-col items-center">
                     <div class="relative mb-4">
-                        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white flex items-center justify-center text-3xl font-serif font-bold shadow-md">
-                            ${t.name.charAt(0)}
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white flex items-center justify-center text-3xl font-serif font-bold shadow-md overflow-hidden">
+                            ${t.avatar_url ? `<img src="${t.avatar_url}" alt="${t.name}" class="w-full h-full object-cover">` : t.name.charAt(0)}
                         </div>
                         <span class="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md ${genderBadge}" title="Gender: ${t.gender === 'female' ? 'Wanita' : 'Pria'}">
                             <i class="fa-solid ${genderIcon}"></i>

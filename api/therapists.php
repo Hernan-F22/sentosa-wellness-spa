@@ -22,7 +22,7 @@ if ($method === 'GET') {
     $gender = $_GET['gender'] ?? '';
     $availableOnly = isset($_GET['available_only']) ? (int)$_GET['available_only'] : 0;
 
-    $query = "SELECT t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating,
+    $query = "SELECT t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, t.avatar_url,
                      u.name, u.phone, u.email,
                      COUNT(r.id) as total_reviews
               FROM therapists t
@@ -40,7 +40,7 @@ if ($method === 'GET') {
         $params[] = $gender;
     }
 
-    $query .= " GROUP BY t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, u.name, u.phone, u.email";
+    $query .= " GROUP BY t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, t.avatar_url, u.name, u.phone, u.email";
     $query .= " ORDER BY t.is_available DESC, t.rating DESC, u.name ASC";
 
     $stmt = $db->prepare($query);
@@ -67,7 +67,48 @@ if (!$user) {
     jsonResponse(['success' => false, 'message' => 'Silakan login terlebih dahulu.'], 401);
 }
 
-// --- 2. Toggle Status Ketersediaan (is_available) ---
+// --- 2. Update Foto Profil Terapis ---
+if ($action === 'update_photo') {
+    $therapistId = (int)($input['therapist_id'] ?? ($input['id'] ?? 0));
+    $avatarUrl = trim($input['avatar_url'] ?? '');
+
+    if ($therapistId <= 0 && $user['role'] === 'therapist') {
+        $tStmt = $db->prepare("SELECT id FROM therapists WHERE user_id = ?");
+        $tStmt->execute([$user['id']]);
+        $therapistId = (int)$tStmt->fetchColumn();
+    }
+
+    if ($therapistId <= 0) {
+        jsonResponse(['success' => false, 'message' => 'ID terapis tidak valid.'], 400);
+    }
+
+    // Hanya admin atau terapis bersangkutan yang boleh mengubah foto
+    if ($user['role'] !== 'admin') {
+        $checkOwner = $db->prepare("SELECT id FROM therapists WHERE id = ? AND user_id = ?");
+        $checkOwner->execute([$therapistId, $user['id']]);
+        if (!$checkOwner->fetch()) {
+            jsonResponse(['success' => false, 'message' => 'Akses ditolak.'], 403);
+        }
+    }
+
+    $dbAvatar = empty($avatarUrl) ? null : $avatarUrl;
+
+    $updateStmt = $db->prepare("UPDATE therapists SET avatar_url = ? WHERE id = ?");
+    $updateStmt->execute([$dbAvatar, $therapistId]);
+
+    // Jika terapis sendiri yang mengubah, sinkronkan session PHP
+    if ($user['role'] === 'therapist') {
+        $_SESSION['user']['avatar_url'] = $dbAvatar;
+    }
+
+    jsonResponse([
+        'success'    => true,
+        'message'    => 'Foto profil berhasil diperbarui.',
+        'avatar_url' => $dbAvatar
+    ]);
+}
+
+// --- 3. Toggle Status Ketersediaan (is_available) ---
 if ($action === 'toggle_availability' || $action === 'toggle_status') {
     $therapistId = (int)($input['therapist_id'] ?? ($input['id'] ?? 0));
 
@@ -247,6 +288,12 @@ if ($action === 'update' && $user['role'] === 'admin') {
         // Catatan: Rating terapis tidak dapat diubah manual oleh admin, melainkan dihitung murni dari ulasan pelanggan
         $tUpdate = $db->prepare("UPDATE therapists SET specialization = ?, gender = ?, is_available = ? WHERE id = ?");
         $tUpdate->execute([$specialization, $gender, $isAvailable, $therapistId]);
+
+        if (isset($input['avatar_url'])) {
+            $avatarVal = trim($input['avatar_url']);
+            $dbAvatar = empty($avatarVal) ? null : $avatarVal;
+            $db->prepare("UPDATE therapists SET avatar_url = ? WHERE id = ?")->execute([$dbAvatar, $therapistId]);
+        }
 
         $db->commit();
 

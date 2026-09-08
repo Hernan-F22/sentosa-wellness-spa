@@ -476,6 +476,7 @@
 
             return {
                 ...t,
+                avatar_url: t.avatar_url || user.avatar_url || null,
                 name: user.name || 'Terapis',
                 email: user.email || '',
                 phone: user.phone || '',
@@ -496,6 +497,36 @@
         return therapists.find(t => t.user_id == userId) || null;
     }
 
+    function updateTherapistPhoto(therapistId, photoUrl) {
+        initStore();
+        const therapists = getItem('therapists', []);
+        const users = getItem('users', []);
+        const tIndex = therapists.findIndex(t => t.id == therapistId);
+
+        if (tIndex !== -1) {
+            const cleanUrl = photoUrl ? String(photoUrl).trim() : null;
+            therapists[tIndex].avatar_url = cleanUrl;
+
+            // Perbarui di array users jika terhubung
+            const uIndex = users.findIndex(u => u.id == therapists[tIndex].user_id);
+            if (uIndex !== -1) {
+                users[uIndex].avatar_url = cleanUrl;
+            }
+
+            // Perbarui sesi currentUser di localStorage jika yang aktif adalah terapis ini
+            const currentUser = getCurrentUser();
+            if (currentUser && (currentUser.therapist_id == therapistId || currentUser.id == therapists[tIndex].user_id)) {
+                currentUser.avatar_url = cleanUrl;
+                setCurrentUser(currentUser);
+            }
+
+            setItem('therapists', therapists);
+            setItem('users', users);
+            return { success: true, avatar_url: cleanUrl, message: 'Foto profil terapis berhasil disimpan.' };
+        }
+        return { success: false, message: 'Data terapis tidak ditemukan.' };
+    }
+
     function saveTherapist(data) {
         initStore();
         const therapists = getItem('therapists', []);
@@ -514,11 +545,17 @@
                     if (data.password && data.password.trim().length > 0) {
                         users[uIndex].password = data.password.trim();
                     }
+                    if (data.avatar_url !== undefined) {
+                        users[uIndex].avatar_url = data.avatar_url || null;
+                    }
                 }
                 therapists[tIndex].specialization = data.specialization || t.specialization;
                 therapists[tIndex].gender = data.gender || t.gender;
                 if (data.is_available !== undefined) {
                     therapists[tIndex].is_available = data.is_available;
+                }
+                if (data.avatar_url !== undefined) {
+                    therapists[tIndex].avatar_url = data.avatar_url || null;
                 }
                 setItem('users', users);
                 setItem('therapists', therapists);
@@ -928,6 +965,7 @@
         getTherapists,
         getTherapistById,
         getTherapistByUserId,
+        updateTherapistPhoto,
         saveTherapist,
         deleteTherapist,
         toggleTherapistAvailability,

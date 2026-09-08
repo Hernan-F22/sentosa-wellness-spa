@@ -1410,8 +1410,8 @@ $pageTitle = 'Admin Dashboard - ' . APP_NAME;
                             <div>
                                 <div class="flex items-start justify-between mb-4">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-12 h-12 rounded-full bg-brand-800 text-white flex items-center justify-center font-serif text-lg font-bold">
-                                            ${escapeHtml(t.name.charAt(0))}
+                                        <div class="w-12 h-12 rounded-full bg-brand-800 text-white flex items-center justify-center font-serif text-lg font-bold overflow-hidden">
+                                            ${t.avatar_url ? `<img src="${escapeHtml(t.avatar_url)}" alt="${escapeHtml(t.name)}" class="w-full h-full object-cover">` : escapeHtml(t.name.charAt(0))}
                                         </div>
                                         <div>
                                             <h4 class="font-bold text-stone-900 text-sm">${escapeHtml(t.name)}</h4>

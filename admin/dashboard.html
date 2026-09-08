@@ -957,8 +957,8 @@
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center font-bold text-lg font-serif">
-                                    ${t.name.charAt(0)}
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center font-bold text-lg font-serif shrink-0 overflow-hidden">
+                                    ${t.avatar_url ? `<img src="${t.avatar_url}" alt="${t.name}" class="w-full h-full object-cover">` : t.name.charAt(0)}
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-stone-900 text-sm">${t.name}</h4>

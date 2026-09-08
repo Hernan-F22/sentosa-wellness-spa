@@ -19,7 +19,7 @@ $therapistsStmt = $db->query("SELECT t.*, u.name, u.phone, COUNT(r.id) as total_
                               FROM therapists t 
                               JOIN users u ON t.user_id = u.id 
                               LEFT JOIN reviews r ON t.id = r.therapist_id
-                              GROUP BY t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, t.created_at, u.name, u.phone
+                              GROUP BY t.id, t.user_id, t.specialization, t.gender, t.is_available, t.rating, t.avatar_url, t.created_at, u.name, u.phone
                               ORDER BY t.is_available DESC, t.rating DESC");
 $therapists = $therapistsStmt->fetchAll();
 ?>
@@ -251,8 +251,12 @@ $therapists = $therapistsStmt->fetchAll();
 
                     <!-- Avatar with Gender Badge -->
                     <div class="relative mb-4">
-                        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-800 to-emerald-600 text-white flex items-center justify-center text-3xl font-serif font-bold shadow-md">
-                            <?= substr($t['name'], 0, 1) ?>
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-800 to-emerald-600 text-white flex items-center justify-center text-3xl font-serif font-bold shadow-md overflow-hidden">
+                            <?php if (!empty($t['avatar_url'])): ?>
+                                <img src="<?= htmlspecialchars($t['avatar_url']) ?>" alt="<?= htmlspecialchars($t['name']) ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <?= substr($t['name'], 0, 1) ?>
+                            <?php endif; ?>
                         </div>
                         <span class="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md <?= ($t['gender'] === 'female') ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700' ?>" title="Gender: <?= ($t['gender'] === 'female') ? 'Wanita' : 'Pria' ?>">
                             <i class="fa-solid <?= ($t['gender'] === 'female') ? 'fa-venus' : 'fa-mars' ?>"></i>

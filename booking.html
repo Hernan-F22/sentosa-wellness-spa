@@ -527,8 +527,8 @@
                     onclick="handleTherapistSelect(${t.id})">
                     <input type="radio" name="selected_therapist" value="${t.id}" ${isSelected ? 'checked' : ''} ${isAvailable ? '' : 'disabled'} class="sr-only">
                     <div class="flex items-center space-x-3.5">
-                        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white flex items-center justify-center text-base font-bold font-serif shadow-sm shrink-0">
-                            ${initial}
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white flex items-center justify-center text-base font-bold font-serif shadow-sm shrink-0 overflow-hidden">
+                            ${t.avatar_url ? `<img src="${t.avatar_url}" alt="${t.name}" class="w-full h-full object-cover">` : initial}
                         </div>
                         <div>
                             <div class="flex items-center space-x-2">

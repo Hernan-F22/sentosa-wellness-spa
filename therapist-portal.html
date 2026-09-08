@@ -178,6 +178,112 @@
         </div>
     </div>
 
+    <!-- Modal Ganti Foto Profil Terapis -->
+    <div id="changePhotoModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div onclick="closeChangePhotoModal()" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm"></div>
+            
+            <div class="relative bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-stone-100 z-10 space-y-5">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-lg font-bold text-stone-900">Ganti Foto Profil</h3>
+                            <p class="text-xs text-stone-500">Perbarui foto profil agar pelanggan mudah mengenali Anda.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeChangePhotoModal()" class="text-stone-400 hover:text-stone-700 p-1 rounded-lg">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Preview Area -->
+                <div class="flex items-center space-x-4 p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
+                    <div class="relative shrink-0">
+                        <div id="modalPhotoPreview" class="w-20 h-20 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-3xl font-bold font-serif shadow-md overflow-hidden border border-stone-200">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <span class="font-bold text-stone-800 text-sm block" id="modalTherapistName">Terapis</span>
+                        <p class="text-stone-500 text-[11px] leading-relaxed">Foto ini akan tampil pada portal tugas, kartu reservasi pelanggan, dan profil terapis berlisensi.</p>
+                        <span id="photoStatusNotice" class="text-[11px] text-emerald-700 font-semibold block"></span>
+                    </div>
+                </div>
+
+                <!-- Tabs: Upload, Preset, URL -->
+                <div>
+                    <div class="grid grid-cols-3 gap-1 p-1 bg-stone-100 rounded-xl mb-4 text-xs font-semibold">
+                        <button type="button" id="tabUploadBtn" onclick="switchPhotoTab('upload')" class="py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5">
+                            <i class="fa-solid fa-upload"></i>
+                            <span>Upload File</span>
+                        </button>
+                        <button type="button" id="tabPresetBtn" onclick="switchPhotoTab('preset')" class="py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5">
+                            <i class="fa-solid fa-images"></i>
+                            <span>Pilihan Foto</span>
+                        </button>
+                        <button type="button" id="tabUrlBtn" onclick="switchPhotoTab('url')" class="py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5">
+                            <i class="fa-solid fa-link"></i>
+                            <span>Link URL</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab 1: Upload File -->
+                    <div id="tabContentUpload" class="space-y-3">
+                        <label class="border-2 border-dashed border-stone-300 hover:border-emerald-600 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer bg-stone-50/50 hover:bg-emerald-50/20 transition-all group">
+                            <input type="file" id="therapistFileInput" accept="image/*" onchange="handlePhotoFileInput(event)" class="sr-only">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <span class="text-xs font-bold text-stone-800 group-hover:text-emerald-800">Pilih Foto dari Galeri / Kamera HP</span>
+                            <span class="text-[11px] text-stone-400 mt-0.5">Mendukung JPG, PNG, WebP (Kompresi otomatis cerdas)</span>
+                        </label>
+                    </div>
+
+                    <!-- Tab 2: Pilihan Foto Koleksi (Preset) -->
+                    <div id="tabContentPreset" class="space-y-2 hidden">
+                        <p class="text-[11px] text-stone-500 font-medium">Klik salah satu foto profesional di bawah ini:</p>
+                        <div class="grid grid-cols-4 gap-2.5 max-h-52 overflow-y-auto p-1" id="presetPhotosGrid">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Link URL -->
+                    <div id="tabContentUrl" class="space-y-2 hidden">
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">URL Gambar Langsung</label>
+                        <div class="flex space-x-2">
+                            <input type="url" id="therapistUrlInput" placeholder="https://images.unsplash.com/..." class="flex-1 px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-800 focus:bg-white focus:outline-none">
+                            <button type="button" onclick="handleUrlPhotoPreview()" class="px-3.5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-xs rounded-xl transition-colors">
+                                Pratinjau
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-stone-400">Masukkan link web foto (misal foto profil Cloudinary, Unsplash, Imgur, dsb).</p>
+                    </div>
+                </div>
+
+                <!-- Footer Action Buttons -->
+                <div class="pt-3 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <button type="button" onclick="removeTherapistPhoto()" id="removePhotoBtn" class="w-full sm:w-auto px-4 py-2 text-rose-600 hover:bg-rose-50 text-xs font-bold rounded-xl transition-colors text-left flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                        <span>Hapus Foto (Gunakan Inisial)</span>
+                    </button>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button type="button" onclick="closeChangePhotoModal()" class="flex-1 sm:flex-none px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl transition-colors">
+                            Batal
+                        </button>
+                        <button type="button" onclick="saveTherapistPhoto()" id="savePhotoBtn" class="flex-1 sm:flex-none px-5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center space-x-1.5">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Simpan Foto</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer & Modals Containers -->
     <div id="footer-container"></div>
     <div id="modals-container"></div>
@@ -241,14 +347,21 @@
         function renderHeaderBanner(therapist) {
             const container = document.getElementById('therapistHeaderBanner');
             const isAvailable = therapist.is_available == 1;
+            const hasAvatar = !!therapist.avatar_url;
+
+            const avatarDisplay = hasAvatar
+                ? `<img src="${therapist.avatar_url}" alt="${therapist.name}" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shadow-inner border border-white/20">`
+                : `<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner border border-white/20">${therapist.name.charAt(0)}</div>`;
 
             container.innerHTML = `
                 <div class="flex items-center space-x-4 sm:space-x-5">
-                    <div class="relative">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold font-serif shadow-inner border border-white/20">
-                            ${therapist.name.charAt(0)}
+                    <div class="relative group cursor-pointer" onclick="openChangePhotoModal()" title="Klik untuk mengganti foto profil">
+                        ${avatarDisplay}
+                        <div class="absolute inset-0 bg-stone-900/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-[1px]">
+                            <i class="fa-solid fa-camera text-base sm:text-lg mb-0.5"></i>
+                            <span class="text-[10px] font-semibold leading-tight">Ganti</span>
                         </div>
-                        <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-[11px] shadow ${therapist.gender === 'female' ? 'bg-pink-500 text-white' : 'bg-blue-500 text-white'}">
+                        <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-[11px] shadow ${therapist.gender === 'female' ? 'bg-pink-500 text-white' : 'bg-blue-500 text-white'} ring-2 ring-stone-900">
                             <i class="fa-solid ${therapist.gender === 'female' ? 'fa-venus' : 'fa-mars'}"></i>
                         </span>
                     </div>
@@ -259,6 +372,10 @@
                             <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold tracking-wider uppercase border border-emerald-500/30">
                                 Terapis Berlisensi
                             </span>
+                            <button onclick="openChangePhotoModal()" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 text-[11px] font-semibold border border-white/15 transition-colors">
+                                <i class="fa-solid fa-camera text-xs"></i>
+                                <span>Ganti Foto</span>
+                            </button>
                         </div>
                         <p class="text-xs sm:text-sm text-stone-300 mt-1 font-medium">
                             <i class="fa-solid fa-spa text-emerald-400 mr-1.5"></i>${therapist.specialization}
@@ -296,6 +413,201 @@
                 SentosaStore.showToast(res.message, 'success');
                 const therapist = SentosaStore.getTherapistById(therapistId);
                 renderHeaderBanner(therapist);
+            }
+        }
+
+        // ==========================================
+        // FITUR GANTI FOTO PROFIL TERAPIS
+        // ==========================================
+        let tempPhotoUrl = null;
+        const PRESET_THERAPIST_PHOTOS = [
+            { name: 'Wanita 1 (Ramah)', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Wanita 2 (Senyum Hangat)', url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Wanita 3 (Profesional)', url: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Wanita 4 (Alami & Tenang)', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Pria 1 (Ramah & Bugar)', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Pria 2 (Profesional)', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Pria 3 (Sporty & Segar)', url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80' },
+            { name: 'Pria 4 (Sehat & Energik)', url: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&auto=format&fit=crop&q=80' }
+        ];
+
+        function openChangePhotoModal() {
+            const therapist = SentosaStore.getTherapistById(activeTherapistId);
+            if (!therapist) return;
+
+            tempPhotoUrl = therapist.avatar_url || null;
+            document.getElementById('modalTherapistName').textContent = therapist.name;
+            updateModalPhotoPreview(tempPhotoUrl, therapist.name);
+
+            // Populate presets
+            const presetGrid = document.getElementById('presetPhotosGrid');
+            presetGrid.innerHTML = PRESET_THERAPIST_PHOTOS.map(p => `
+                <div onclick="selectPresetPhoto('${p.url}', this)" 
+                     class="preset-photo-item relative rounded-xl overflow-hidden aspect-square border-2 ${tempPhotoUrl === p.url ? 'border-emerald-600 ring-2 ring-emerald-600/30' : 'border-stone-200'} cursor-pointer hover:opacity-90 transition-all group">
+                    <img src="${p.url}" alt="${p.name}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                    <span class="absolute bottom-1 left-1 right-1 text-[9px] font-bold text-white bg-stone-900/75 rounded px-1 text-center truncate">${p.name}</span>
+                </div>
+            `).join('');
+
+            // Reset inputs
+            document.getElementById('therapistFileInput').value = '';
+            document.getElementById('therapistUrlInput').value = (tempPhotoUrl && !tempPhotoUrl.startsWith('data:')) ? tempPhotoUrl : '';
+            document.getElementById('photoStatusNotice').textContent = '';
+
+            switchPhotoTab('upload');
+            document.getElementById('changePhotoModal').classList.remove('hidden');
+        }
+
+        function closeChangePhotoModal() {
+            document.getElementById('changePhotoModal').classList.add('hidden');
+        }
+
+        function switchPhotoTab(tab) {
+            const tabs = ['upload', 'preset', 'url'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1) + 'Btn');
+                const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (t === tab) {
+                    btn.className = 'py-2 rounded-lg bg-white text-stone-900 shadow-sm transition-all flex items-center justify-center space-x-1.5 font-bold';
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = 'py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center justify-center space-x-1.5 font-semibold';
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        function updateModalPhotoPreview(url, name) {
+            const preview = document.getElementById('modalPhotoPreview');
+            const therapist = SentosaStore.getTherapistById(activeTherapistId);
+            const displayName = name || (therapist ? therapist.name : 'T');
+
+            if (url) {
+                preview.innerHTML = `<img src="${url}" alt="${displayName}" class="w-full h-full object-cover">`;
+            } else {
+                preview.innerHTML = displayName.charAt(0);
+            }
+        }
+
+        function handlePhotoFileInput(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                SentosaStore.showToast('File yang dipilih harus berupa gambar (JPG, PNG, WebP).', 'error');
+                return;
+            }
+
+            const notice = document.getElementById('photoStatusNotice');
+            notice.textContent = 'Memproses & mengompres foto...';
+            notice.className = 'text-[11px] text-amber-700 font-semibold block';
+
+            // Kompres gambar via HTML5 Canvas agar ringan (~20-40KB) dan aman di localStorage
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const maxWidth = 400;
+                    const maxHeight = 400;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                    tempPhotoUrl = compressedDataUrl;
+                    updateModalPhotoPreview(tempPhotoUrl);
+
+                    notice.textContent = '✓ Foto galeri siap disimpan!';
+                    notice.className = 'text-[11px] text-emerald-700 font-semibold block';
+
+                    // Reset highlight preset
+                    document.querySelectorAll('.preset-photo-item').forEach(item => {
+                        item.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/30');
+                        item.classList.add('border-stone-200');
+                    });
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function selectPresetPhoto(url, el) {
+            tempPhotoUrl = url;
+            updateModalPhotoPreview(tempPhotoUrl);
+
+            document.querySelectorAll('.preset-photo-item').forEach(item => {
+                item.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/30');
+                item.classList.add('border-stone-200');
+            });
+
+            if (el) {
+                el.classList.remove('border-stone-200');
+                el.classList.add('border-emerald-600', 'ring-2', 'ring-emerald-600/30');
+            }
+
+            const notice = document.getElementById('photoStatusNotice');
+            notice.textContent = '✓ Foto pilihan koleksi dipilih!';
+            notice.className = 'text-[11px] text-emerald-700 font-semibold block';
+        }
+
+        function handleUrlPhotoPreview() {
+            const urlInput = document.getElementById('therapistUrlInput').value.trim();
+            if (!urlInput) {
+                SentosaStore.showToast('Masukkan link URL gambar terlebih dahulu.', 'error');
+                return;
+            }
+
+            tempPhotoUrl = urlInput;
+            updateModalPhotoPreview(tempPhotoUrl);
+
+            const notice = document.getElementById('photoStatusNotice');
+            notice.textContent = '✓ Foto dari URL dimuat.';
+            notice.className = 'text-[11px] text-emerald-700 font-semibold block';
+        }
+
+        function saveTherapistPhoto() {
+            const res = SentosaStore.updateTherapistPhoto(activeTherapistId, tempPhotoUrl);
+            if (res.success) {
+                SentosaStore.showToast(res.message || 'Foto profil terapis berhasil diperbarui!', 'success');
+                closeChangePhotoModal();
+                const therapist = SentosaStore.getTherapistById(activeTherapistId);
+                renderHeaderBanner(therapist);
+                // Render ulang navbar agar foto terapis di navbar ikut tersinkron
+                if (typeof renderNavbar === 'function') renderNavbar();
+            } else {
+                SentosaStore.showToast(res.message || 'Gagal menyimpan foto profil.', 'error');
+            }
+        }
+
+        function removeTherapistPhoto() {
+            if (confirm('Hapus foto profil dan kembali menggunakan inisial nama?')) {
+                tempPhotoUrl = null;
+                const res = SentosaStore.updateTherapistPhoto(activeTherapistId, null);
+                if (res.success) {
+                    SentosaStore.showToast('Foto profil dihapus. Profil kembali menggunakan inisial.', 'success');
+                    closeChangePhotoModal();
+                    const therapist = SentosaStore.getTherapistById(activeTherapistId);
+                    renderHeaderBanner(therapist);
+                    if (typeof renderNavbar === 'function') renderNavbar();
+                }
             }
         }
 

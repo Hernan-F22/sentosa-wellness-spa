@@ -55,14 +55,15 @@ switch ($action) {
             'role'  => $user['role']
         ];
 
-        // Jika terapis, sertakan ID terapis
+        // Jika terapis, sertakan ID terapis & avatar_url
         if ($user['role'] === 'therapist') {
-            $tStmt = $db->prepare("SELECT id, specialization, gender, is_available, rating FROM therapists WHERE user_id = ?");
+            $tStmt = $db->prepare("SELECT id, specialization, gender, is_available, rating, avatar_url FROM therapists WHERE user_id = ?");
             $tStmt->execute([$user['id']]);
             $therapist = $tStmt->fetch();
             if ($therapist) {
                 $_SESSION['user']['therapist_id'] = (int)$therapist['id'];
                 $_SESSION['user']['specialization'] = $therapist['specialization'];
+                $_SESSION['user']['avatar_url'] = $therapist['avatar_url'] ?? null;
             }
         }
 
@@ -199,6 +200,17 @@ switch ($action) {
     case 'me':
         $currentUser = getCurrentUser();
         if ($currentUser) {
+            if ($currentUser['role'] === 'therapist') {
+                $tStmt = $db->prepare("SELECT id, specialization, gender, is_available, rating, avatar_url FROM therapists WHERE user_id = ?");
+                $tStmt->execute([$currentUser['id']]);
+                $therapist = $tStmt->fetch();
+                if ($therapist) {
+                    $currentUser['therapist_id'] = (int)$therapist['id'];
+                    $currentUser['specialization'] = $therapist['specialization'];
+                    $currentUser['avatar_url'] = $therapist['avatar_url'] ?? null;
+                    $_SESSION['user'] = $currentUser;
+                }
+            }
             jsonResponse([
                 'success'   => true,
                 'logged_in' => true,

@@ -66,8 +66,12 @@ $navRoot = !empty($baseUrl) ? $baseUrl : '.';
                     <!-- Dropdown / Info Pengguna Login -->
                     <div class="relative group">
                         <button class="flex items-center space-x-2.5 px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200/80 transition-colors text-stone-800 text-sm font-medium">
-                            <span class="w-7 h-7 rounded-full bg-brand-800 text-white flex items-center justify-center text-xs font-bold uppercase">
-                                <?= substr($currentUser['name'], 0, 1) ?>
+                            <span class="w-7 h-7 rounded-full bg-brand-800 text-white flex items-center justify-center text-xs font-bold uppercase overflow-hidden">
+                                <?php if (!empty($currentUser['avatar_url'])): ?>
+                                    <img src="<?= htmlspecialchars($currentUser['avatar_url']) ?>" alt="<?= htmlspecialchars($currentUser['name']) ?>" class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <?= substr($currentUser['name'], 0, 1) ?>
+                                <?php endif; ?>
                             </span>
                             <span class="max-w-[120px] truncate"><?= htmlspecialchars($currentUser['name']) ?></span>
                             <i class="fa-solid fa-chevron-down text-xs text-stone-500"></i>

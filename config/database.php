@@ -115,6 +115,12 @@ class Database
         } catch (Exception $ex) {
             // Abaikan jika sudah ada atau terhambat constraint
         }
+
+        try {
+            $pdo->exec("ALTER TABLE `therapists` ADD COLUMN `avatar_url` VARCHAR(500) NULL AFTER `rating`");
+        } catch (Exception $ex) {
+            // Abaikan jika sudah ada kolom avatar_url
+        }
     }
 }
 
