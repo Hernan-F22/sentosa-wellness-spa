@@ -704,6 +704,11 @@
     <!-- Scripts -->
     <script src="../js/store.js"></script>
     <script>
+        if (typeof SentosaStore === 'undefined') {
+            document.write('<script src="/js/store.js"><\/script>');
+        }
+    </script>
+    <script>
         let currentTab = 'overview';
         let currentBookingFilter = 'all';
 
@@ -1176,6 +1181,8 @@
                     loadTherapistsGrid();
                 }
             }
+        }
+
         // ==========================================
         // FITUR MANAJEMEN PELANGGAN (ADMIN)
         // ==========================================
